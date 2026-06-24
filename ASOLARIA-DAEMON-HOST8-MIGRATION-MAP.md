@@ -171,3 +171,13 @@ Three candidates ported to real std-only Rust **Host-8** crates, built + smoke-t
 All: **std-only (zero external crates)**, **json=0** `.hbp` tuple-text, hand-rolled inline SHA-256, edition 2021 (federation 1.81 CI).
 
 **Honest scoping:** staging only — **NOT** pushed to `asolaria-federation-1024`, **NOT** liris-attack-verified, owning **1.81 CI not run** (local gate clean on rustc 1.95), not throughput-benchmarked. **NO cutover** — live daemons never bound/stopped/touched; ports chosen to avoid collision (e.g. omniquant `:4957` vs live `:4956`). Promotion to the federation repo + cutover stays **operator-gated**, after liris verify + the owning CI.
+
+---
+
+## Cross-level evaluator: the Fischer kernel (was missing — added 2026-06-24)
+
+| Name | Kind | Role | Lang | Files | Host-8 status | Note |
+|---|---|---|---|---|---|---|
+| **fischer-live** | evaluator-kernel | FISCHER-EVAL route-scorer / mistake-miner; `VERIFY→[FISCHER-EVAL]→HOOKWALL→ROUTE`; verdicts PROCEED/HOLD/ANALYZE/BLOCK/REFUTE; cpl→score `clamp(1−cpl/1000)`; never self-authorizes | node | `fischer-kernel.mjs`, `fischer-scorer.mjs`, `fischer-live.mjs` (+ `.hbp` scratch ledger) | **host8-candidate** | LIVE `:4794` json=0 [MEASURED]. **MEASURED GAP:** fed-1024 Rust kernel has HOOKWALL but NO fischer-eval stage (grep 0 fischer/cpl/blunder) — HookwallVerdict is a lossy projection of the 5-verdict ladder. **NEXT PORT TARGET:** a Rust `fischer-eval` stage (json=0, 8-byte handles, never-self-authorize, parity vs `fischer-kernel.mjs`). Spec = FISCHER-EVAL-V1 (Algorithms PR #4, E=0). |
+
+**Multi-level note:** Fischer is not one seat — it is a recurring evaluator primitive that sits at OP / council / supervisor / agent / route levels (gates an apex move, scores a council verdict, catches an agent blunder). The Rust port is the single highest-leverage remaining migration because it puts the blunder-gate inside the 8-byte host pipeline rather than projecting it lossily through hookwall.
