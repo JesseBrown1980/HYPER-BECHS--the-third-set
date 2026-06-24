@@ -156,3 +156,18 @@ The harvest-mark join that would attach individual PID names to these class/laye
 - **Two `host8-serve` entries are intentionally distinct** (framework crate vs. userland-binary manifest) per the source census; they are not a dedup miss.
 - **`rust-host8-done` means the Rust crate exists and is parity-built**, not that cutover has happened. `serve-recall → recall-serve` in particular is explicitly **pending peer attack-verify + operator authorization** before the Node process is retired. Migration *readiness* ≠ migration *executed*.
 - All ports have been reduced to bare numbers and no keys, tokens, shared-key paths, or PII path-fragments are reproduced here.
+---
+
+## Newly built this session (staging — additive, NO cutover)
+
+Three candidates ported to real std-only Rust **Host-8** crates, built + smoke-tested at `C:/tmp/host8-migration/`:
+
+| Daemon | → Rust Host-8 crate | LOC | Build | Smoke | Parity (MEASURED) |
+|---|---|---:|:---:|:---:|---|
+| omniquant-engine-stub | `omniquant-host8` | 1307 | ✓ | ✓ | **byte-exact vs Node** quant core (triple/polar/turbo/JL + HBH1 envelope; 6/6 unit tests; node-bridge eliminated) |
+| omnimets-stub | `omnimets-collector` | 401 | ✓ | ✓ | live per-lane snapshot counts **reproduced byte-for-byte** |
+| ghost-envelope-gc | `ghost-envelope-gc` | 1162 | ✓ | ✓ | full parity; **never-delete canon preserved** (flag-only) |
+
+All: **std-only (zero external crates)**, **json=0** `.hbp` tuple-text, hand-rolled inline SHA-256, edition 2021 (federation 1.81 CI).
+
+**Honest scoping:** staging only — **NOT** pushed to `asolaria-federation-1024`, **NOT** liris-attack-verified, owning **1.81 CI not run** (local gate clean on rustc 1.95), not throughput-benchmarked. **NO cutover** — live daemons never bound/stopped/touched; ports chosen to avoid collision (e.g. omniquant `:4957` vs live `:4956`). Promotion to the federation repo + cutover stays **operator-gated**, after liris verify + the owning CI.
