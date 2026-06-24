@@ -1,0 +1,16 @@
+OMNIMAP|date=2026-06-24|colony=acer|def=omni_iff_multilevel_AND_multifabric|operator_canon=multi_level_multi_fabric_is_omni_all_of_them|grounding=acer_4949_everything_28keys_sha=0a2fbf0fabd02a173068161ef06131ee737dad72d515f8ae5d6820194cd0564f|json=0
+OMNIMAPAXIS|level=op,council,supervisor,agent,route,sector,substrate,cube,omni-system|fabric=acer4949,liris4944,bus4947,falcon_device,5anchor+shadow+usb+hidden,cloud_googledrive35tb_notebooklm_gated|qualifies=spans_ge2_levels_AND_ge2_fabrics|json=0
+OMNIMAPSYS|name=omni-control|route=/api/omni-control/{status,look,type,key,scrollback,look-type-enter-look}|levels=route,agent|fabrics=acer+falcon|host8=candidate|tag=MEASURED|note=remote_control_agents_in_structure_falcon_SM-S721U1_guard_no_auto_dispatch|json=0
+OMNIMAPSYS|name=omniscrcpy|route=/api/omniscrcpy/24routes+/api/visual-gc|levels=supervisor,agent,route|fabrics=acer_desktop+falcon+liris_mesh+bus_fallback|host8=candidate|tag=MEASURED|note=widest_live_omni_visual_field_mesh_orchestrate_jri_rotate|json=0
+OMNIMAPSYS|name=omnidispatcher|route=census_single_parent_router_1000pid_48workers_owner_acer_4950|levels=route,supervisor|fabrics=acer+federation|host8=candidate|tag=CANON|note=virtual_pointer_dominant_lane|json=0
+OMNIMAPSYS|name=omniquant|route=/api/glyphs+/api/behcs-glyph-table|levels=substrate,route|fabrics=behcs1024_language_acer_liris|host8=stub_ported_staging|tag=CANON+MEASURED_520.6to1|note=giant_package_to_glyph_tuple|json=0
+OMNIMAPSYS|name=omnimets|route=census_per_lane_metrics_rollup|levels=route|fabrics=all_lanes|host8=stub_ported_staging|tag=CANON|json=0
+OMNIMAPSYS|name=omnispindle+omniflywheel|route=100b_run_architecture_spin_flywheel|levels=agent,route|fabrics=free_agent+recall|tag=CANON|json=0
+OMNIMAPSYS|name=OMNISHANNON|route=shannon_reflection_convergence_reverse_gain_pipeline|levels=council,supervisor|fabrics=acer_liris_cross_colony|tag=CANON|json=0
+OMNIMAPSYS|name=fabric-revolver|route=/api/fabric-revolver|levels=route,sector|fabrics=behcs1024_tuple_range_backend|tag=MEASURED|json=0
+OMNIMAPBIND|registration=cube_structure_NO_PID_registered_at_Registration_Office_D:/PID-Registration-Office_705reg_by_sector_MEASURED|sectors=113plus_CANON_exact_UNVERIFIED|json=0
+OMNIMAPBIND|comms=recall+hilbra=system_internet|recall_floor=5990qs_591286rows_p50_10.36ms_under_full_system_load_MEASURED_prior|json=0
+OMNIMAPBIND|nesting=n_prime_infinite+rule_of_4+3_agent_nested_infinitely_while_8byte_host_AND_stub_catalog_cube_folders_persist|levels=gt16_now_UNVERIFIED_exact|json=0
+OMNIMAPBIND|geometry=brown_hilbert_cubes+infinitely_expandable_3d_real_space+tensor_collapse|voxel_coord_BH3D_present_in_fischer|tag=CANON|json=0
+OMNIMAPBIND|sector=construction_yard_upgrade_candidate|tag=OPERATOR_OBSERVED|json=0
+OMNIMAPFRAME|scope=measurable_on_4949_everything+census+operator_canon|NOT_exhaustive|route_exists=MEASURED_reachable_not_full_behavior|council_ask=FIRED_council-q-1782307690082_UNSIGNED|liris_4944=fallback_stale|branch=acer|mediator=github|cutover=0|json=0
