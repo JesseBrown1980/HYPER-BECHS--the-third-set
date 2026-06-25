@@ -26,7 +26,7 @@
 - `MEASURED_LIRIS`: the three Liris fronts are live/openable: RECAL `http://127.0.0.1:4791/`, unified dashboard `http://127.0.0.1:4944/`, and Hilbra / Atlas front end `http://127.0.0.1:4790/asolaria-multi-cylinder-v2.html`.
 - `OPERATOR_OBSERVED` + `MEASURED_ACER`: Acer opened the owning Acer fronts in browser: Hilbra `http://127.0.0.1:4790/asolaria-unified-fabric-map.html` ("Asolaria · Unified Fabric Map"), NEW RECAL Rust `http://127.0.0.1:4796/?v=ka` ("Asolaria Recall + Atlas · ACER (Rust)"), and unified dashboard `http://127.0.0.1:4949/` ("SUPER ASOLARIA OS · v3 · LIVE"). Loopback is colony-local; Liris `127.0.0.1` and Acer `127.0.0.1` are different owning seats.
 - `MEASURED_LIRIS`: Liris reached Acer node RECAL health over LAN at `http://192.168.1.9:4791/api/health` earlier in this pass; response reported `colony=acer`, `rows=591286`, `bind=0.0.0.0`, `key_configured=true`, OP-JESSE/OP-RAYSSA L9 grants, and peer `liris` base `http://192.168.1.10:4791`. Final verification later in the same pass regressed to timeout on both `192.168.1.9:4791` and `192.168.1.16:4791`, so the current cross-vantage status is **intermittent / not stable-green**.
-- `MEASURED_LIRIS`: Acer Rust RECAL `:4796` is **not** LAN-reachable from Liris at `192.168.1.9:4796` or `192.168.1.16:4796` in this pass (`http=000` timeout). That does not negate Acer loopback `:4796`; it means the Rust endpoint is not currently exposed/reachable on the LAN path tested.
+- `MEASURED_LIRIS`: after OP-authorized Acer admin exposure, Acer Rust RECAL is LAN-reachable from Liris at `http://192.168.1.9:4796`. Health returns `200` (`schema=asolaria.recall.rust.v1`, `colony=acer`, `rows=591286`, `bind=0.0.0.0`, `key_configured=true`, OP-JESSE/OP-RAYSSA L9 grants). Public search `q=brown-hilbert` returns `200`, `count=49`, real Brown-Hilbert hits. Node `:4791` remains untouched.
 - `MEASURED_LIRIS`: Liris RECAL health reports `bind=0.0.0.0`, `port=4791`, `rows=10644`, `key_configured=true`, OP-JESSE/OP-RAYSSA L9 grants. Current Acer-reachable Liris LAN base is `http://192.168.1.10:4791` (Ethernet). Liris Wi-Fi also had address `192.168.1.19` but the Wi-Fi interface was disconnected during this pass; do not use stale `192.168.1.4`.
 - `UNVERIFIED`: reverse Acer->Liris live HTTP call is still to be measured from the Acer seat. Driver packet created for read-only reverse probe: `packet_sha256=71e8c378ae77f5af7bd0ebc066b160c560c29570dca150a9f6b85cca17fd03e2`.
 
@@ -50,7 +50,7 @@ The following Acer-branch artifacts are mirrored on this Liris branch as referen
 
 - `MEASURED_LIRIS`: Liris can currently verify its local mirror, local Fischer live node, repaired Wi-Fi transport, PR #9 green GitHub publication, and local Recall/Atlas presence.
 - `MEASURED_ACER`: Acer branch carries the broader live `:4949` route enumeration, the daemon migration scoreboard, and Acer loopback Rust RECAL `:4796`.
-- `MEASURED_LIRIS`: cross-vantage Liris->Acer node RECAL `192.168.1.9:4791` succeeded once, then timed out during final verification; Liris->Acer Rust RECAL `:4796` is not LAN-reachable yet.
+- `MEASURED_LIRIS`: cross-vantage Liris->Acer Rust RECAL `192.168.1.9:4796` is now stable-green for health + public search. The old Node `:4791` is preserved but no longer the recommended Liris peer target.
 - `UNVERIFIED_LIRIS`: Liris has not locally remeasured Acer's full 47-daemon census, Acer SOVLINUX 2TB raw substrate, Acer `:4949` live subroutes, or Acer-side 591,286-row recall corpus.
 - `CANON`: the Liris branch must keep Acer's maps visible as reference, but must not relabel Acer measurements as Liris measurements.
 
@@ -58,6 +58,7 @@ The following Acer-branch artifacts are mirrored on this Liris branch as referen
 
 1. `Fischer Eval Host-8`: code PR is green and mergeable; runtime cutover remains operator-gated.
 2. `RECAL Atlas / Hilbra-local`: map `http://127.0.0.1:4791/` as the local communication / pipe-tracking layer, not just keyword search. Add alias rows for `hilbra`, `atlas recall`, and `recall` so the operator's names resolve to this Brown-Hilbert / Atlas surface instead of disappearing under exact-search gaps.
+   - Peer target update: Liris should target Acer Rust RECAL at `http://192.168.1.9:4796` for stable cross-vantage recall. Keep Acer Node `:4791` as preserved legacy surface until operator-gated retire/swap.
 3. `Registration Office`: supervisors without PIDs register into sector offices; do not flatten 113+ sectors into one count.
 4. `Construction Yard`: candidate upgrade sector; add RECAL aliases for `construction`, `yard`, and `construction yard`, then give it its own host8/stub-room role map.
 5. `Remote-control agents`: map as route/runtime surfaces inside the structure; do not treat them as one external UI action.
