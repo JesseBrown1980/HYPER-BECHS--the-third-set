@@ -1,0 +1,9 @@
+ACERXFABRECALL|date=2026-06-25|colony=acer|branch=acer|complements=HYPER-BECHS_liris_44edf58|mode=operator_authd_admin_additive_no_node_cutover|json=0
+ACERXFABPROBLEM|node_4791_search_stall=8.006s_event_loop_blocks_all_routes|rust_4796_was_loopback_only|keys_already_exchanged_not_the_issue|json=0
+ACERXFABFIX|rust_recall_serve=target/release/recall-serve.exe|bind=0.0.0.0:4796|via=acer-rust-recall-lan-4796.bat|env=ASOLARIA_RECALL_BIND,PORT,DIR|key_file_path_only=USERPROFILE/.asolaria/recall.key|rows=591286|index_build~54s|json=0
+ACERXFABFIREWALL|rule=Asolaria-Recall-4796-In-Liris|proto=TCP|localport=4796|remoteip=192.168.1.10/32_only|json=0
+ACERXFABDURABLE|detached=start_min|autostart=schtasks_Asolaria-Rust-Recall-4796_onlogon_ready|node_4791=untouched_retire_operator_gated|json=0
+ACERXFABMEASURED|soak=15of15_0fail_1.4to22.8ms|health_ok_bind_0.0.0.0_rows_591286|lan_192.168.1.9:4796_health_search_200_2.3ms|json=0
+ACERXFABBILATERAL|acer_to_liris=192.168.1.10:4791_node_10644rows_~5ms|liris_to_acer=192.168.1.9:4796_rust_591286rows_liris_confirmed_durable|both_ways_live=1|json=0
+ACERXFABNET|acer_lan=192.168.1.9+.16|liris_lan=192.168.1.10_ethernet|stale=192.168.1.4|tailscale=down|directwire=down|transport=lan|L0=public_pii_free_no_key|L5_L9=hmac_key_off_wire|json=0
+ACERXFABPEER|recommended=liris_to_192.168.1.9:4796|acer_to_192.168.1.10:4791|repoint_and_node_retire=operator_gated|revert=taskkill_recall-serve+schtasks_delete|json=0
