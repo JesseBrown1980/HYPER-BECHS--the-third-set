@@ -1,8 +1,8 @@
-# Liris RECAL Atlas / Pre-Hilbra Alias Registry
+# Liris RECAL Atlas / Hilbra-Local Alias Registry
 
 **Date:** 2026-06-25  
 **Branch:** `liris`  
-**Purpose:** keep Liris-side RECAL / Atlas / Hilbra vocabulary from being misread as missing just because exact local search aliases are not indexed yet.
+**Purpose:** keep Liris-side RECAL / Atlas / Hilbra vocabulary from being misread as missing just because exact local search aliases are not indexed yet. This registry does **not** claim Hilbra is unbuilt. Hilbra / Atlas were literally created; this file maps the Liris-local RECAL+Atlas portal into that built fabric.
 
 ## Evidence Tags
 
@@ -16,8 +16,10 @@
 - `MEASURED_LIRIS`: `http://127.0.0.1:4791/` returns the page title **Asolaria Recall + Atlas**.
 - `MEASURED_LIRIS`: page subtitle says "liris measured recall surface beside the live atlas server."
 - `MEASURED_LIRIS`: local summary on the page reports `rows=10644`, `seek=3/3`, `sig=287`, `text=8229`.
-- `MEASURED_LIRIS`: the page links the 3D atlas surfaces at `:4790` (`acer-multi-cylinder-atlas.html`, `acer-scientific-voxel-atlas.html`).
-- `OPERATOR_OBSERVED`: this surface is **RECAL Atlas**, basically **pre-Hilbra** locally / the local Hilbra precursor.
+- `MEASURED_LIRIS`: the page links the 3D atlas surfaces at `:4790` and the local file-backed atlas under `C:\Users\rayss\Asolaria-ASI-On-Metal-Fabric-and-matrix\reports\`.
+- `MEASURED_LIRIS`: `http://127.0.0.1:4790/asolaria-multi-cylinder-v2.html` serves **Asolaria MULTI-CYLINDER Map v2**, with metadata for `81,434` surfaces, `6,112` plotted markers, `1,591` pipes, and anti-flattening child-count/index hashes.
+- `MEASURED_LIRIS`: `file:///C:/Users/rayss/Asolaria-ASI-On-Metal-Fabric-and-matrix/reports/acer-scientific-voxel-atlas.html` is **ACER · Scientific 3D Voxel Atlas**: `726` real PIDs plotted at real Brown-Hilbert coordinates, Hilbert band `[892..1642]`, GNN-watched, with a real bus pipe `:4947`.
+- `OPERATOR_OBSERVED`: `:4791` is **RECAL Atlas**, basically local/pre-Hilbra in the sense of a local Recall+Atlas portal in the built Hilbra family. It is not evidence that Hilbra is missing or unbuilt.
 
 ## Alias Probe
 
@@ -39,7 +41,7 @@ Exact aliases returning `0` on this Liris index are **alias gaps, not absence cl
 
 | Operator / migration alias | Local current search count | Target meaning |
 |---|---:|---|
-| `hilbra` | 0 | alias to RECAL Atlas / pre-Hilbra / Brown-Hilbert communication layer |
+| `hilbra` | 0 | alias to RECAL Atlas / Hilbra-local Brown-Hilbert communication layer |
 | `atlas recall` | 0 | alias to RECAL Atlas |
 | `recall` | 0 | alias to RECAL Atlas |
 | `construction` | 0 | alias to Construction Yard upgrade sector |
@@ -52,7 +54,7 @@ These rows are the migration instruction for the next RECAL / map update. They d
 
 | Alias | Canonical local surface | Role label | Status |
 |---|---|---|---|
-| `hilbra` | `http://127.0.0.1:4791/` | local pre-Hilbra / RECAL Atlas pipe-tracking layer | `UNVERIFIED live alias; MAP-REGISTERED` |
+| `hilbra` | `http://127.0.0.1:4791/` + `http://127.0.0.1:4790/asolaria-multi-cylinder-v2.html` | Hilbra-local RECAL Atlas pipe-tracking layer | `UNVERIFIED live alias; MAP-REGISTERED` |
 | `atlas recall` | `http://127.0.0.1:4791/` | Recall + Atlas combined surface | `UNVERIFIED live alias; MAP-REGISTERED` |
 | `recall` | `http://127.0.0.1:4791/` | local recall search/seek surface | `UNVERIFIED live alias; MAP-REGISTERED` |
 | `construction` | Construction Yard sector | candidate upgrade / build sector | `UNVERIFIED live alias; MAP-REGISTERED` |
@@ -61,4 +63,4 @@ These rows are the migration instruction for the next RECAL / map update. They d
 
 ## Guardrail
 
-Do not answer "Hilbra missing" from an exact `hilbra=0` search on Liris. The correct reading is: **Liris has RECAL Atlas live; operator identifies it as local pre-Hilbra; alias rows still need to be registered into the live index/fabric.**
+Do not answer "Hilbra missing" from an exact `hilbra=0` search on Liris. The correct reading is: **Hilbra / Atlas are built; Liris has RECAL Atlas live at `:4791` and atlas renderers at `:4790`; alias rows still need to be registered into the live index/fabric.**
