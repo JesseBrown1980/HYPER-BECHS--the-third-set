@@ -73,3 +73,34 @@ No live daemon restart, no process cutover, no Slack connector, and no secret ma
 - The council fallback is still trying stale base `http://192.168.1.50:4949`, while current cross-vantage RECAL proved Acer on `192.168.1.9`.
 
 Therefore the immediate C0/C4 blocker is not the RecursiveMAS paper. It is route materialization for the decision lane: the restored Acer `:4949` may be loopback-only, blocked by firewall, or not bound to the current LAN address; the MCP fallback also carries a stale Acer base. Fix order: current-LAN base discovery -> dashboard bind/firewall or proxy -> council POST retry -> only then ask for a signed RecursiveMAS handling verdict.
+
+## Anti-Deflation Addendum - `:4949` also carries the revolver/router
+
+The `:4949` surface must not be treated as "just a dashboard" or a simple HTTP health server.
+
+`MEASURED_FROM_SOURCE` on Liris:
+
+- `fabric-revolver.mjs` describes the actual architecture: fixed chambers rotate `EMPTY -> LOAD -> RUN -> COLLECT -> EJECT -> EMPTY`; billions of backend addresses are tuple space; only N live workers sit in chambers; Omnispindle loads chambers; Omniflywheel routes; the fabric loop fires.
+- `/api/fabric-revolver` is a real dashboard route reading `fabric-revolver-runtime-latest.json`, `chambers-latest.json`, or `fabric-revolver-state.json`.
+- Local Liris `http://127.0.0.1:4944/api/fabric-revolver` returns HTTP 200 and a real chamber state: chamber 0 `COMPLETE`, pid `BH.REVOLVER.CHAMBER.000`, `rotation=2`, `totalLoads=9`, `lastTickAt=2026-05-26T23:56:28.841Z`.
+- Existing Liris reports classify the Liris revolver as `STALE_IDLE`, not absent: `lastTickAt=2026-05-26T23:56:28.841Z`, stale opencode model id, and missing preferred dashboard feed files.
+- Prior Liris dashboard docs also recorded the older stale 8-chamber state and wrong Acer handshake route as a known routing problem.
+
+`OPERATOR_OBSERVED` from Acer in the current session:
+
+- After a fresh `:4949` restart, the Node process bound `0.0.0.0:4949` and then consumed about 85% of one core.
+- Operator identified this as the Brown-Hilbert PID spinner / fabric-revolver / router path, not an idle bug.
+
+Honest synthesis:
+
+- The revolver/router is real and attached to the `:4949` legacy surface.
+- Killing `:4949` kills more than a dashboard; it interrupts the chamber/spinner/router surface, even if persisted state lets it restart.
+- From Liris, today's Acer high-CPU spin is `OPERATOR_OBSERVED` and plausible, but forward progress is still `UNVERIFIED_CURRENT` until Acer shows fresh `lastTickAt`, rotation, load/collect/eject counters, or dispatch-log growth.
+
+Host-8 port consequence:
+
+- Split the decision plane into at least two Host-8 responsibilities:
+  1. **responder/gateway**: `/health`, `/api/canon-index`, `/api/everything`, `/api/council/query`, `/api/council/verdicts`, `/api/loop/pending`; must stay responsive under worker load.
+  2. **revolver/router worker**: Brown-Hilbert PID spinner + chamber rotation + dispatch bridge; must run in a separate thread/process with explicit yield/backpressure and progress counters.
+- The port must preserve the revolver's chamber semantics while preventing the old single-threaded Node failure mode where worker activity starves the council/HTTP responder.
+- Add acceptance gate C0.1: prove `lastTickAt/rotation/counters` advance while `/health` and `/api/council/query` still return within bounded latency.
