@@ -14,3 +14,9 @@ SCOPE_GROUNDTRUTH|preserve=6tier_access_L0_L5_L9,auto_fire_allowed_false,unsigne
 FIX|A=taskkill_4949_node_relaunch_fresh_quick_restore_additive|B=fix_advertised_and_fallback_base_to_192.168.1.9_4949|C=build_rust_host8_council_loop_port_staged_no_cutover|order=A_then_B_then_C|gate=owning_1.81_ci_plus_liris_attack_verify_plus_operator
 HELD|recursivemas=arxiv_2604.25917|reason=no_signed_council_verdict_while_lane_wedged|safe=E0_recursivelink_to_asolaria_primitive_map_only
 ADVANCE|done=diagnosis_plus_groundtruth_scope_plus_memory|daemon_restart=false|cutover=false|slack=false|secrets=false|carveout_clean=true
+RECALPEER|date=2026-06-25|tag=MEASURED_ACER|seat=acer_loopback|endpoint=http://127.0.0.1:4796/api/health|peers=1|peer_name=liris|peer_base=http://192.168.1.10:4791|identity_from_acer_engine=true
+RECALPEER|date=2026-06-25|tag=MEASURED_ACER|direction=acer_to_liris|liris_health=http200|liris_colony=liris|liris_rows=10644|liris_peer_back=acer|search_atlas=http200_count1_candidate11_real_row
+RECALPEER|date=2026-06-25|tag=MEASURED_ACER|engine_rebuild=built_ms_55155|bind=0.0.0.0:4796|rows=591286|key=true|cross_fabric_search=live_both_directions
+HILBERTINTERSECTION|date=2026-06-25|tag=MEASURED_ACER|path=C:/Users/acer/Asolaria/tools/cube/hilbert-intersection-engine.js|bytes=13065|mtime=2026-04-10|declares=REAL_6^4_intersection_cube|bilateral_parity_with_liris=true|not_just_hash=true
+HOST8CELL|id=C0.2|name=hilbert_ptp_geometry_preservation|tag=ACCEPTED_FROM_LIRIS|target=worker_walks_same_6^4_geometry_preserve_ptp_lanes_responder_nonblocking|cutover=false
+HONEST_BOUNDARY|persistent_socket=UNVERIFIED|claim=mutual_peer_registration_plus_bidirectional_cross_search|data_plane=healthy|decision_plane=active_migration_cell|parity=liris_4cd1bd8

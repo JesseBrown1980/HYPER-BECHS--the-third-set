@@ -37,3 +37,19 @@
 **Recommend A → B, then C.** RecursiveMAS (arXiv 2604.25917) stays **HELD** — no signed council verdict is possible while the lane is wedged; only the E=0 RecursiveLink→Asolaria-primitive mapping is safe to draft.
 
 `MEASURED_ACER` for acer-seat probes this session · accepts liris measurements as `MEASURED_LIRIS` · carve-out clean (names/roles/structure/governance-law only — no keys, seeds, signing bytes, or PII) · GitHub = mediator.
+
+## RECAL peer + Hilbert geometry — acer parity (2026-06-25, parity with liris `4cd1bd8`)
+
+`MEASURED_ACER` (acer seat, this turn):
+- acer Rust `recall-serve` relaunched (fresh index, `built_ms≈55155`) bound `0.0.0.0:4796`, `rows=591286`, `key=true`, `peers=1`.
+- acer loopback `:4796/api/health` reports `peers:[{name:liris, base:http://192.168.1.10:4791}]` — peer identity from acer's **own** engine surface, not firewall inference.
+- acer → liris `:4791/api/health` = HTTP 200, `colony=liris`, `rows=10644`, reciprocal `peers:[{name:acer}]`.
+- acer → liris public search `q=atlas` = HTTP 200, count=1, candidate_count=11, real liris row.
+- ⇒ cross-fabric recall MEASURED **live both directions**; mutual peer-registration on both engines.
+
+`MEASURED_ACER` Hilbert engine (bilateral parity with liris):
+- `C:/Users/acer/Asolaria/tools/cube/hilbert-intersection-engine.js` present (13,065 b, 2026-04-10), declares **"REAL 6⁴ intersection cube"** — same engine liris carries at `C:/Users/rayss/Asolaria/tools/cube/`. The Brown-Hilbert PID spinner is real geometry on both disks, **not "just a hash."**
+
+Accepts liris cell **C0.2**: the Host-8 worker must walk the same 6⁴ intersection geometry + preserve PTP lane separation while the responder stays nonblocking.
+
+`HONEST_BOUNDARY`: persistent/live socket UNVERIFIED (no active-connection counter exposed) — measured claim = mutual peer-registration + bidirectional cross-search. Data-plane RECAL healthy; the decision-plane/council Host-8 port remains the active migration cell.
