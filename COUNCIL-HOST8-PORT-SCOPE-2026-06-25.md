@@ -104,3 +104,21 @@ Host-8 port consequence:
   2. **revolver/router worker**: Brown-Hilbert PID spinner + chamber rotation + dispatch bridge; must run in a separate thread/process with explicit yield/backpressure and progress counters.
 - The port must preserve the revolver's chamber semantics while preventing the old single-threaded Node failure mode where worker activity starves the council/HTTP responder.
 - Add acceptance gate C0.1: prove `lastTickAt/rotation/counters` advance while `/health` and `/api/council/query` still return within bounded latency.
+
+## Acer Forward-Progress Addendum - finite burst, not proven revolver progress
+
+`OPERATOR_OBSERVED_ACER` / `ACER_MEASURED` from the follow-up probe:
+
+- `:4949` PID 20812 had accumulated substantial CPU (`573s` reported), but the follow-up sample showed `dCPU=0s over 4s => 0% of one core`.
+- Therefore the earlier high CPU was a finite burst, not a permanent infinite loop.
+- Acer-side revolver state files were stale: `chambers-latest` and `fabric-revolver-runtime-latest` were May-dated; `fabric-revolver-state.json` was absent.
+- Acer e-cohort dispatch files were stale to `2026-06-20`; no today-write was proven in the samples.
+- Acer source inspection showed the dashboard `/api/fabric-revolver` is primarily a viewer over feed/state files; the real worker/router surfaces are separate daemons/scripts such as `fabric-revolver.mjs`, `auto-fabric-query-daemon --watch`, and `gnn-dispatch-bridge --watch`.
+
+Corrected read:
+
+- The Brown-Hilbert PID spinner / fabric-revolver / dispatch router are real architecture and must not be deflated away.
+- Today's measured Acer `:4949` burst is not enough to claim live revolver forward progress.
+- The next diagnostic is a true progress probe: sample `lastTickAt`, `rotation`, load/collect/eject counters, and dispatch-log sizes twice while also measuring `/health` and `/api/council/query` latency.
+
+Operator supplied old Acer desktop notes as archaeology leads, especially `SLICES.txt`, `Sub milisecond loop.txt`, `Full system.txt`, `ASK THE FABRIC.txt`, and `REMEMBER the old systems builds the new.txt`. These exact files are not present on the Liris filesystem in this session, so their contents remain Acer-side evidence/leads until copied or rehydrated here.
