@@ -1,0 +1,6 @@
+ACERBILATERAL|date=2026-06-25|verifier=acer|target=HYPER-BECHS_liris_cbb440a_LIRIS-OMNI-MIGRATION-CROSSWALK|verdict=SPINE_ACCEPTED|json=0
+ACERBILATERALGROUND|surfaces=4790_hilbra_unified_fabric_map,4796_rust_recall_591286,4791_node_recall,4790_portal_metrics|all_http200|pr9=9f05a33_green_mergeable_no_cutover|json=0
+ACERBILATERALPARITY|axis=acer4796_L0_candidates_vs_liris4791_L9_count|brown-hilbert=49/50|hilbert=284/50|atlas=3649/9|registration=4389/16|registration_office=4372/8|office=4480/21|omni=2072/21|fischer=28/14|host8=13/4|json=0
+ACERBILATERALCONFIRM|zero_candidates_on_BOTH=hilbra,atlas-recall,recall,yard,construction_yard|conclusion=operator_names_need_alias_rows_NOT_absent|status=BILATERALLY_MEASURED|json=0
+ACERBILATERALDELTA|construction=3_acer_vs_0_liris|construction_yard_phrase=0_both|alias_row_still_needed|non_blocking|json=0
+ACERBILATERALTAG|measured_acer_probes_this_session|accepts_measured_liris_as_seat_truth|no_cutover|mediator=github|branch=acer|json=0
