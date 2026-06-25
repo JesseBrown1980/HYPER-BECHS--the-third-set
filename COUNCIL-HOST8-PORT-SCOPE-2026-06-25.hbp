@@ -12,3 +12,5 @@ DECISIONLANE|tag=MEASURED_FROM_MAP|component=dashboard_aggregator|current=dashbo
 DECISIONLANE|tag=CANON|component=boot_autostart|target=kernel_microkernel_host8_room_starter|gate=councils_and_above_warm_at_operator_login
 RECURSIVEMAS|tag=MEASURED_FROM_PAPER|paper=arxiv_2604.25917v1|title=Recursive_Multi-Agent_Systems|claim=RecursiveLink_latent_recursion|metrics=accuracy_plus_8.3pct_speedup_1.2x-2.4x_token_reduction_34.6pct-75.6pct|asolaria_status=E0_mapping_queued_100B_review_HELD_no_council_verdict
 ADVANCE|done=scope_packet_only|cutover=false|daemon_restart=false|slack=false|secrets=false
+RETRY|date=2026-06-25|tag=MEASURED|after=network_returned|liris_fabric_get=healthy|canon_entries=427|canon_sections=134|acer_recal_192.168.1.9_4796=HTTP200|acer_dashboard_192.168.1.9_4949=timeout|acer_dashboard_192.168.100.1_4949=timeout
+RETRY|date=2026-06-25|tag=MEASURED|council_query_ok=false|fallback_reason=all_bases_unavailable|fallback_stale_base=http://192.168.1.50:4949|current_acer_recal_base=http://192.168.1.9:4796|next_blocker=C0_C4_route_materialization

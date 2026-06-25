@@ -61,3 +61,15 @@ Held work:
 - Queued RecursiveMAS for E=0 mapping plus later 100B review.
 
 No live daemon restart, no process cutover, no Slack connector, and no secret material were touched.
+
+## Retry Addendum - after network returned
+
+`MEASURED` from Liris after the operator reported the network was back:
+
+- Liris fabric GET remains healthy: health ok on `:4944`, canon-index `427` entries / `134` sections, `/api/everything` reachable.
+- Liris -> Acer Rust RECAL still works: `http://192.168.1.9:4796/api/health` returned HTTP 200.
+- Liris -> Acer dashboard still does **not** work: `http://192.168.1.9:4949/health` timed out, and `http://192.168.100.1:4949/health` also timed out.
+- `asolaria_fabric_council_query` still returned `ok=false`, `_fallback.reason=all_bases_unavailable`.
+- The council fallback is still trying stale base `http://192.168.1.50:4949`, while current cross-vantage RECAL proved Acer on `192.168.1.9`.
+
+Therefore the immediate C0/C4 blocker is not the RecursiveMAS paper. It is route materialization for the decision lane: the restored Acer `:4949` may be loopback-only, blocked by firewall, or not bound to the current LAN address; the MCP fallback also carries a stale Acer base. Fix order: current-LAN base discovery -> dashboard bind/firewall or proxy -> council POST retry -> only then ask for a signed RecursiveMAS handling verdict.
