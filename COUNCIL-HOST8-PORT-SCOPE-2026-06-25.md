@@ -122,3 +122,47 @@ Corrected read:
 - The next diagnostic is a true progress probe: sample `lastTickAt`, `rotation`, load/collect/eject counters, and dispatch-log sizes twice while also measuring `/health` and `/api/council/query` latency.
 
 Operator supplied old Acer desktop notes as archaeology leads, especially `SLICES.txt`, `Sub milisecond loop.txt`, `Full system.txt`, `ASK THE FABRIC.txt`, and `REMEMBER the old systems builds the new.txt`. These exact files are not present on the Liris filesystem in this session, so their contents remain Acer-side evidence/leads until copied or rehydrated here.
+
+## Hilbert Intersection / PTP Collision Geometry Addendum
+
+`MEASURED_LIRIS_SOURCE`:
+
+- `C:/Users/rayss/Asolaria/tools/cube/hilbert-intersection-engine.js` exists locally and declares itself `REAL 6^4 intersection cube`.
+- The same engine shape is mirrored under `C:/Users/rayss/Asolaria/engines/hilbert-intersection-engine.js`.
+- The source computes `6 x 6 x 6 x 6 = 1,296` Brown-Hilbert cube intersection points over layer, protocol, surface, and dimension axes.
+- `C:/Users/rayss/Asolaria/brown-hilbert/08-2026-04-10-cube-multiplication.md` records `6^4 = 1,296 intersection points`.
+- `C:/Users/rayss/Asolaria/ASOLARIA-OS-MASTER.md` lists `hilbert-intersection-engine` among live components.
+
+`OPERATOR_OBSERVED_ACER` from the old Acer desktop notes read on Acer:
+
+- The Hilbert intersection engine is not "just a hash"; it is the Brown-Hilbert collision geometry.
+- The axes are cubes of primes; rule-of-3 digital-root plus primes / primes^2 / primes^3 form the PTP non-colliding lanes.
+
+Host-8 consequence:
+
+- C0.1 must preserve the Brown-Hilbert PID spinner as geometry, not collapse it into a hash lookup.
+- Add follow-on gate C0.2: prove the Host-8 worker can walk the same `6^4` intersection geometry and preserve PTP lane separation while the responder remains nonblocking.
+
+## Acer Rust RECAL Peer Rebuild Addendum
+
+`OPERATOR_OBSERVED_ACER` from the live `recall-serve` log:
+
+```text
+RECALLSERVE|building inverted index from C:\asolaria-acer\recall-atlas\data/ASOLARIA-ACER-RECALL.hbi ...|json=0
+RECALLSERVE|ok=true|engine=rust-inverted|colony=acer|bind=0.0.0.0:4796|rows=591286|terms=2614638|postings=23930053|skipped=0|built_ms=55155|key=true|peers=1|max_conn=256|json=0
+```
+
+`MEASURED_LIRIS` follow-up over the LAN:
+
+- `http://192.168.1.9:4796/api/health` returned HTTP 200 from `asolaria.recall.rust.v1`.
+- Acer health reports `bind=0.0.0.0`, `port=4796`, `rows=591286`, `terms=2614638`, `postings=23930053`, `built_ms=55155`, `key_configured=true`, and `peers=[{name:liris, base:http://192.168.1.10:4791}]`.
+- Liris -> Acer public search `q=brown-hilbert` returned HTTP 200, `candidate_count=49`, and real Acer rows.
+- Liris local RECAL `http://127.0.0.1:4791/api/health` remains HTTP 200 with `rows=10644`, `key_configured=true`, and peer `acer`.
+- Liris local search `q=atlas` returned HTTP 200 with a real Liris atlas row.
+
+Honest read:
+
+- `peers=1` and peer identity `liris` are now measured from the Acer Rust engine's own health surface.
+- The route is live from Liris to Acer and the local Liris RECAL remains live.
+- A persistent socket or active session should not be claimed unless the engine exposes a live-connection counter; the current measured claim is configured peer plus successful cross-vantage search.
+- Data-plane RECAL is healthy and durable while the decision-plane/council Host-8 work remains the active migration cell.
