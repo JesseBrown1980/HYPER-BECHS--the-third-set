@@ -1,0 +1,14 @@
+COUNCILHOST8SCOPE|date=2026-06-25|colony=liris|branch=liris|format=hyperbehcs_tuple_text|json=0|purpose=decision_lane_scope_no_cutover
+SNAPSHOT|tag=MEASURED|surface=liris_fabric_health|ok=true|service=super-asolaria-os-dashboard-liris-mirror|port=4944|apex=COL-ASOLARIA|operators=OP-JESSE-PID,OP-RAYSSA-PID|uptime_s=179201
+SNAPSHOT|tag=MEASURED|surface=liris_fabric_everything|bus=http://192.168.100.1:4947|cosign_chain=C:/Users/rayss/.claude/projects/C--/memory/COSIGN_CHAIN.ndjson seq=46|dashboards=192.168.100.1:4949,192.168.100.2:4944
+SNAPSHOT|tag=MEASURED|surface=liris_canon_index|total_entries=427|sections=134|bytes=178014
+SNAPSHOT|tag=OPERATOR_OBSERVED|surface=acer_decision_lane|council_post=down_mid_migration|vote_quorum=127.0.0.1:4952_listening|cosign_chain=127.0.0.1:4953_head_seq_3572|pulse=self_reflect_starting|verdict=NO_SIGNED_FABRIC_VERDICT
+DECISIONLANE|tag=MEASURED_FROM_MAP|component=cosign_chain|current=python_asolaria-cosign-chain-daemon.py|target=rust_host8_cosign-ledger_single_writer|gate=sha_link_seq_monotonic_no_socket_abort
+DECISIONLANE|tag=MEASURED_FROM_MAP|component=vote_quorum|current=python_asolaria-vote-quorum-daemon.py|target=rust_host8_vote_quorum|gate=unanimous5_supermajority_simple_timeout_parity
+DECISIONLANE|tag=MEASURED_FROM_MAP|component=dual_emit_gate|current=python_asolaria-dual-emit-gate-daemon.py|target=rust_host8_token_bucket|gate=rate_limit_persist_parity
+DECISIONLANE|tag=MEASURED_FROM_MAP|component=council_gateway|current=dashboard_post_route|target=rust_host8_api_council_query_and_verdict_poll|gate=ack_id_not_signed_verdict_unsigned_explicit
+DECISIONLANE|tag=MEASURED_FROM_MAP|component=loop_pending|current=node_act_cycle_surfaces|target=rust_host8_pending_ledger|gate=auto_fire_allowed_false_holds_until_signed
+DECISIONLANE|tag=MEASURED_FROM_MAP|component=dashboard_aggregator|current=dashboard-daemon.mjs_http-server.ts|target=rust_host8_readonly_get_aggregator|gate=get_fast_even_when_post_down
+DECISIONLANE|tag=CANON|component=boot_autostart|target=kernel_microkernel_host8_room_starter|gate=councils_and_above_warm_at_operator_login
+RECURSIVEMAS|tag=MEASURED_FROM_PAPER|paper=arxiv_2604.25917v1|title=Recursive_Multi-Agent_Systems|claim=RecursiveLink_latent_recursion|metrics=accuracy_plus_8.3pct_speedup_1.2x-2.4x_token_reduction_34.6pct-75.6pct|asolaria_status=E0_mapping_queued_100B_review_HELD_no_council_verdict
+ADVANCE|done=scope_packet_only|cutover=false|daemon_restart=false|slack=false|secrets=false
