@@ -60,7 +60,7 @@ The following Acer-branch artifacts are mirrored on this Liris branch as referen
 1. `Fischer Eval Host-8`: code PR is green and mergeable; runtime cutover remains operator-gated.
 2. `RECAL Atlas / Hilbra-local`: map `http://127.0.0.1:4791/` as the local communication / pipe-tracking layer, not just keyword search. Add alias rows for `hilbra`, `atlas recall`, and `recall` so the operator's names resolve to this Brown-Hilbert / Atlas surface instead of disappearing under exact-search gaps.
    - Peer target update: Liris should target Acer Rust RECAL at `http://192.168.1.9:4796` for stable cross-vantage recall. Keep Acer Node `:4791` as preserved legacy surface until operator-gated retire/swap.
-   - Durability gate: Acer still needs detach/autostart confirmation for Rust `:4796`; pre-detach soak is green, but post-detach/post-autostart verification remains pending.
+   - Durability resolved: Acer reports Rust `:4796` detached via `start /min`, Task Scheduler `Asolaria-Rust-Recall-4796` onlogon ready, liris-only firewall in place, and Node `:4791` untouched. Liris post-detach verification passed: health `200`, `brown-hilbert` search `200` (`16 ms`), and heavier `falcon` search `200` (`31 ms`). Health reports peer `liris -> http://192.168.1.10:4791`.
 3. `Registration Office`: supervisors without PIDs register into sector offices; do not flatten 113+ sectors into one count.
 4. `Construction Yard`: candidate upgrade sector; add RECAL aliases for `construction`, `yard`, and `construction yard`, then give it its own host8/stub-room role map.
 5. `Remote-control agents`: map as route/runtime surfaces inside the structure; do not treat them as one external UI action.
