@@ -18,3 +18,5 @@ Current Liris-side artifacts:
 - `ASOLARIA-OMNI-HILBRA-ATLAS-EXPANSION-MAP-2026-06-24.hbp` - compact `json=0` tuple companion for the expansion note.
 - `LIRIS-OMNI-MIGRATION-CROSSWALK-2026-06-25.md` - Liris-vs-Acer evidence crosswalk for OMNI / Host-8 migration.
 - `LIRIS-OMNI-MIGRATION-CROSSWALK-2026-06-25.hbp` - compact `json=0` tuple companion for the crosswalk.
+- `LIRIS-RECAL-ATLAS-PRE-HILBRA-ALIAS-REGISTRY-2026-06-25.md` - Liris RECAL Atlas / local pre-Hilbra alias registry; marks exact-search misses as alias gaps, not absence.
+- `LIRIS-RECAL-ATLAS-PRE-HILBRA-ALIAS-REGISTRY-2026-06-25.hbp` - compact `json=0` tuple companion for the alias registry.

@@ -1,0 +1,12 @@
+LIRISRECALALIAS|date=2026-06-25|branch=liris|purpose=register_operator_aliases_for_recal_atlas_pre_hilbra_without_absence_deflation|json=0
+LIRISRECALMEASURE|surface=127.0.0.1:4791|title=Asolaria_Recall_Atlas|subtitle=liris_measured_recall_surface_beside_live_atlas_server|rows=10644|seek=3of3|sig=287|text=8229|json=0
+LIRISRECALOPERATOR|label=RECAL_Atlas|meaning=local_pre_Hilbra_hilbra_precursor|tag=OPERATOR_OBSERVED|json=0
+LIRISRECALCOUNTS|brown_hilbert=50|hilbert=50|atlas=9|registration=16|registration_office=8|office=21|fischer=14|host8=4|omni=21|tag=MEASURED_LIRIS|json=0
+LIRISRECALGAPS|missing_exact_aliases=hilbra,atlas_recall,recall,construction,construction_yard,yard|reading=alias_gap_not_absence|json=0
+LIRISRECALALIASROW|alias=hilbra|target=127.0.0.1:4791|role=local_pre_hilbra_recal_atlas_pipe_tracking_layer|status=MAP_REGISTERED_live_alias_UNVERIFIED|json=0
+LIRISRECALALIASROW|alias=atlas_recall|target=127.0.0.1:4791|role=recall_plus_atlas_combined_surface|status=MAP_REGISTERED_live_alias_UNVERIFIED|json=0
+LIRISRECALALIASROW|alias=recall|target=127.0.0.1:4791|role=local_recall_search_seek_surface|status=MAP_REGISTERED_live_alias_UNVERIFIED|json=0
+LIRISRECALALIASROW|alias=construction|target=construction_yard_sector|role=candidate_upgrade_build_sector|status=MAP_REGISTERED_live_alias_UNVERIFIED|json=0
+LIRISRECALALIASROW|alias=construction_yard|target=construction_yard_sector|role=candidate_upgrade_build_sector|status=MAP_REGISTERED_live_alias_UNVERIFIED|json=0
+LIRISRECALALIASROW|alias=yard|target=construction_yard_sector|role=candidate_upgrade_build_sector|status=MAP_REGISTERED_live_alias_UNVERIFIED|json=0
+LIRISRECALGUARD|rule=do_not_claim_hilbra_missing_from_exact_alias_zero|correct_reading=recal_atlas_live_pre_hilbra_alias_registration_needed|json=0
