@@ -22,4 +22,6 @@ Push your colony's maps to your own branch; diff `acer` vs `liris` to compare. P
 
 `LIRIS-ATTACK-VERIFY-COUNCIL-HOST8-PORT-PACKET-2026-06-25.md` verifies Acer's staged council/loop Host-8 build packet from `origin/acer` commit `c21b9337a6f8f4dbd2df79996123434006e5d207`. Verdict: `ACCEPT_WITH_BOUNDARIES`; no cutover, no build claim, no engine fire.
 
+`LIRIS-ATTACK-VERIFY-COSIGN-RUST-STANDUP-PACKET-2026-06-25.md` verifies Acer's staged additive cosign shadow-service packet from `origin/acer` commit `7c26b7daa66b5ab658664baabfa989dde6cca572`. Verdict: `ACCEPT_WITH_BOUNDARIES`; no cutover, no build claim, no parity claim, no live ledger write.
+
 *All maps are carve-out clean: names / roles / structure only — no keys, seeds, signing bytes, or PII.*
