@@ -3,7 +3,7 @@
 **Date:** 2026-06-24  
 **Repo/branch:** `JesseBrown1980/asolaria-federation-1024`, branch `liris/fischer-eval-host8-2026-06-24`  
 **PR:** https://github.com/JesseBrown1980/asolaria-federation-1024/pull/9  
-**Commits:** `1522a30` initial port; `78eaa98` fmt/clippy gate fix  
+**Commits:** `1522a30` initial port; `78eaa98` fmt/clippy gate fix; `9f05a33` merge `main` / resolve replay-prep extraction conflict  
 **Mode:** additive Rust Host-8 migration build, no cutover.
 
 ## MEASURED
@@ -16,6 +16,7 @@
 - `cargo +1.81 clippy -p asolaria-server-fischer-eval --tests -- -D warnings` passes after fixing Acer-reported `too_many_arguments` and `needless_range_loop`.
 - Static no-JSON scan over the Rust source is clean.
 - Exact owning fmt gate `cargo +1.81 fmt --all -- --check` passes after formatting the branch.
+- GitHub Actions `ci` passes on head `9f05a33`: `cargo check (workspace)`, `node lint + type-check`, `ndjson + json schema sanity`, `cosign-chain sha-link integrity`, and `no-bloat invariant`.
 - `cargo +1.81 check --workspace` is blocked on this seat by missing MSVC `link.exe` while compiling dependency build scripts (`proc-macro2`, `quote`).
 - `cargo test -p asolaria-server-fischer-eval` is blocked on this seat by missing MSVC `link.exe`.
 
@@ -34,7 +35,7 @@ The Rust crate ports `BHFISCHER-KERNEL-v1`, not the earlier simplified score for
 
 ## Status
 
-`MEASURED`: source/build-check, exact fmt, and focused Fischer clippy parity cells are complete.  
+`MEASURED`: source/build-check, exact fmt, focused Fischer clippy parity, mergeability, and GitHub CI cells are complete.  
 `UNVERIFIED`: executable runtime smoke awaits a build seat with a linker.  
 `CANON/OPERATOR_OBSERVED`: Fischer is cross-level. It can sit at OP, council, supervisor, agent, route, and omni-system levels as a recurring evaluator/blunder gate.
 

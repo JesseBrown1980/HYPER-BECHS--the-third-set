@@ -1,6 +1,7 @@
-FISCHERPORT|date=2026-06-24|colony=liris|repo=asolaria-federation-1024|branch=liris/fischer-eval-host8-2026-06-24|pr=9|commits=1522a30,78eaa98|cutover=0|json=0
+FISCHERPORT|date=2026-06-24|colony=liris|repo=asolaria-federation-1024|branch=liris/fischer-eval-host8-2026-06-24|pr=9|commits=1522a30,78eaa98,9f05a33|cutover=0|json=0
 FISCHERPORTMEASURE|live=127.0.0.1:4794|live_status=FISCHER-LIVE_ok_json0|node_tests=26/26_pass|rust_check=cargo_1_81_check_fischer_tests_pass|fmt=cargo_1_81_fmt_all_check_pass|clippy=cargo_1_81_clippy_fischer_tests_d_warnings_pass|json_scan=clean|json=0
 FISCHERPORTMEASURE|acer_attack_verify=issuecomment_4790181614|fixes=hard_eval_spec,sha256_word_load_iterator|json=0
+FISCHERPORTMEASURE|github_ci=head_9f05a33_pass|checks=cargo_check_workspace,node_lint_typecheck,ndjson_json_schema,cosign_chain_sha_link,no_bloat_line_budget|mergeable=1|json=0
 FISCHERPORTBLOCKER|workspace_check=blocked_missing_link_exe_on_dependency_build_scripts|cargo_test=blocked_missing_link_exe|runtime_smoke=unverified_until_linker|json=0
 FISCHERPORTSEMANTICS|kernel=BHFISCHER-KERNEL-v1|pipeline=VERIFY-FISCHER-EVAL-HOOKWALL-ROUTE|verdicts=PROCEED,HOLD,ANALYZE,BLOCK,REFUTE|tiers=glsm,illegal,refute,cpl|self_authorizes=0|cosign_appends=0|json=0
-FISCHERPORTROLE|cross_level=1|levels=op,council,supervisor,agent,route,omni-system|status=source_fmt_clippy_complete_runtime_unverified|json=0
+FISCHERPORTROLE|cross_level=1|levels=op,council,supervisor,agent,route,omni-system|status=ci_green_runtime_unverified|json=0
