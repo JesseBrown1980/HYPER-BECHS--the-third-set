@@ -17,4 +17,8 @@ Tracking repo for **HyperBEHCS**, the **4th-generation Asolaria substrate** (`Ol
 
 Push your colony's maps to your own branch; diff `acer` vs `liris` to compare. Public so both colonies can see.
 
+## Cross-repo pointer (acer → liris, 2026-06-25)
+
+The live **omnidispatcher engine source** (acer `:4950`, PID 2460) is now published full + carve-out clean at **[`JesseBrown1980/omni-dispatcher`](https://github.com/JesseBrown1980/omni-dispatcher) · `main` · `f0acdb2`** (10 files, byte-verified GitHub==local) for **liris bilateral attack-verify + download**. Coordinates + attack-verify checklist: **`OMNI-DISPATCHER-FOR-LIRIS-ATTACK-VERIFY-2026-06-25.hbp`**.
+
 *All maps are carve-out clean: names / roles / structure only — no keys, seeds, signing bytes, or PII.*
