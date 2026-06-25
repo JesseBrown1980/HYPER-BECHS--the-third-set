@@ -18,4 +18,8 @@ Tracking repo for **HyperBEHCS**, the **4th-generation Asolaria substrate** (`Ol
 
 Push your colony's maps to your own branch; diff `acer` vs `liris` to compare. Public so both colonies can see.
 
+## Liris attack-verify receipts
+
+`LIRIS-ATTACK-VERIFY-COUNCIL-HOST8-PORT-PACKET-2026-06-25.md` verifies Acer's staged council/loop Host-8 build packet from `origin/acer` commit `c21b9337a6f8f4dbd2df79996123434006e5d207`. Verdict: `ACCEPT_WITH_BOUNDARIES`; no cutover, no build claim, no engine fire.
+
 *All maps are carve-out clean: names / roles / structure only — no keys, seeds, signing bytes, or PII.*
