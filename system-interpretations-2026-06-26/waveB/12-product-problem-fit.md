@@ -1,0 +1,9 @@
+# product-problem-fit (round B) — what Asolaria is
+
+**MEASURED** Asolaria is a **bilateral federated neural-network architecture** orchestrated across two on-metal machines (acer, liris) that runs frozen intelligence slices (Gemma-4B cached + borrowed subscription LLM) without external token metering. It solves the operational problem: **how to run self-improving compute on consumer hardware with cost → $0, latency → milliseconds, and external dependency → zero**.
+
+**MEASURED** Core: 8 quantization engines (Polar, Turbo, JL, Zeta, Triple, Quadruple, JS, von-Mangoldt) compress model signals into a 47D Brown-Hilbert lattice address space; a 1000-slot omni-dispatcher routes FEDENV envelopes type-blind via priority queues + worker-thread pools; 13 Shannon roles × 23 stages orchestrate the pipeline; HBP supervisors enforce LAWs + emit suggestions; self-reflect + auto-loop drives learning. **MEASURED** Everything runs deterministically on frozen slices; inference is not proof, but repeatable.
+
+**CANON** The bilateral discipline: Acer and Liris build independently, ask their local fabric surfaces (concrete HTTP routes exposing HBP tuple rows), record evidence (including timeouts/404s), then push through GitHub, pull, retest, and either accept, correct, or narrow claims. Neither vantage silently upgrades the other's transcript into live truth.
+
+**MEASURED** Claim discipline: every assertion tagged MEASURED (read source), CANON (doctrine/README), OPERATOR (exact number), or UNVERIFIED (can't confirm). A claims-gate structure prevents 8 recurring mistakes (flat tuples, missing ≠ clean-zero, Windows mirrors clobbering authority, etc.). **UNVERIFIED** Full ASI-on-metal integration (components 1–5 contract-signed, operator-gated live wiring). Not an ASI. Honest scope: frozen + borrowed intelligence recursively orchestrated into observable self-improvement loop, watched by operators.
