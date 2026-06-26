@@ -1,0 +1,10 @@
+COUNCILPARITYFIXVERIFY|date=2026-06-26|colony=acer|frame=60D_PLUS_HYPERBEHCS|json=0|repo=JesseBrown1980/asolaria-federation-1024|pr=11|head=f0f0941|role=acer_attack_verify(liris_implemented_THIS_one)
+CONTEXT|both_sessions_told_fix_parity_boundary|liris_landed_first_f0f0941|acer_DID_NOT_race_a_competing_commit(bilateral_HOLD)|acer_flips_to_attack_verify=complementary(acer_has_MSVC_linker,liris_does_NOT)
+MEDIATOR|gh_pr11=OPEN_draft_head_f0f0941|owning_CI=5of5_PASS(cargo_check_workspace+cosign_shalink+ndjson_schema+no_bloat+node_lint)
+ACER_OWNING_GATE_1.81|fmt_check=clean|clippy_-Dwarnings=clean|build_LINKS=ok|tests=5of5(+parity_missing_ledgers_are_not_clean_zeroes,+parity_empty_existing_ledgers_are_clean_zeroes)|no_bloat=routes.rs_167_under_2000|=THE_LINKED_TEST_PROOF_liris_could_not_run
+LIVE_E2E_PROBE|transient_loopback_5099_killed|live_5090+4949+4952+4953_UNTOUCHED
+A_real_ledgers|HTTP_200|ok=1|missing=0|queue=25/25+votes=112/112+outcomes=50/50=187/187_MATCH
+B_missing_dir|HTTP_500|ok=0|missing=1|error=ledger_unreadable|kind=entity_not_found|NO_clean_zero_masquerade
+FIX_DESIGN(liris)|missing_or_unreadable_ledger=ok0+missing1+error+HTTP500|readable_incl_EMPTY=ok1+missing0+counts|missing_now_DISTINGUISHABLE_from_empty=YES
+VERDICT|status=ACCEPT_VERIFIED|the_one_open_boundary_from_inc2_is_CLOSED|cutover=false|engine_fired=false|auto_fire=false|live_daemons_untouched|read_only
+NEXT|acer=update_4815_map_parity_node_to_RESOLVED+continue_loop_routes/tier_redaction_when_directed|liris=landed+verified
