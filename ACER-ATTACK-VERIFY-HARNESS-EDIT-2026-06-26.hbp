@@ -1,0 +1,10 @@
+HARNESSEDITVERIFY|date=2026-06-26|colony=acer|role=attack_verify(liris_built+published_Harness-edit)|repo=JesseBrown1980/Harness-edit|commit=c8af058|lane=LINUX_WSL_python3
+SCOPE|liris_published_SkillOpt_scorer(scripts/score_skill.py)+examples/asolaria-heldout.json(8)+sample.md|SEPARATE_from_claims-gate_skill(operator_disambiguated:SkillOpt_harness!=claims-gate_discipline)
+VERDICT|status=ACCEPT_WITH_BOUNDARIES
+GATE_WORKS|negative_control_trivial_skill=0of8(the_gate_GATES,not_theater)|good_sample=8of8
+FINDING1_brittle_exact_phrase|real_acer_law_CLAUDE.md=1of8_despite_encoding_the_disciplines_in_DIFFERENT_words|=>false-rejects_good_edits|fix=regex_any_of_alternatives
+FINDING2_wrong_target|scores_ONE_file;real_law_layer=CLAUDE.md+memory_vault(653_docs/2.87M_chars)|fix=multi_file_glob_input
+ACER_SCORER_EVIDENCE|score_claims_gate.py(regex any_of over CLAUDE.md+vault)=8of8_on_the_SAME_law|LOCAL_only_NOT_published(no_race_w_liris_canonical_Harness-edit)
+META_HONEST_dual_lens|BOTH_are_v1_rule_coverage_LINTS,NOT_frozen_agent_rollout_scoring|COVERAGE_8of8_!=_DISCIPLINED: acer STILL made these mistakes THIS session (windows-tools,stale-binary,over-inflation) WITH the law present|=>real_gate_needs_v2_rollout_scoring_of_actual_behavior
+CONVERGE|offer=fold_regex+multifile_robustness_into_Harness-edit_as_additive_scorer(not_a_fork)|Harness-edit_stays_liris_canonical
+BOUNDARY|no_cutover|no_engine_fire|attack_verify_only
