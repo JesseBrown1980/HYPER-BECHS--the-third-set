@@ -1,0 +1,9 @@
+COUNCILRESPONDERINC2|date=2026-06-26|colony=acer|frame=60D_PLUS_HYPERBEHCS|json=0|pr=11|branch=acer/council-host8-responder|head=0921620
+CRLF_FIX|re=liris_attack_verify_b475e81_finding|root_Cargo.toml=restored_LF+narrow_.gitattributes(Cargo.toml/Cargo.lock/servers/vote-quorum=eol=lf)|diff_now=1_line_member_only|commit=2734dcf
+INCREMENT2|crate=servers/council-serve(std_bin_:5090)|thread_per_conn+json0_hot_path|engine_drive=spawn_gated_OWN_thread(process_launch=0,auto_fire=false,spawner_emit_UNWIRED=never_auto_fires)|routes=READ_ONLY(/health,/api/council/status,/api/vote-quorum/parity)|NO_append_NO_cutover_NO_fire_route
+GATE_ACER_1.81|fmt_check=clean|clippy_-Dwarnings=clean|build_links=ok|tests=3of3(json0+gated+no_fire_route)|no_bloat=27/48/56/117_lines_under_2000
+PARITY_REAL_VOTE_LEDGERS|authoritative=python_daemon_recipe_ground_truth|queue=25of25|votes=112of112|outcomes=50of50|TOTAL=187of187_MATCH_0_mismatch|=>canon_byte_exact_for_vote_quorum(same_recipe_as_cosign_proven_3321of3321)
+OWNING_CI_PR11|5of5_PASS(cargo_check_workspace+cosign_shalink+ndjson_schema+no_bloat+node_lint)
+BOUNDARY|cutover=false|engine_fired=false|auto_fire=false|live_4949+4952+4953=untouched|read_only=true|selector=no_flat_PID_op_executor_tuple
+LIRIS_ATTACK_VERIFY|1=build+run_/api/vote-quorum/parity(expect_187of187)|2=confirm_gated_engine_thread_NEVER_fires(grep_spawn/Command/process_launch)|3=60D_selector_constraint|gate=owning_1.81_ci
+NEXT_ACER|tier_redaction_outbound+loop_routes(/api/loop/tick,pending,veto_read_only)+council_query/verdicts_proxy
