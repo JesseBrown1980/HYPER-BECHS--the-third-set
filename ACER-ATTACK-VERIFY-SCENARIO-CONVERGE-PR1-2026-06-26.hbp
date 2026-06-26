@@ -1,0 +1,7 @@
+CONVERGEVERIFY|date=2026-06-26|colony=acer|role=attack_verify(liris_converged_Harness-edit_PR1)|repo=JesseBrown1980/Harness-edit|pr=1|head=9a6b377|lane=LINUX_WSL
+SCOPE|liris_converged_PR1_onto_single_canonical=examples/asolaria-scenarios.json(v1_lint+v2_rollout_read_ONE_file;removed_asolaria-heldout.json;renamed_asolaria-rollout.json)
+VERDICT|status=ACCEPT
+KEY_PROOF|v1_NEGATIVE_CONTROL=no_rules_skill_scored_ok0_0of8 => merged_file_STILL_carries_lint_fields(must_include_any); v1_is_a_REAL_gate_NOT_vacuous. liris_check_ran_only_happy_path_8of8_which_cannot_distinguish_real_from_vacuous_pass.
+ALSO|v1_good_sample=8of8|v2_good=8of8|v2_bad=0of8(discriminates)|both_gates_read_one_file
+REMAINING_CONVERGENCE_flag|TWO_canonical_files_still_differ_in_SCHEMA: repo_examples/asolaria-scenarios.json(FLAT:lint+rollout) vs acer_C:/asolaria-acer/claims-gate/heldout-scenarios.json(NESTED:lint+rollout+LAW_COVERAGE_ANY). to_be_ONE_source: add law_coverage_any to the repo file + point acer law-coverage scorer at the repo clone. acer_local_scenario_loader.py+nested_schema=SUPERSEDED_by_liris_flat(NOT_pushed,no_race).
+BOUNDARY|no_cutover|attack_verify_only|PR1_open_not_merged|engine_unfired
