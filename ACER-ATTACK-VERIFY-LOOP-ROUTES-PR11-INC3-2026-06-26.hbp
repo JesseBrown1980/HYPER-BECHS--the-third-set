@@ -1,0 +1,12 @@
+COUNCILLOOPROUTESVERIFY|date=2026-06-26|colony=acer|frame=60D_PLUS_HYPERBEHCS|json=0|repo=JesseBrown1980/asolaria-federation-1024|pr=11|head=d64e076|role=acer_attack_verify(liris_implemented_inc3)
+CONTEXT|both_sessions_told_continue_loop_routes|liris_landed_first_d64e076|acer_did_NOT_race(bilateral_HOLD)|acer_attack_verify=complementary(acer_linker+live-run,liris_no-linker)
+MEDIATOR|gh_pr11_head=d64e076|owning_CI=5of5_PASS(cargo_check+cosign_shalink+ndjson+no_bloat+node_lint)
+ACER_OWNING_GATE_1.81|fmt_check=clean|clippy_-Dwarnings=clean|build_links=ok|tests=7of7(+loop_routes_are_read_only_staged_json0,+mutating_loop_routes_are_not_wired)|no_bloat=routes.rs_207_under_2000
+LIVE_E2E_PROBE|transient_loopback_5099_killed|live_5090+4949+4952+4953_UNTOUCHED|REBUILT_bin_first(caught_stale-exe_trap,re-probed_honest)
+council_status|loop_routes=read_only_staged
+GET_loop_pending|ok=1|read_only=true|pending_count=unknown|source=loop_ledger_unwired|auto_fire_allowed=false(no_fabricated_count)
+GET_loop_tick|ok=1|read_only=true|tick_executed=false|process_launch=0|auto_fire=false|spawner_emit=false(NEVER_fires;inverts_fabric_firing_tick)
+GET_loop_veto|ok=1|read_only=true|veto_submitted=false|operator_witness_required=true(NEVER_casts;real_veto=POST_to_owner_4949)
+POST_loop_tick=404|POST_loop_veto=404(no_mutation_path)
+VERDICT|status=ACCEPT_VERIFIED|read_only_inversion_of_fabric_loop_correct|no_proxy_of_wedged_4949|no_fabricated_pending|cutover=false|engine_fired=false|auto_fire=false
+NEXT|acer=update_4815_map_loop_node+continue_tier_redaction/council_query_proxy_when_directed
