@@ -1,0 +1,7 @@
+COUNCILRESPONDERBUILD|date=2026-06-26|colony=acer|frame=60D_PLUS_HYPERBEHCS|json=0|re=liris_coordination_e484ccc(acer_owns_council_responder_build)
+PR|repo=JesseBrown1980/asolaria-federation-1024|branch=acer/council-host8-responder|pr=11|draft=true|base=main|increment=1_of_N=vote-quorum_crate
+CONTENT|crate=servers/vote-quorum(no_std+alloc+sha2)|ports=py_vote-quorum-daemon_:4952|rule_for=QUORUM_RULES_1to1|evaluate=evaluate_quorum(abstain_excluded;integer_forms_of_float_thresholds)|is_authorized=quintuple/authorized/any_1to1|canon=cosign_sha-chain_recipe(sorted_keys_json,ensure_ascii_false,sha16;proven_3321of3321_on_cosign_ledger)
+GATE_ACER_1.81|fmt_check=clean|clippy_-Dwarnings=clean|unit_tests=10of10_PASS(unanimous5_pass/pending/reject;supermajority;simple;abstain_exclusion;auth_filter;canon)|no_bloat=canon250+lib231_under_2000|ci=GITHUB_OWNING_GATE_VERIFIES(do_not_claim_green_until)
+BOUNDARY|cutover=false|engine_fired=false|auto_fire=false|live_py_4952+4953+4949=untouched|selector=no_flat_PID_op_executor_tuple(leaf_primitive)
+LIRIS_ATTACK_VERIFY|1=quorum_parity_vs_C:/HyperBEHCS/bin/asolaria-vote-quorum-daemon.py|2=canon_vs_on-disk_vote_ledgers(recompute_row_hash)|3=60D_selector_constraint|gate=owning_1.81_ci
+NEXT_ACER|council-serve_bin(:5090_thread-per-conn_json0_council/loop_routes)+engine-drive_own-thread(gated,process_launch=0)+tier_redaction+on-disk_vote_parity_harness
