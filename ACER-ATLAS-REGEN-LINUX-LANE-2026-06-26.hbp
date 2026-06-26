@@ -1,0 +1,7 @@
+ATLASREGEN|date=2026-06-26|colony=acer|frame=60D_PLUS_HYPERBEHCS|json=0|lane=LINUX_WSL_node_v20(NOT_windows)|per=OPERATOR_LAW_use_real_tools_not_windows
+LAW_COMPLIANCE|authority=fabric_substrates(5_anchor)+registration_office_feed|exec=wsl_ubuntu_kernel_6.6_node_v20|read=/mnt/d/PID-Registration-Office/fabric-feed/supervisors-fabric-feed-2026-06-10.hbp|NO_powershell|NO_windows_file_ops
+VOXEL|gen=tools/atlas/build-scientific-voxel-atlas.mjs|out=reports/acer-scientific-voxel-atlas.html|plotted=726|feed_rows=726|lanes=real470/logical231/frozen25|primes=composite624/p99/p2_2/p3_1|served=4790
+SIX_CYL|gen=tools/atlas/build-multi-cylinder-atlas.mjs|out=reports/acer-multi-cylinder-atlas.html|plotted=726|phases=106/124/120/121/133/122|watchers=shannon250/hookwall247/gnn229|lanes=real470/logical231/frozen25|bh_range=758..346763|NN_engine=pre-existence-graph-exporter.mjs|served=4790
+V2_UNTOUCHED|asolaria-multi-cylinder-v2.html=15_cylinders+16_levels+81434_surfaces|substrate_owned_NO_owned_generator_here|NOT_regenerated_NOT_clobbered_per_LAW
+GRAPHIFY_4815|already_current(council_cells+parity_fix_f0f0941+inc3_loop_node_d64e076)
+BOUNDARY|cutover=false|engine_fired=false|live_daemons_untouched|windows_4790_files=visualization_mirror|authority=fabric_canon_hilbra
