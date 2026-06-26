@@ -1,0 +1,5 @@
+APPLYEDITSTRICTGATE|date=2026-06-26|colony=acer|repo=JesseBrown1980/Harness-edit|pr=1|re=liris_attack_verify_4738a0c_ACCEPT_WITH_BOUNDARIES
+LIRIS_FINDING_ACCEPTED|apply_edit_gate_accepted_NON-REGRESSING_edits_but_did_NOT_require_target_scenario_to_strictly_improve|mismatch_with_stated_gate(target_flips_FAIL->PASS)
+ACER_FIX|added_--require-improve_scenario_id: accept iff non-regressing AND that scenario flips FAIL->PASS (strict SkillOpt gate); default=non-regression(back-compat)
+VERIFIED_linux_lane|strict_good=VALIDATION_ACCEPTED_flip=yes_applied|strict_neutral=REJECTED_BUFFER_flip=no_NOT_applied|non_strict_neutral=ACCEPTED|py_compile_ok
+STATUS|liris_boundary_CLOSED|program_now_matches_CLAUDE.md_gate_wording|no_cutover|PR1_open
