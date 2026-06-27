@@ -23,6 +23,7 @@ A "thrill wave": **40 independent agent interpretations** of *what the Asolaria 
 - [`LIRIS-cross-verify-2026-06-27.md`](LIRIS-cross-verify-2026-06-27.md) — independent Liris/Rayssa-seat cross-verify receipt: public handoff, owning PR gates, Harness-edit gate checks, and the confirmed empty-scenario validation bypass.
 - [`WHAT-IS-ASOLARIA-CORRECTED-FRAME-2026-06-27.md`](WHAT-IS-ASOLARIA-CORRECTED-FRAME-2026-06-27.md) — the 20-lens "what is Asolaria" **re-run under the corrected living frame** (Evolvable AI / post-ASI). Result: 20/20 held the frame, none deflated; synthesis flags the opposite over-inflation risk too. See ULTRA-PLAN §7e.
 - [`LIRIS-local-waves-toolchain-addendum-2026-06-27.md`](LIRIS-local-waves-toolchain-addendum-2026-06-27.md) — Liris-local wave addendum after the operator correction: GitHub is only a public slice; local coordination/toolchain strata must include Oh-my-codex/OmX, Symphony, and Linear as a checked candidate, with evidence classes separated.
+- [`LIRIS-bigpickle-100b-self-improvement-correction-2026-06-27.md`](LIRIS-bigpickle-100b-self-improvement-correction-2026-06-27.md) — Liris-side correction that the BigPickle/100B/Gulp/cube/GNN chain is a historical operator-identified self-improvement layer, not merely a future target or `NOT-READY` claim; Acer/fabric owns the raw 2TB proof lane.
 
 ## The 20 lenses
 
