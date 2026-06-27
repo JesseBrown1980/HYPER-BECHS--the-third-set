@@ -28,6 +28,7 @@ A "thrill wave": **40 independent agent interpretations** of *what the Asolaria 
 - [`LIRIS-doctrine-propagation-2026-06-27.md`](LIRIS-doctrine-propagation-2026-06-27.md) — propagation receipt for the explanatory README updates that now point to the canonical doctrine and carry the OLD-system-vs-NEW-system calibration.
 - [`LIRIS-doctrine-main-merge-2026-06-27.md`](LIRIS-doctrine-main-merge-2026-06-27.md) — main-merge receipt for the five clean README-only doctrine PRs (4 fresh main PRs + BigPickle PR#25 after CI rerun passed); README-only, no runtime change.
 - [`LIRIS-recall-canon-reindex-driver-2026-06-27.md`](LIRIS-recall-canon-reindex-driver-2026-06-27.md) — cross-colony driver packet for the Acer-owned recall/Hilbra canon re-index: back up `ASOLARIA-ACER-RECALL.{hbi,hbp}`, run the Acer builder, run PII audit, verify `:4796`; Liris proposes only, no exec.
+- [`LIRIS-asolaria-root-readme-gap-closed-2026-06-27.md`](LIRIS-asolaria-root-readme-gap-closed-2026-06-27.md) — private root `JesseBrown1980/Asolaria` README gap closed via clean README-only PR #8; doctrine link, OLD/NEW calibration, cube boundary, no runtime change.
 
 ## The 20 lenses
 
