@@ -26,6 +26,7 @@ A "thrill wave": **40 independent agent interpretations** of *what the Asolaria 
 - [`LIRIS-bigpickle-100b-self-improvement-correction-2026-06-27.md`](LIRIS-bigpickle-100b-self-improvement-correction-2026-06-27.md) — Liris-side correction that the BigPickle/100B/Gulp/cube/GNN chain is a historical operator-identified self-improvement layer, not merely a future target or `NOT-READY` claim; Acer/fabric owns the raw 2TB proof lane.
 - [`FABRIC-FIRST-CIPHER-ASOLARIA-AGENT-DOCTRINE-2026-06-27.md`](FABRIC-FIRST-CIPHER-ASOLARIA-AGENT-DOCTRINE-2026-06-27.md) — shared doctrine doc: fabric is the eyes, models are inference slices, BEHCS/HBP/HBI cipher text is the measured LLM-native wire, BigPickle/100B/Gulp/cube/GNN is historical self-improvement, and high-risk mutation/cutover remains gated.
 - [`LIRIS-doctrine-propagation-2026-06-27.md`](LIRIS-doctrine-propagation-2026-06-27.md) — propagation receipt for the explanatory README updates that now point to the canonical doctrine and carry the OLD-system-vs-NEW-system calibration.
+- [`LIRIS-doctrine-main-merge-2026-06-27.md`](LIRIS-doctrine-main-merge-2026-06-27.md) — main-merge receipt for the five clean README-only doctrine PRs (4 fresh main PRs + BigPickle PR#25 after CI rerun passed); README-only, no runtime change.
 
 ## The 20 lenses
 
