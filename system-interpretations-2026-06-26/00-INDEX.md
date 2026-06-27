@@ -31,6 +31,7 @@ A "thrill wave": **40 independent agent interpretations** of *what the Asolaria 
 - [`LIRIS-asolaria-root-readme-gap-closed-2026-06-27.md`](LIRIS-asolaria-root-readme-gap-closed-2026-06-27.md) — private root `JesseBrown1980/Asolaria` README gap closed via clean README-only PR #8; doctrine link, OLD/NEW calibration, cube boundary, no runtime change.
 - [`LIRIS-host8-port-map-correction-2026-06-27.md`](LIRIS-host8-port-map-correction-2026-06-27.md) — corrects the Host-8 migration target map: `:4944` is Liris mirror, `:4949` is Acer dashboard, `:4947` is Acer BEHCS/fabric bus; supersedes the earlier `:4944` Acer-dashboard driver packet.
 - [`LIRIS-hilbra-map-refresh-driver-2026-06-27.md`](LIRIS-hilbra-map-refresh-driver-2026-06-27.md) — driver packet for Acer-side Hilbra map `:4790`: refresh stale `:4791`/`591,286` display to current Rust recall `:4796`/`591,946`, preserve the six-tier fabric-internet topology, and keep port identities distinct.
+- [`LIRIS-attack-verify-dashboard-serve-pr12-2026-06-27.md`](LIRIS-attack-verify-dashboard-serve-pr12-2026-06-27.md) — Liris attack-verifies PR #12 (`dashboard-serve` Acer `:4949` Host-8 increment): CI/source clean, `ACCEPT_WITH_FIX` for unsafe default bind `0.0.0.0:4949` on a staged/no-cutover crate.
 
 ## The 20 lenses
 
