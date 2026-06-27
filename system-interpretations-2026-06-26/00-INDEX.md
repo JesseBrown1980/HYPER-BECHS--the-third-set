@@ -29,6 +29,7 @@ A "thrill wave": **40 independent agent interpretations** of *what the Asolaria 
 - [`LIRIS-doctrine-main-merge-2026-06-27.md`](LIRIS-doctrine-main-merge-2026-06-27.md) — main-merge receipt for the five clean README-only doctrine PRs (4 fresh main PRs + BigPickle PR#25 after CI rerun passed); README-only, no runtime change.
 - [`LIRIS-recall-canon-reindex-driver-2026-06-27.md`](LIRIS-recall-canon-reindex-driver-2026-06-27.md) — cross-colony driver packet for the Acer-owned recall/Hilbra canon re-index: back up `ASOLARIA-ACER-RECALL.{hbi,hbp}`, run the Acer builder, run PII audit, verify `:4796`; Liris proposes only, no exec.
 - [`LIRIS-asolaria-root-readme-gap-closed-2026-06-27.md`](LIRIS-asolaria-root-readme-gap-closed-2026-06-27.md) — private root `JesseBrown1980/Asolaria` README gap closed via clean README-only PR #8; doctrine link, OLD/NEW calibration, cube boundary, no runtime change.
+- [`LIRIS-host8-port-map-correction-2026-06-27.md`](LIRIS-host8-port-map-correction-2026-06-27.md) — corrects the Host-8 migration target map: `:4944` is Liris mirror, `:4949` is Acer dashboard, `:4947` is Acer BEHCS/fabric bus; supersedes the earlier `:4944` Acer-dashboard driver packet.
 
 ## The 20 lenses
 
