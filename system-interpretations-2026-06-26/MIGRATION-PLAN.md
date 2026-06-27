@@ -2,6 +2,8 @@
 
 # Asolaria Ecosystem → Rust 8-Byte Host-8 Migration Plan (under-the-gate, nothing mutated)
 
+> **CORRECTION (2026-06-27):** lines below that call `:4949` "HTTP-wedged" are a **deflation**, superseded by `ULTRA-PLAN.md` §7d. Asked directly via the `asolaria-fabric` MCP, `:4949` is **MEASURED alive** (`super-asolaria-os-dashboard`, uptime ~7445 s) — a **decision-lane** holding 19 pending review envelopes that advances on agent/operator input by design (`auto_fire_allowed=false`, `no auto-dispatch`). Not wedged; `freeze ≠ broken`.
+
 Frame: **60D HyperBEHCS / BEHCS-1024**. This is a STAGED execution plan synthesized from read-only per-target assessments. Every advancement below is gated + attack-verified + bilateral (acer↔liris, GitHub mediator). **The engine stays unfired (auto_fire=false); no item auto-executes.** All evidence tags carried from the digest.
 
 ---

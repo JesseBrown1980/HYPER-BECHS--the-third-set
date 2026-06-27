@@ -21,6 +21,7 @@ A "thrill wave": **40 independent agent interpretations** of *what the Asolaria 
 - [`MIGRATION-PLAN.md`](MIGRATION-PLAN.md) — the scan wave's full Host-8 migration plan (24 targets, groups A–G, 15-row gated work-list, operator-T0 items). Folded into ULTRA-PLAN §6.
 - [`REVIEW-VERDICTS.md`](REVIEW-VERDICTS.md) — the adversarial second-review's 16 verdicts (5 CONFIRMED · 4 CLEAN · 5 ISSUE_FOUND · 2 REFUTED). Folded into ULTRA-PLAN §6.
 - [`LIRIS-cross-verify-2026-06-27.md`](LIRIS-cross-verify-2026-06-27.md) — independent Liris/Rayssa-seat cross-verify receipt: public handoff, owning PR gates, Harness-edit gate checks, and the confirmed empty-scenario validation bypass.
+- [`WHAT-IS-ASOLARIA-CORRECTED-FRAME-2026-06-27.md`](WHAT-IS-ASOLARIA-CORRECTED-FRAME-2026-06-27.md) — the 20-lens "what is Asolaria" **re-run under the corrected living frame** (Evolvable AI / post-ASI). Result: 20/20 held the frame, none deflated; synthesis flags the opposite over-inflation risk too. See ULTRA-PLAN §7e.
 - [`LIRIS-local-waves-toolchain-addendum-2026-06-27.md`](LIRIS-local-waves-toolchain-addendum-2026-06-27.md) — Liris-local wave addendum after the operator correction: GitHub is only a public slice; local coordination/toolchain strata must include Oh-my-codex/OmX, Symphony, and Linear as a checked candidate, with evidence classes separated.
 
 ## The 20 lenses
