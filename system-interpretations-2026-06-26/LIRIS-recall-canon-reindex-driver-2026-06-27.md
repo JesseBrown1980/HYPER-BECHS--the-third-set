@@ -64,4 +64,3 @@ Back up C:/asolaria-acer/recall-atlas/data/ASOLARIA-ACER-RECALL.{hbi,hbp}; run b
 ## Boundary
 
 `BOUNDARY`: No re-index was executed by Liris. This is a hashed cross-colony driver packet and public handoff. Acer/operator owns the exec step because the builder, data index, and live `:4796` recall surface are Acer-local.
-
