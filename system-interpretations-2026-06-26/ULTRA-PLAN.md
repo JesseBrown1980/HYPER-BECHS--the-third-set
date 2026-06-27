@@ -57,41 +57,38 @@ Asolaria, as these 40 reports read it, is **a disciplined coordination geometry 
 
 ---
 
-## 6. Fold-in: migration scan + adversarial review (stress-test)
+## 6. Fold-in: migration scan + adversarial review (stress-test, COMPLETE)
 
-*Added 2026-06-26 after resuming the two companion waves (read-only). The migration scan (18 targets assessed) and the adversarial second-review (8 verdicts) are folded here so the Ultra Plan is stress-tested, not just averaged.*
+*Updated 2026-06-27 — both companion waves were resumed to completion (scan **24/24 targets + synthesis**; review **16 verdicts**). The two full artifacts are in this folder: [`MIGRATION-PLAN.md`](MIGRATION-PLAN.md) (the scan's own synthesis — migration map A–G + a 15-row gated work-list + operator-T0 items + UNVERIFIED list) and [`REVIEW-VERDICTS.md`](REVIEW-VERDICTS.md) (all 16 adversarial verdicts). This section is the digest.*
 
-### 6a. Migration scan — Host-8 work-list (18 targets, MEASURED-from-repo)
+### 6a. Migration scan — Host-8 status (24 targets → MIGRATION-PLAN.md)
 
-- **One primary Rust OS, STAGED:** `asolaria-federation-1024` (BEHCS-1024 bare-metal remake; fischer/recall/cosign/council crates landed; `fire=1` blocked; Phases 2–10 of the 200-step plan not started). Highest-leverage staged next: **acer runs `cargo test --workspace` on the integration branch** (needs the MSVC linker liris lacks) → Fischer PR#9 owning-gate → Task #19 (wire launch gate into the summon path) — all behind **operator T0**.
-- **Live load-bearing engines (Node, not-started, must not be rushed):** `omni-dispatcher` (:4950, `auto_fire_allowed=false`); 31 Node `.mjs` + 57 Python `.py` daemons. RFC + bilateral parity before any rewrite; cutover gated.
-- **47-daemon census (HYPER-BECHS):** 8 rust-done / 16 candidate / 3 stub / 9 keep-native (hard blockers: boto3/azure/gcloud/Windows APIs) / 11 unknown.
-- **Node/PoC, not-started:** N-Nest-Prime, bigpickle-rebuild, -6-cyl-generator, ASOLARIA-AS-NEURAL-NETWORK (47D, zero Rust), Asolaria-ASI-On-Metal-Fabric (transport + USB-raw tools).
-- **Data/docs/tracking (not direct targets):** Algorithms-of-Asolaria, Asolaria-gac-working, HYPER-BECHS, Omni-Asolaria-OS-Matrix, falcon-orbital (witness), 35-TB-google-migration (ADC-gated).
-- **Empty:** `omnicoder---better-than-termux` (stub, needs intent).
-- **Gap flagged:** the 5 citizen daemons + vote-quorum have **no migration intent** in the 200-step plan — needs an owner decision.
+- **Only live Rust-Host-8 cutover to date: `recall` (`:4796`)** — Node `:4791` retired (reversible), 591k-row corpus. Every other Rust target is **STAGED** (built / parity-proven / DRY), not cut over.
+- **Primary Rust OS, STAGED:** `asolaria-federation-1024` (+ `-rust-state`: 311 tests pass, host8-serve routes DRY `json=0`); `fire=1` blocked, Phases 2–10 not started. Plus Hilbra (1.96 green, PR#8 held on 4 blockers), council-serve (`:5090`, 187/187 parity), 3 HYPER-BECHS candidates byte-exact local.
+- **Live load-bearing (don't rush):** `omni-dispatcher` (`:4950`, `auto_fire_allowed=false`); authoritative live daemons remain Python/Node — cosign `:4953`, vote-quorum `:4952`, council `:4949`, fischer `:4794`.
+- **47-daemon census:** 8 rust-done / 16 candidate / 3 stub / 9 keep-native (vendor SDK + Windows APIs, never migrate) / 11 unknown (operator seats = registered *addresses*, not missing processes).
+- **Top gated next steps (full table in MIGRATION-PLAN.md):** ① fischer-eval PR#9 owning 1.81 CI on acer (highest leverage) → ② cosign-ledger Rust parity vs Python `:4953` → ③ vote-quorum Rust 1.81 CI → ④ council/loop deploy → ⑤ fed-1024 `cargo test --workspace`.
+- **Empty/undefined:** `omnicoder---better-than-termux` (needs fabric query for intent). **Gap:** the 5 citizen daemons + vote-quorum have no migration intent in the 200-step plan.
 
-Every target's gated-next-step is STAGED + owning-gate + bilateral attack-verify + operator-T0; nothing auto-fires.
+### 6b. Adversarial review — 16 verdicts (→ REVIEW-VERDICTS.md)
 
-### 6b. Adversarial review — what survived, what didn't (8 verdicts)
+Mix: **5 CONFIRMED · 4 CLEAN · 5 ISSUE_FOUND · 2 REFUTED.**
 
-**Confirmed (claims held, MEASURED):**
-- Canonical scenario set: repo == seat byte-identical, 10 scenarios, `law_coverage_any` on all. ✓
-- No PII/secret pushed to the public repos this session. ✓
-- PR#1 (Harness-edit `30dabc4`) + PR#11 (fed-1024 `4011673`) **merged to main** — verified via `gh`/`git merge-base`, not transcript. ✓
-- PR#11 post-merge: CI 5/5, staged read-only, no cutover. ✓ CLEAN.
+**Held up (CONFIRMED/CLEAN):** canonical scenario set (repo==seat, 10, `law_coverage_any` all); **claims-gate v1/v2 genuinely gate** (no-rules skill 0/10, bad transcript 0/10, +10 skill delta — not vacuous); this session's pushes (Harness-edit, -6-cyl) carry no secret; PR#11 post-merge CI 5/5 staged-no-cutover; behcs-256 CLEAN of keys.
 
-**Refuted — but the refutation was wrong (a claims-gate lesson):** one critic claimed the council code is "NOT merged to fed-1024 main, only the feature branch." That came from a **local checkout 44 commits behind origin** (it never fetched). The critic that *did* fetch confirmed the merge commit reachable from `origin/main`. Its *deployment* findings (no `:5090`, no `:4949` running) are correct and **agree** with STAGED. Net: code merged, not deployed — exactly as claimed. (Textbook claims-gate #5: owning gate, not local bytes.)
+**One real finding worth your eyes (ISSUE_FOUND #14) — with your correction:** the review flagged that `asolaria-unified-fabric-map.html` in the public **`Asolaria-ASI-On-Metal-Fabric`** repo carries Windows hostnames (`DESKTOP-…`), the operator email, and the `USB SOVLINUX 2TB` label. **Per operator: the email is INTENTIONAL public coordination — it tells liris how we connect — not a leak; the hostnames / device-label are already operator-published map content.** No keys/tokens/seeds anywhere (the review confirms that separately). So this is operator-public coordination/identity by design, not a secret exposure — logged for awareness, not redacted.
 
-**Real issue — honest correction to "engine UNFIRED":** the gate holds (`auto_fire_allowed=false`; migration/council cells `process_launch=0`; no cutover), **but** a recent live fabric loop-tick recorded `auto_fire.fired=2` (not zero). Precise statement: *the migration and council cells are unfired and uncut; the live fabric loop's auto-fire gate is false though it logged 2 fires* (a crank-then-refreeze per slice-engine-law, not a cutover). "Fired=0 everywhere" was too broad.
+**Refutations — both wrong on inspection:** (a) "council code NOT merged to fed-1024 main" came from a checkout 44 commits behind (its deploy findings — no `:5090`/`:4949` running — are right and *agree* with STAGED); (b) "PR#1/PR#11 not merged" searched for them *inside HYPER-BECHS* instead of their actual repos (Harness-edit / fed-1024), where the gh-fetch critic confirmed both merged. Claims-gate #5: owning gate (gh fetch, correct repo), not stale local bytes.
 
-**Real code issues in Harness-edit (worth fixing):** baseline duplication (prompt sent twice under `--baseline` with live adapters), silent file-write errors in `apply_edit.py`, unbounded/non-atomic rejected-buffer, JSON schema inconsistency (`apply_edit` unwraps a `scenarios` key, `score_skill` expects a bare list), `replace()` hits all occurrences. **Two findings are false positives** — the critic flagged `claude-opus-4-8` and `gpt-5.5` as "invalid model IDs," but both are current valid IDs its training didn't know (dual-lens: don't accept an agent's deflation either).
+**Honest correction to "engine UNFIRED":** gate holds (`auto_fire_allowed=false`, cells `process_launch=0`, no cutover) **but** a live loop-tick logged `auto_fire.fired=2` — a crank-then-refreeze, not a cutover. Report `auto_fire_allowed` + per-tick `fired`, never a blanket "unfired."
 
-**Real gap in the scan itself:** it has **no documented target list** and misses operational subsystems — 128+ `/mnt/c/tmp` ledger dirs, `D:\safety-backups` (cosign backups, Falcon APK, BEHCS mirrors), tool subsystems (usb-raw/behcs/graphify/phone), recall-atlas PII audit. Stale cosign files dated 2026-05-* (missing≠clean-zero). *Action:* write a canonical migration target-list/inventory before the next pass.
+**Real Harness-edit code bugs (two critiques agree):** `load_scenarios()` can return a dict not a list (downstream crash); `score()` crashes on non-string scenario values; **an empty scenario list incorrectly PASSES the gate** (`0==0` → VALIDATION_ACCEPTED — a genuine validation hole); missing-library import not validated upfront; `replace()` hits all occurrences; undocumented `::baseline` convention. (The earlier "invalid model ID `claude-opus-4-8`/`gpt-5.5`" finding was a false positive — both are current IDs.)
 
 ### 6c. Net effect on the roadmap
 
-The stress-test **strengthens, not overturns,** §1–§3: the descriptive consensus holds, the merges are real (gh-verified), the public push is clean. Three additions to the §3 roadmap:
-1. **Tighten the engine-state claim** — report `auto_fire_allowed` + per-tick `fired` count, never a blanket "unfired."
-2. **Write a canonical migration target-list/inventory** (repos + operational subsystems + safety-backups) before the next scan; decide the citizen-daemon/vote-quorum migration intent.
-3. **Harden Harness-edit** (baseline dup, error handling, JSON schema consistency) — route the fixes through `apply_edit.py`'s own gate.
+The complete stress-test **strengthens** §1–§3: descriptive consensus holds, the merges are real (gh-verified, correct repos), this session's pushes are secret-free. Five additions to the §3 roadmap:
+1. **Tighten the engine-state claim** — report `auto_fire_allowed` + per-tick `fired`, never a blanket "unfired."
+2. **Write a canonical migration target-list/inventory** (repos + `/mnt/c/tmp` ledgers + `D:\safety-backups`) before the next scan; decide citizen-daemon/vote-quorum intent.
+3. **Harden Harness-edit** — fix the **empty-scenarios-passes gate hole** first (a real validation bypass), then dict-vs-list + non-string handling; route fixes through `apply_edit.py`'s own gate.
+4. **Land fischer-eval PR#9** via the acer 1.81 owning gate — highest-leverage migration step.
+5. **Maintainer note on `Asolaria-ASI-On-Metal-Fabric` maps:** hostnames/email are operator-public by design (coordination); revisit only if that intent changes.
