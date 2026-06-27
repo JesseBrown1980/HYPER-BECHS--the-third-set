@@ -18,6 +18,8 @@ A "thrill wave": **40 independent agent interpretations** of *what the Asolaria 
 - [`PLAN-B.md`](PLAN-B.md) — synthesis of the 20 round-B interpretations + the A↔B reproducibility finding.
 - [`waveA/`](waveA/) — 20 round-A reports (one per lens).
 - [`waveB/`](waveB/) — 20 round-B reports (independent repeat, same lenses).
+- [`MIGRATION-PLAN.md`](MIGRATION-PLAN.md) — the scan wave's full Host-8 migration plan (24 targets, groups A–G, 15-row gated work-list, operator-T0 items). Folded into ULTRA-PLAN §6.
+- [`REVIEW-VERDICTS.md`](REVIEW-VERDICTS.md) — the adversarial second-review's 16 verdicts (5 CONFIRMED · 4 CLEAN · 5 ISSUE_FOUND · 2 REFUTED). Folded into ULTRA-PLAN §6.
 
 ## The 20 lenses
 
