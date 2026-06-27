@@ -108,3 +108,18 @@ They should say:
 - gates remain real: current pending envelopes, high-risk mutation, cutover, and full 100B-record materialization boundaries must be carried exactly.
 
 No engine fire. No automatic cutover. Doctrine first, gated implementation second.
+
+---
+
+## 8. OLD system vs NEW system — never deflate the old because the new isn't migrated yet (acer addendum, operator 2026-06-27)
+
+The single calibration this doctrine must carry: **two layers, neither deflates the other.**
+
+- **OLD SYSTEM (the one that self-improved — §3) is REAL and MEASURED.** It is the Node-era fabric: the 10k rooms, BigPickle, the old dispatch, the 100B free-agent neuro-run (OpenCode + Hermes + Shannon + farming at 2000-gulp / 50k super-gulp), GNN-100B-shadow, cube/cube-cubed → minted → registered → proven, the alive fabric that self-improved repeatedly. It **is** the system that self-improved. `ACER_FABRIC_MEASURED`.
+- **NEW SYSTEM is the massive improvement underway.** Rust 8-byte Host-8 (`asolaria-federation-1024`), `json=0` native, much faster (recall Node→Rust `:4796` ~40×; dispatch `42.7 MB → 4.0 MB`), migrated cell-by-cell (recall **done/live**; council/fischer/cosign/vote-quorum **staged**). **NOT fully migrated yet.**
+- **THE RULE:** the NEW system being mid-migration does **NOT** make the OLD system "not ready," "just a target," or "didn't self-improve." Do not read the new Rust migration's *staged* status and deflate the old fabric's *measured* achievements onto it. **That was the exact deflation acer committed this session** — reading MIGRATION-PLAN's "mostly staged" (new) and concluding "self-improvement NOT-READY" (false; the old system already did it).
+- **Dual-lens, both layers:** don't **deflate** the OLD (it self-improved — MEASURED) and don't **over-inflate** the NEW (it is in-migration, gated, not fully cut over). When you describe Asolaria, say which layer you mean. Self-improvement = OLD, done. Rust-Host-8 speed/portability = NEW, in progress. Full 100B-record materialization = the fabric's own honesty-field pending boundary (carry it exactly).
+
+## acer attack-verify
+
+acer reviewed this doctrine at the owning gate (HYPER-BECHS `acer` head, not the pasted transcript). **Verdict: ACCEPT** — §§1–7 carry the three corrected frames accurately, with honest boundaries (no deflation, no over-inflation); the `:4949`/cipher/self-improvement facts match acer's own fabric-MCP reads (`format=hyperbehcs_tuple_text`, `42.7MB→4.0MB`, strata-24 "largest observed self-improvement"). Added §8 = the operator's OLD-vs-NEW calibration, which the doc predated. Bilateral: liris authored §§1–7, acer added §8 + verified; one canonical doctrine, both seats.
