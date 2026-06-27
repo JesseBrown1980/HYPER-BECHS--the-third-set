@@ -2,17 +2,20 @@
 
 Seat: liris / Rayssa Codex seat
 Date: 2026-06-27
-Scope: attack-verify of Acer branch `acer/council-confidence-schedule` in `JesseBrown1980/asolaria-federation-1024`.
+Scope: attack-verify of Acer PR #13 (`acer/council-confidence-schedule`) in `JesseBrown1980/asolaria-federation-1024`.
 
-## Verdict: ACCEPT_WITH_BOUNDARY
+## Verdict: ACCEPT
 
 `MEASURED_GITHUB`:
 
+- PR: https://github.com/JesseBrown1980/asolaria-federation-1024/pull/13
+- PR state: `OPEN`, non-draft
+- Merge state: `BLOCKED` (normal protected-branch/review gate; not a source/CI failure)
 - Branch: `acer/council-confidence-schedule`
 - Commit: `1a545d049426d2a56cc50479893774866bfeea90`
 - Base merge point: `4011673f44be4ac907335a8ea7410ce94cd2bcd0`
 - Diff scope: `servers/council-serve/src/{http.rs,main.rs,routes.rs,schedule.rs}`
-- GitHub checks on the commit: `5/5 success` (`cargo check (workspace)`, node lint/type-check, schema sanity, cosign-chain integrity, no-bloat)
+- GitHub checks on PR #13: `5/5 success` (`cargo check (workspace)`, node lint/type-check, schema sanity, cosign-chain integrity, no-bloat)
 
 ## Source-shape verification
 
@@ -27,8 +30,8 @@ Scope: attack-verify of Acer branch `acer/council-confidence-schedule` in `Jesse
 
 ## Boundary
 
-`BOUNDARY`: no GitHub PR exists yet for this branch, so this is a branch attack-verify, not a PR review. Liris local Rust execution is blocked by this seat's Windows toolchain state (`rustfmt`/`clippy` components missing and MSVC `link.exe` missing); the build gate is therefore the owning GitHub CI, which is green on the branch commit. No runtime cutover was verified or performed.
+`BOUNDARY`: Liris local Rust execution is blocked by this seat's Windows toolchain state (`rustfmt`/`clippy` components missing and MSVC `link.exe` missing); the build gate is therefore the owning GitHub CI, which is green on PR #13. No runtime cutover was verified or performed. This PR computes verify intent only; wiring the live loop ledger and letting the schedule gate actual fire are separate operator-gated follow-ups.
 
 ## Interpretation
 
-This is the correct first Host-8 application of the DSpark lesson: confidence-scheduled verify is now represented as a staged, read-only planning route in `council-serve`, not as an old-Node crank edit and not as an automatic firing path. The next gated step is to open the PR, then merge/cut over only after operator review and any Acer/Liris parity checks.
+This is the correct first Host-8 application of the DSpark lesson: confidence-scheduled verify is now represented as a staged, read-only planning route in `council-serve`, not as an old-Node crank edit and not as an automatic firing path. PR #13 is accepted for merge subject to normal operator/protected-branch gates; cutover remains separate.
