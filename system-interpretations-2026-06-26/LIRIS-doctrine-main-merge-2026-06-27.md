@@ -41,4 +41,3 @@ The operator requested "Clean README-only PRs." Liris did not merge the earlier 
 ## Boundary
 
 `BOUNDARY`: These are README/doctrine merges only. No engine fired, no runtime cutover happened, and no code path was changed by this merge pass. The earlier BigPickle red check was not overridden; it was rerun and passed before merge.
-
