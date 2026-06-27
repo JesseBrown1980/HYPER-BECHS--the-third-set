@@ -54,3 +54,44 @@ Every step is **STAGED · owning-gate · bilateral attack-verify · operator-T0 
 ## 5. Honest frame
 
 Asolaria, as these 40 reports read it, is **a disciplined coordination geometry over borrowed, frozen intelligence — real engineering, deliberately constrained, transparent about its gaps.** It is not an ASI and does not claim to be. Advancement requires the operator's crank. This document is a *reading and a plan*, not a verdict; the verdict comes from the owning gates in §3, run before anything is called live.
+
+---
+
+## 6. Fold-in: migration scan + adversarial review (stress-test)
+
+*Added 2026-06-26 after resuming the two companion waves (read-only). The migration scan (18 targets assessed) and the adversarial second-review (8 verdicts) are folded here so the Ultra Plan is stress-tested, not just averaged.*
+
+### 6a. Migration scan — Host-8 work-list (18 targets, MEASURED-from-repo)
+
+- **One primary Rust OS, STAGED:** `asolaria-federation-1024` (BEHCS-1024 bare-metal remake; fischer/recall/cosign/council crates landed; `fire=1` blocked; Phases 2–10 of the 200-step plan not started). Highest-leverage staged next: **acer runs `cargo test --workspace` on the integration branch** (needs the MSVC linker liris lacks) → Fischer PR#9 owning-gate → Task #19 (wire launch gate into the summon path) — all behind **operator T0**.
+- **Live load-bearing engines (Node, not-started, must not be rushed):** `omni-dispatcher` (:4950, `auto_fire_allowed=false`); 31 Node `.mjs` + 57 Python `.py` daemons. RFC + bilateral parity before any rewrite; cutover gated.
+- **47-daemon census (HYPER-BECHS):** 8 rust-done / 16 candidate / 3 stub / 9 keep-native (hard blockers: boto3/azure/gcloud/Windows APIs) / 11 unknown.
+- **Node/PoC, not-started:** N-Nest-Prime, bigpickle-rebuild, -6-cyl-generator, ASOLARIA-AS-NEURAL-NETWORK (47D, zero Rust), Asolaria-ASI-On-Metal-Fabric (transport + USB-raw tools).
+- **Data/docs/tracking (not direct targets):** Algorithms-of-Asolaria, Asolaria-gac-working, HYPER-BECHS, Omni-Asolaria-OS-Matrix, falcon-orbital (witness), 35-TB-google-migration (ADC-gated).
+- **Empty:** `omnicoder---better-than-termux` (stub, needs intent).
+- **Gap flagged:** the 5 citizen daemons + vote-quorum have **no migration intent** in the 200-step plan — needs an owner decision.
+
+Every target's gated-next-step is STAGED + owning-gate + bilateral attack-verify + operator-T0; nothing auto-fires.
+
+### 6b. Adversarial review — what survived, what didn't (8 verdicts)
+
+**Confirmed (claims held, MEASURED):**
+- Canonical scenario set: repo == seat byte-identical, 10 scenarios, `law_coverage_any` on all. ✓
+- No PII/secret pushed to the public repos this session. ✓
+- PR#1 (Harness-edit `30dabc4`) + PR#11 (fed-1024 `4011673`) **merged to main** — verified via `gh`/`git merge-base`, not transcript. ✓
+- PR#11 post-merge: CI 5/5, staged read-only, no cutover. ✓ CLEAN.
+
+**Refuted — but the refutation was wrong (a claims-gate lesson):** one critic claimed the council code is "NOT merged to fed-1024 main, only the feature branch." That came from a **local checkout 44 commits behind origin** (it never fetched). The critic that *did* fetch confirmed the merge commit reachable from `origin/main`. Its *deployment* findings (no `:5090`, no `:4949` running) are correct and **agree** with STAGED. Net: code merged, not deployed — exactly as claimed. (Textbook claims-gate #5: owning gate, not local bytes.)
+
+**Real issue — honest correction to "engine UNFIRED":** the gate holds (`auto_fire_allowed=false`; migration/council cells `process_launch=0`; no cutover), **but** a recent live fabric loop-tick recorded `auto_fire.fired=2` (not zero). Precise statement: *the migration and council cells are unfired and uncut; the live fabric loop's auto-fire gate is false though it logged 2 fires* (a crank-then-refreeze per slice-engine-law, not a cutover). "Fired=0 everywhere" was too broad.
+
+**Real code issues in Harness-edit (worth fixing):** baseline duplication (prompt sent twice under `--baseline` with live adapters), silent file-write errors in `apply_edit.py`, unbounded/non-atomic rejected-buffer, JSON schema inconsistency (`apply_edit` unwraps a `scenarios` key, `score_skill` expects a bare list), `replace()` hits all occurrences. **Two findings are false positives** — the critic flagged `claude-opus-4-8` and `gpt-5.5` as "invalid model IDs," but both are current valid IDs its training didn't know (dual-lens: don't accept an agent's deflation either).
+
+**Real gap in the scan itself:** it has **no documented target list** and misses operational subsystems — 128+ `/mnt/c/tmp` ledger dirs, `D:\safety-backups` (cosign backups, Falcon APK, BEHCS mirrors), tool subsystems (usb-raw/behcs/graphify/phone), recall-atlas PII audit. Stale cosign files dated 2026-05-* (missing≠clean-zero). *Action:* write a canonical migration target-list/inventory before the next pass.
+
+### 6c. Net effect on the roadmap
+
+The stress-test **strengthens, not overturns,** §1–§3: the descriptive consensus holds, the merges are real (gh-verified), the public push is clean. Three additions to the §3 roadmap:
+1. **Tighten the engine-state claim** — report `auto_fire_allowed` + per-tick `fired` count, never a blanket "unfired."
+2. **Write a canonical migration target-list/inventory** (repos + operational subsystems + safety-backups) before the next scan; decide the citizen-daemon/vote-quorum migration intent.
+3. **Harden Harness-edit** (baseline dup, error handling, JSON schema consistency) — route the fixes through `apply_edit.py`'s own gate.
