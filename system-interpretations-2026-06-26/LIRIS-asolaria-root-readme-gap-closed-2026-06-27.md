@@ -33,4 +33,3 @@ The operator stopped the clone-first path and pointed out that the Asolaria prof
 ## Boundary
 
 `BOUNDARY`: This closes the README doctrine gap only. It does not promote a live branch, resolve Asolaria PR #6's main-adoption decision, fire an engine, cut over runtime, publish private evidence, or expose profile key values.
-
