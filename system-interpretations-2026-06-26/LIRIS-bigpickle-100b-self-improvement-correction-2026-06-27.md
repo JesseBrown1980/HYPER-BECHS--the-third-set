@@ -23,9 +23,14 @@ That is a historical self-improvement layer, not just an aspiration.
 ## Evidence classes
 
 - `OPERATOR_OBSERVED`: the operator identifies the 100B BigPickle/Gulp/cube/GNN chain as real, measured, and registered.
+- `ACER_FABRIC_MEASURED`: Acer asked the fabric's own 27-strata timeline and it names `2026-04-30` as the `CURRENT CYCLE` / `largest observed self-improvement`, with about `26K` bilateral envelopes, `178` waves, `:4949 + :4944`, `OP-JESSE + OP-RAYSSA real-Claude`, and a cosign chain.
+- `ACER_FABRIC_MEASURED`: the fabric timeline reports BigPickle `1M / 10M / 100M` backend-shelless free-agent runs at about `104k/sec`, `GNN-100B-shadow` runs (`30.8M tests/sec`, `34.3 hr`, `34.7 hr`), a `10K hermes-shannon-connor` run, and genome acquisition where the Plan B corpus was ingested, supervised, and office-registered `705 -> 713`.
+- `ACER_FABRIC_MEASURED`: `operator_claims_verified_on_disk (9)` includes `10K` runs, `1M` runs, `10B` runner tool, `100B-class` tools, Shannon v4+v5, OCR live, `234`-supervisor council / `14182` records, `603MB` GNN corpus, and Brown-Hilbert `1296`.
+- `ACER_FABRIC_MEASURED`: dispatch hot path compressed `42.7 MB JSON -> 4.0 MB HBP`; this is the cipher/BEHCS compression doctrine measured in production, not merely proposed.
+- `ACER_FABRIC_MEASURED`: GNN is live serving ranked predictions; the substrate list includes the five anchors, including SOVLINUX 2TB.
 - `ACER_OR_FABRIC_OWNED`: the owning raw substrate and USB evidence is Acer/fabric-side; Liris must not erase it because this seat cannot see the 2TB SOVLINUX raw device.
 - `LIRIS_FABRIC_MIRROR_MEASURED`: the Liris fabric mirror is alive (`super-asolaria-os-dashboard-liris-mirror`, port `4944`) and exposes HyperBEHCS tuple text plus pending review envelopes whose pipeline includes GNN, Shannon, Gulp, Whiteroom, and fabric stages.
-- `BOUNDARY`: this Liris addendum does not independently remeasure the 100B payload corpus, the 2TB USB receipts, or the historical cubed-response ledgers. It corrects the classification and points to the owning evidence lane.
+- `BOUNDARY`: this Liris addendum does not independently remeasure the 100B payload corpus, the 2TB USB receipts, or the historical cubed-response ledgers. It corrects the classification and points to the owning evidence lane. The remaining open item is the fabric's own honesty-field boundary: full `100B`-record materialization / `10B` records actually written; that boundary must not be used to erase the measured self-improvement runs above.
 
 ## Layer split
 
