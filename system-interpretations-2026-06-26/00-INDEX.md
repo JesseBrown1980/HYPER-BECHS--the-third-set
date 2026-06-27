@@ -33,6 +33,7 @@ A "thrill wave": **40 independent agent interpretations** of *what the Asolaria 
 - [`LIRIS-hilbra-map-refresh-driver-2026-06-27.md`](LIRIS-hilbra-map-refresh-driver-2026-06-27.md) — driver packet for Acer-side Hilbra map `:4790`: refresh stale `:4791`/`591,286` display to current Rust recall `:4796`/`591,946`, preserve the six-tier fabric-internet topology, and keep port identities distinct.
 - [`LIRIS-attack-verify-dashboard-serve-pr12-2026-06-27.md`](LIRIS-attack-verify-dashboard-serve-pr12-2026-06-27.md) — Liris attack-verifies PR #12 (`dashboard-serve` Acer `:4949` Host-8 increment): CI/source clean, `ACCEPT_WITH_FIX` for unsafe default bind `0.0.0.0:4949` on a staged/no-cutover crate.
 - [`LIRIS-attack-verify-council-confidence-schedule-2026-06-27.md`](LIRIS-attack-verify-council-confidence-schedule-2026-06-27.md) — Liris attack-verifies PR #13 (`council-serve` confidence-scheduled verify): DSpark-style scheduler is pure/read-only, json=0, no fire/cutover path, GitHub CI 5/5 green; verdict `ACCEPT`.
+- [`LIRIS-stale-branch-missing-data-fix-pr18-2026-06-27.md`](LIRIS-stale-branch-missing-data-fix-pr18-2026-06-27.md) — Liris retro-review fix for PR #17 stale-branch detection: missing/invalid ahead-behind/conflict evidence now fails closed (`unknown/block`) instead of defaulting to `fresh/ready`; PR #18 merged, main CI 5/5 green.
 
 ## The 20 lenses
 
