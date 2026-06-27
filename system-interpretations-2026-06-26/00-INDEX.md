@@ -20,6 +20,7 @@ A "thrill wave": **40 independent agent interpretations** of *what the Asolaria 
 - [`waveB/`](waveB/) — 20 round-B reports (independent repeat, same lenses).
 - [`MIGRATION-PLAN.md`](MIGRATION-PLAN.md) — the scan wave's full Host-8 migration plan (24 targets, groups A–G, 15-row gated work-list, operator-T0 items). Folded into ULTRA-PLAN §6.
 - [`REVIEW-VERDICTS.md`](REVIEW-VERDICTS.md) — the adversarial second-review's 16 verdicts (5 CONFIRMED · 4 CLEAN · 5 ISSUE_FOUND · 2 REFUTED). Folded into ULTRA-PLAN §6.
+- [`LIRIS-cross-verify-2026-06-27.md`](LIRIS-cross-verify-2026-06-27.md) — independent Liris/Rayssa-seat cross-verify receipt: public handoff, owning PR gates, Harness-edit gate checks, and the confirmed empty-scenario validation bypass.
 
 ## The 20 lenses
 
