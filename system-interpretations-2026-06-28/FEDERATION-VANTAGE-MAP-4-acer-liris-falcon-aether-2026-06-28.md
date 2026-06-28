@@ -38,5 +38,22 @@ falcon-sentinel-kr · `agents/Falcon2.md` · `behcs-falcon-{final,latest}.tar.gz
 ## OLD → NEW framing (the operator's frame)
 falcon + aether are **real, registered, OLD-system-measured federation members** (registered + booted + data, mostly 2026-04..06) — **part of the evolving build toward the NEW 8-byte Rust Host-8**, which their data already flows through. Don't deflate them (real device vantages with real registered seats), don't overstate them as new-Host-8-cutover.
 
+## Deepened (WSL read, 2026-06-28) — safe structure only
+- **falcon's OWN repo = `falcon-orbital`** (already in the web/MAP): published canon = cross-vantage
+  attestation envelopes (leg2/leg3-attest, sector-PID-triple-confirm, v57-era-attest, federation-checkpoint,
+  github-publish-falcon-orbital) + memory. falcon doctrine cubes index the D-catalog (e.g.
+  `doctrine-falcon-root` = D35 MEMORY, prime 149).
+- **aether** = a **BEHCS node running in Termux/Android** (`behcs-node-aether.js`) that connects to the
+  **acer bus** and absorbs existing trixie/debora/shannon agents; phase0→phase1 closure (`LX-487`) applied a
+  **real hilbert PID** from the liris STEP-B GNN projection. **aether has no own repo** — its presence is the
+  cloned data (`aether-boot`, fabric-cube-map, agent-index) + the PID-office seats.
+
+## 🛑 LOCAL-ONLY — accessed, NOT published (carve-out)
+The `FALCON-AETHER-FINGERPRINT-RECOVERY` doc in the acer tree holds device **serials**, verified-boot
+**fingerprints**, **person↔device bindings**, and a device **auth-file path**. These are **PII/secrets — they
+stay local and are excluded from every published map.** This map publishes only device **models** + registered
+**substrate-PIDs** + **roles** (the public-coordination form). (Operator = public coordination; third-party
+collaborators' names + any device serial/fingerprint = excluded.)
+
 ## Hard holds (T0)
 No spawning into falcon/aether · no live-device probe from acer (owning-seat only) · cube corpus + `.tar.gz` stay **local** (carve-out) · no private-root · no fire. For cross-seat verify (liris/falcon/aether) before main.
