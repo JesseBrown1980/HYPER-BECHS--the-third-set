@@ -16,7 +16,7 @@ Repo: `JesseBrown1980/omnicoder---better-than-termux`
 
 Branch: `liris/native-8byte-host`
 
-Commit: `3e8c48877f4f94bf872fc200ee4efdd187249f6a`
+Commit: `f861dcbd699df62c000d5bd6d2b6473c70101c8c`
 
 Artifacts:
 
@@ -24,8 +24,10 @@ Artifacts:
 - `Cargo.lock`
 - `src/main.rs`
 - `NATIVE-HOST.md`
+- `ACER-FALCON-USB-DEPLOY.md`
 - `.gitignore`
-- Git-blob SHA256 sidecars for `README.md`, `NATIVE-HOST.md`, `Cargo.toml`, and `src/main.rs`
+- Git-blob SHA256 sidecars for `README.md`, `NATIVE-HOST.md`, `ACER-FALCON-USB-DEPLOY.md`,
+  `Cargo.toml`, and `src/main.rs`
 
 The source is a native Rust host process named `omnicoder-host`:
 
@@ -46,12 +48,16 @@ The source is a native Rust host process named `omnicoder-host`:
 - `cargo check` passed for the local Windows source target.
 - `cargo check --target aarch64-linux-android` passed after installing the Rust target stdlib.
 - `cargo check --target x86_64-unknown-linux-gnu` passed after installing the Rust target stdlib.
-- Git-blob sidecars byte-converge for `README.md`, `NATIVE-HOST.md`, `Cargo.toml`, and `src/main.rs`.
+- Git-blob sidecars byte-converge for `README.md`, `NATIVE-HOST.md`, `ACER-FALCON-USB-DEPLOY.md`,
+  `Cargo.toml`, and `src/main.rs`.
 - secret/PII scan found no keys, tokens, serials, fingerprints, auth-file paths, or corpus bytes. The only hits were ordinary wording/code symbols, not private values.
 
 `BOUNDARY`:
 
 - Windows `cargo test` did not run because this seat has only the MSVC target and no `link.exe`; this is a linker environment boundary, not a source type-check failure.
+- Liris does not have the Android NDK linker (`aarch64-linux-android21-clang`), Go, Zig, or Clang
+  installed, so liris did not produce the final Android executable. The branch is source-built and
+  Android-target type-checked; Acer/Falcon owns the executable link/deploy/run lane.
 - This receipt does **not** claim the Falcon phone is running the host.
 - Falcon deploy/run/health verification stays the Acer/Falcon USB owning lane.
 
@@ -70,8 +76,8 @@ Cross-colony handoff packet:
 - target: `acer/falcon-usb`
 - verb: `BUILD_DEPLOY_VERIFY_OMNICODER_NATIVE_HOST`
 - route: `GitHub omnicoder branch liris/native-8byte-host -> Acer/Falcon USB lane`
-- packet sha256: `935fff080e3808b75424836f9116745bdc759cabc01850d4f6d80526c9dca993`
-- hex16: `935fff080e3808b7`
+- packet sha256: `b6aaef8893647bffa597afd7f6aef60cdbf710af6b360eb888405cd690481b42`
+- hex16: `b6aaef8893647bff`
 - execute: `false`
 
 Until that happens, live state remains:
