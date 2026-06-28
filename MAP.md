@@ -45,7 +45,7 @@ tables below to see where you are; follow the links to walk the rest.
 | `N-Nest-Prime-INFINITE-SELF-REFLECT-AGENTS-NESTED` | prime-nesting self-reflect + per-node correction gate |
 | `HYPER-BECHS--the-third-set` | published ledgers / interpretations / findings |
 | `Asolaria-gac-working` | GAC governance / authority seats |
-| `falcon-orbital` | frozen v57 canon (superseded by the 60D / Host-8 frame) |
+| `falcon-orbital` | the **third federation vantage** (falcon/orbital seat), not residue; carries the mobile/orbital side of the acer + liris + falcon federation |
 | `NOT-WEDGED-SYSTEM-RULE-and-explanation-Asolaria` | the slice-engine / freeze≠broken rule |
 | `-6-cyl-generator` | satellite generator |
 | `asolaria-whiteroom-engine` · `35-TB-google-AI-Ultra-migration` | (= LEG-1 + LEG-4, listed under External legs) |
@@ -62,7 +62,15 @@ The system **now** is **multiple of everything**: **16 levels (L0-L15) · multip
 multiple emitters · multiple languages** (index / pixels-first / BEHCS-256 / BEHCS-1024 / HBI-HBP).
 **Current frame = 60D HyperBEHCS / BEHCS-1024**; 35D / 47D / 49D + BEHCS-256 are **bridge strata** below
 it (old decodes new). The **kernel** is `asolaria-federation-1024` (the Rust 8-byte host). The current
-effort is **"map while upgrading"** — and **this repo web is that map**.
+effort is **"map while upgrading"** — and **this repo web is that map**. P1 closed with watcher-gated
+convergence across acer + liris: the 8-byte sha256/fnv1a64 generative PID is the shared atom across
+recall rows, PID-office, kernel handles, glyph language, and omni PIDs; the office count is **726**
+(including 300 `hyperbehcs_supervisor_entity`); and language routing is live at tuple_dim=60 where the
+owning fabric route is reachable.
+
+P1 also corrected the collision law: the naive prime-tower Sidon form is **not** zero-collision
+(N=2000 produced ~1.7M collisions in the watcher run). Zero-collision is only watcher-confirmed for the
+constructed STE-anchor case (N=400); infinite uniqueness stays a conjecture until proven.
 
 ## How it all fits
 The **emitter [2]** produces 200ns PID signals; the **router [1]** delivers them; the **fleet [0]**
