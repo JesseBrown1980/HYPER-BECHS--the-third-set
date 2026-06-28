@@ -36,7 +36,22 @@ For cross-seat verify before main. **Per-vantage:** every state below is measure
 | upper | liris-multi-cylinder-prime-atlas | map | running | 4790 | liris :4790 ≠ acer :4790 (different service per vantage) |
 | upper | liris-super-os mirror | dashboard | running | 4944 | the sister-organ mirror |
 
-### falcon vantage (3rd seat) — **owning-seat to measure** (dark from acer; not a claim)
+### falcon vantage (Samsung S24 FE phone) — **acer-via-USB reachable** (USB connected 2026-06-28; read-only)
+| level | surface_id | type | state | port | note |
+|---|---|---|---|---|---|
+| device | falcon S24 FE | host | **connected** (acer-via-USB; **Termux runtime present**: com.termux/+api/+hub) | — | serial / fingerprint held **LOCAL** (carve-out) |
+| coder | **falcon-omnicoder** | dashboard/coder | **STUBBED** (acer-via-USB: `node procs=0`, `:8789` not serving) | 8789 (falcon loopback) | repo `omnicoder---better-than-termux` (front door `472376d`); `helper_packet_authority=true` / **`execution_authority=false`**; **START = owning-seat (falcon), gated** |
+| various | falcon sensors / mqtt / opencode-proxy / asolaria-mirror | device | owning-seat-to-measure | — | per PID-office seats; live state = falcon's vantage |
+
+### aether vantage (Galaxy A06 phone) — owning-seat to measure (not USB-connected to acer this session)
+| level | surface_id | type | state | port | note |
+|---|---|---|---|---|---|
+| device | aether A06 | host | owning-seat-to-measure | — | Termux BEHCS node → acer bus; phase1-registered (real hilbert PID) |
+
+> **acer-via-USB note:** when a phone vantage is USB-connected, acer can take a **read-only** direct
+> measurement (ADB) — tagged `acer-via-USB`, distinct from the seat's own self-report. **Starting** a
+> stubbed device surface (e.g. the omnicoder) is **device control = E≠0 = owning-seat / operator T0**, never
+> an acer docs/map action.
 
 ## Hard rules carried
 - **Per-vantage row counts stay separate** (acer 591,946 ≠ liris 10,644 — different surfaces, not the
