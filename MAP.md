@@ -50,6 +50,43 @@ tables below to see where you are; follow the links to walk the rest.
 | `-6-cyl-generator` | satellite generator |
 | `asolaria-whiteroom-engine` · `35-TB-google-AI-Ultra-migration` | (= LEG-1 + LEG-4, listed under External legs) |
 
+## Prism/Comb 0-loss (2026-07-01) — satellite entry (this repo: HyperBEHCS, the third set)
+
+**Law (one line):** every prism/comb operation in the substrate is a **bijection**; entropy is
+invariant under bijection (`H(f(X)) = H(X)`), so re-relating information across alphabets costs
+**0 loss** — and no step ever claims compression below entropy (Shannon's `E[bits] ≥ H(X)` stands).
+One fabric, two directions: **forward = comb** (collision-avoidance, lane isolation),
+**backward = prism** (collision-causation, interference-as-search, many→1). How the law lands on
+THIS repo's subject:
+
+- **Level transcode 256 ↔ 1024 — MEASURED** (Q-PRISM commits `53023b6` / `79e8d63` / `de00aca`):
+  bytes are base-2⁸ digits, glyphs base-2¹⁰ digits of the SAME integer; exact packing at
+  `lcm(8,10) = 40` bits ⇒ 5 bytes ⇄ 4 symbols, remainder 0; round-trip `= id`, sha256-identical,
+  Rust==Python symbol-identical, code rate exactly 1.0. This is the one proven rung on the
+  lineage this repo tracks (`Old Index → BEHCS-256 → BEHCS-1024 → HyperBEHCS`).
+- **NEXT RUNG TO PROVE: 1024 ↔ HyperBEHCS-60D — UNVERIFIED.** The tuple substrate mapped in
+  `ASOLARIA-HYPERBEHCS-SUBSTRATE-MAP.md` (`.hbp`/`.hbi`/sha/hex hot path, json=0, tuple_dim=60)
+  earns MEASURED only by its OWN round-trip proof (transcode there and back, digest-identical).
+  Until that proof lands, do NOT inherit the 256↔1024 measurement upward.
+- **`D# = prime(n)³` CRT lanes — math principle (CANON frame).** For pairwise-coprime moduli
+  `m₁…m_k`, `ℤ_M ≅ ℤ_{m₁} × … × ℤ_{m_k}` (ring isomorphism): separation into lanes is exact and
+  exactly reassemblable (forward = isolation, backward = reconstruction). Note this is a
+  DIFFERENT, stronger statement than the naive prime-tower Sidon form P1 already corrected below
+  (~1.7M collisions at N=2000): CRT coprimality is collision-proof by construction; Sidon-style
+  infinite uniqueness stays a conjecture.
+- **The 43+ layer ladder as a groupoid — CANON frame.** Translators `T_ij` with
+  `T_ji ∘ T_ij = id` and `T_jk ∘ T_ij = T_ik` make cross-level translation omnidirectional and
+  path-independent (the measured `by_layer=43` governance taxonomy). One rung MEASURED
+  (256↔1024); every other rung is UNVERIFIED until its own proof.
+- **Referential naming — honest bound.** `handle8 = sha256(content)[:8]` is a 64-bit coordinate
+  against a content-addressed store (`H(content | store) = 0`), NOT compression; birthday bound
+  `≈ M²/2⁶⁵`. Infinite ADDRESSING capacity ≠ infinite lossless compression — hold that boundary.
+
+Cross-links: Q-PRISM (round-trip proofs) · `Asolaria-waves-and-cascades…` (comb/prism duality) ·
+`what-is-asolaria…` (reductions boundary) · `N-Nest…` (integrity dual: verification =
+recomputation = applying the inverse map, per-node `reported == recomputed`) · Metatagging repo
+(Brown & Fedotov physics grounding). E=0 throughout: this entry describes; nothing fires.
+
 ## Current state & evolution (2026-06-28) — read this, don't flatten it
 Asolaria is a **2.5-month archaeology**, not a flat stack. **Capability lineage:** auto-approval switch →
 dashboard → multi-agent → local+web MCP + code-wiki → index language (pixels-first) → cubes-as-catalogs
