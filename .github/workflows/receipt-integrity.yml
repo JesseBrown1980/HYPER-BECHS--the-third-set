@@ -1,0 +1,76 @@
+name: receipt integrity
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - acer-host8-asi-os-metal-60d-kernel-20260708
+
+jobs:
+  receipt-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate July 8 HBP/HBI receipts
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import re
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          root = Path("system-interpretations-2026-07-08")
+          if not root.is_dir():
+              print(f"missing receipt directory: {root}", file=sys.stderr)
+              sys.exit(1)
+
+          sha_files = sorted(root.glob("*.sha256"))
+          if not sha_files:
+              print(f"no sha256 sidecars found under {root}", file=sys.stderr)
+              sys.exit(1)
+
+          hex64 = re.compile(r"^[0-9a-f]{64}$")
+          failures = []
+
+          def git_blob(path: Path) -> bytes:
+              return subprocess.check_output(["git", "cat-file", "blob", f"HEAD:{path.as_posix()}"])
+
+          for sidecar in sha_files:
+              target = Path(str(sidecar)[:-7])
+              text = git_blob(sidecar).decode("utf-8").strip()
+              parts = text.split()
+              if not parts or not hex64.fullmatch(parts[0]):
+                  failures.append(f"{sidecar}: malformed sha256 sidecar")
+                  continue
+              if not target.exists():
+                  failures.append(f"{sidecar}: target missing: {target}")
+                  continue
+              actual = hashlib.sha256(git_blob(target)).hexdigest()
+              if actual != parts[0]:
+                  failures.append(f"{target}: sha256 mismatch expected={parts[0]} actual={actual}")
+
+          for receipt in sorted([*root.glob("*.hbp"), *root.glob("*.hbi")]):
+              data = git_blob(receipt)
+              if b"\r\n" in data or b"\r" in data:
+                  failures.append(f"{receipt}: CRLF/CR byte found; receipts must be LF-stable")
+              if b"\x00" in data:
+                  failures.append(f"{receipt}: NUL byte found")
+              for n, raw in enumerate(data.splitlines(), start=1):
+                  if not raw.strip():
+                      failures.append(f"{receipt}:{n}: blank row")
+                      continue
+                  line = raw.decode("utf-8", errors="replace")
+                  if "|" not in line:
+                      failures.append(f"{receipt}:{n}: missing pipe-delimited tuple fields")
+                  if "json=0" not in line:
+                      failures.append(f"{receipt}:{n}: missing json=0 hot-path marker")
+
+          if failures:
+              for failure in failures:
+                  print(failure, file=sys.stderr)
+              sys.exit(1)
+
+          print(f"validated {len(sha_files)} sidecars and July 8 HBP/HBI tuple rows")
+          PY
