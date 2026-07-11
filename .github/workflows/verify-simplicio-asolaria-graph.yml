@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: wesleysimplicio/simplicio-mapper
-          ref: 138d6829aba9e6c385c43a71adff20924e96928f
+          ref: 04c89b958d43ff41347589ea8979a93ddb9775ff
           path: mapper
 
       - name: Record immutable inputs
@@ -29,7 +29,7 @@ jobs:
           set -euo pipefail
           printf 'verification_repo=%s\n' "$GITHUB_SHA" | tee verification-inputs.txt
           printf 'mapper_repo=wesleysimplicio/simplicio-mapper\n' | tee -a verification-inputs.txt
-          printf 'mapper_commit=138d6829aba9e6c385c43a71adff20924e96928f\n' | tee -a verification-inputs.txt
+          printf 'mapper_commit=04c89b958d43ff41347589ea8979a93ddb9775ff\n' | tee -a verification-inputs.txt
           python --version | tee python-version.txt
 
       - name: Validate all ecosystem contract fixtures
