@@ -1,4 +1,4 @@
-# HYPER-BECHS — the third set
+# HYPER-BEHCS — the third set
 
 Tracking repo for **HyperBEHCS**, the fourth-generation Asolaria substrate:
 
@@ -39,6 +39,20 @@ The coverage ledger records **45 campaign pull requests merged**—44 substantiv
 plus the final public coverage seal—zero remaining campaign PRs, and the explicit classification of
 native organs, direct lineage, integration forks, upstream dependencies, and unrelated repositories.
 
+## Simplicio Canvas shared visualization integration
+
+The organized repository/evidence graph now has a versioned producer and a Canvas-native follow-up:
+
+- [`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md`](SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md)
+- [`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.hbp`](SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.hbp)
+- Mapper producer PR: [`wesleysimplicio/simplicio-mapper#203`](https://github.com/wesleysimplicio/simplicio-mapper/pull/203)
+- Canvas native-import issue: [`wesleysimplicio/simplicio-canvas#65`](https://github.com/wesleysimplicio/simplicio-canvas/issues/65)
+
+The proposed `simplicio.ecosystem-graph/v1` fixture carries actual repository links, immutable
+revisions, typed cross-repository relationships, evidence classes, research references and explicit
+boundaries. The current `simplicio-mapper-flow` projection can be imported into Canvas today; native
+rich metadata rendering remains open and is not silently labeled complete.
+
 ## 2026-07-11 measured recovery/storage map
 
 HyperBEHCS now has a shared main-branch record connecting the tuple substrate to:
@@ -73,6 +87,8 @@ to perform matrix multiplication.
    vantage, merge, and authority doctrine.
 5. **`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md`** — complete repository campaign,
    merge, inclusion, and exclusion ledger.
+6. **`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md`** — versioned visualization contract,
+   shared repository links, research overlay and current implementation boundary.
 
 ## Independent verification
 
@@ -81,6 +97,8 @@ to perform matrix multiplication.
 - GPT-5.6 Pro complete source/test/lineage audit.
 - GPT-directed Rust 1.97.0 GitHub Actions: runs `29134408321`, `29134413119`, `29134419389` all
   successful; latest receipt-bearing runs are recorded in the coverage ledger.
+- The Mapper/Canvas integration is currently `PR_OPEN / ISSUE_OPEN`; its GitHub Actions are not
+  independently green because the repository runners fail or skip before steps execute.
 
 ## Branch convention
 
