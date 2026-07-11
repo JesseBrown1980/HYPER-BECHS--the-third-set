@@ -2,8 +2,10 @@
 
 ## Result
 
-This campaign merged **44 pull requests** across the repositories that are native to Asolaria,
-directly establish its lineage, or contain an explicit Asolaria integration surface.
+This campaign merged **44 substantive pull requests** across repositories that are native to
+Asolaria, directly establish its lineage, or contain an explicit Asolaria integration surface. The
+public coverage ledger itself is merged through HyperBEHCS PR #5, bringing the final campaign total
+to **45 merged pull requests**.
 
 The campaign did **not** rewrite every repository in the account. That would have mixed unrelated
 applications, personal history, source archives, and upstream projects into the Asolaria doctrine.
@@ -15,7 +17,7 @@ classes:
 3. **upstream-derived integration fork** — Asolaria-local note merged without rewriting upstream identity;
 4. **upstream dependency or unrelated repository** — intentionally left source-faithful and recorded as excluded by scope.
 
-No coordinated pull request from the three campaign branches remains open.
+No coordinated campaign pull request remains open after the coverage seal merges.
 
 ## Governing doctrine
 
@@ -113,6 +115,12 @@ Canonical doctrine:
 | `free-claude-code` | [#4](https://github.com/JesseBrown1980/free-claude-code/pull/4) | Asolaria-local provider capability/config/live-receipt doctrine |
 | `Asolaria-helper` | [#1](https://github.com/JesseBrown1980/Asolaria-helper/pull/1) | Asolaria-local helper adapter/route/handoff doctrine |
 
+## Wave 4 — public coverage seal: 1 merge
+
+| Repository | PR | Merged scope |
+|---|---:|---|
+| `HYPER-BECHS--the-third-set` | [#5](https://github.com/JesseBrown1980/HYPER-BECHS--the-third-set/pull/5) | public 45-merge account coverage ledger, HBP receipt, README index |
+
 ## Verification anchors preserved
 
 ### Claude Fable 5 — operator-supplied independent third seat
@@ -181,7 +189,7 @@ operator/cosign changes, or stronger physical claims remained held.
 
 ## Final state
 
-- **44 pull requests merged**.
+- **45 campaign pull requests merged**: 44 substantive repository changes plus this coverage seal.
 - **0 coordinated campaign pull requests left open**.
 - Native bilateral protocols remain bilateral.
 - Shared evidence is trilateral when a third independent seat exists.
