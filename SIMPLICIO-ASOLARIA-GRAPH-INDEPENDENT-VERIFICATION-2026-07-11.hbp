@@ -1,0 +1,10 @@
+VERIFYv1|date=2026-07-11|subject=simplicio.ecosystem-graph/v1|json=0
+INPUT|mapper_repo=wesleysimplicio/simplicio-mapper|mapper_commit=138d6829aba9e6c385c43a71adff20924e96928f|mapper_pr=203|json=0
+RUN|repository=JesseBrown1980/HYPER-BECHS--the-third-set|workflow=Verify-Simplicio-Asolaria-ecosystem-graph|run_id=29151117068|job_id=86540664249|runner=ubuntu-24.04|conclusion=success|json=0
+CHECK|name=ecosystem-contract-all-fixtures|conclusion=success|json=0
+CHECK|name=focused-ecosystem-graph-tests|tests=9|conclusion=success|json=0
+CHECK|name=public-fixture-privacy-markers|repositories=21|edges=26|references=3|conclusion=success|json=0
+CHECK|name=artifact-upload|conclusion=success|json=0
+EVIDENCE|canvas_issue=65|mapper_pr=203|hyperbehcs_integration_pr=6|json=0
+STATUS|tag=MEASURED_INDEPENDENT_GITHUB_ACTIONS|native_canvas_import=ISSUE_OPEN|mapper_merge=PR_OPEN|json=0
+BOUNDARY|public_metadata_only=1|private_corpus=0|keys=0|model_bodies=0|pii=0|device_credentials=0|runtime_authority=0|json=0
