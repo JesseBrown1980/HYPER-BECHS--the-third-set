@@ -1,0 +1,81 @@
+name: Verify Simplicio Asolaria ecosystem graph
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/verify-simplicio-asolaria-graph.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out verification repository
+        uses: actions/checkout@v4
+
+      - name: Check out pinned Simplicio Mapper proposal
+        uses: actions/checkout@v4
+        with:
+          repository: wesleysimplicio/simplicio-mapper
+          ref: 138d6829aba9e6c385c43a71adff20924e96928f
+          path: mapper
+
+      - name: Record immutable inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf 'verification_repo=%s\n' "$GITHUB_SHA" | tee verification-inputs.txt
+          printf 'mapper_repo=wesleysimplicio/simplicio-mapper\n' | tee -a verification-inputs.txt
+          printf 'mapper_commit=138d6829aba9e6c385c43a71adff20924e96928f\n' | tee -a verification-inputs.txt
+          python --version | tee python-version.txt
+
+      - name: Validate all ecosystem contract fixtures
+        working-directory: mapper
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/validate_ecosystem_contracts.py 2>&1 | tee ../ecosystem-contract.txt
+
+      - name: Run focused ecosystem graph tests
+        working-directory: mapper
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest tests/python/test_ecosystem_graph_contract.py -v 2>&1 | tee ../ecosystem-graph-tests.txt
+
+      - name: Verify no private material was introduced
+        working-directory: mapper
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' 2>&1 | tee ../privacy-check.txt
+          import json
+          from pathlib import Path
+
+          path = Path('contracts/ecosystem/v1/fixtures/asolaria-ecosystem/ecosystem-graph.json')
+          payload = json.loads(path.read_text(encoding='utf-8'))
+          serialized = json.dumps(payload).lower()
+          forbidden = ('private_key', 'password', 'authorization:', 'bearer ', 'api_key', 'device_secret')
+          found = [token for token in forbidden if token in serialized]
+          if found:
+              raise SystemExit(f'forbidden material markers found: {found}')
+          print(f"repositories={len(payload['repositories'])}")
+          print(f"edges={len(payload['edges'])}")
+          print(f"references={len(payload['references'])}")
+          print('privacy_markers=clean')
+          PY
+
+      - name: Upload independent verification receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: simplicio-asolaria-ecosystem-graph-verification
+          path: |
+            verification-inputs.txt
+            python-version.txt
+            ecosystem-contract.txt
+            ecosystem-graph-tests.txt
+            privacy-check.txt
