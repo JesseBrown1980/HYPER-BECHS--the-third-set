@@ -1,4 +1,4 @@
-COVERAGEv1|date=2026-07-11|owner=JesseBrown1980|campaign=trilateral-reality+path2-findings|merged_prs=44|open_campaign_prs=0|json=0
+COVERAGEv1|date=2026-07-11|owner=JesseBrown1980|campaign=trilateral-reality+path2-findings|substantive_merges=44|coverage_seal_pr=5|campaign_total_after_merge=45|open_campaign_prs=0|json=0
 WAVE|id=1|name=recovery+gnn+storage|merged=17|json=0
 MERGE|repo=dbbh-coms-quant-prism|pr=2|scope=path1+rust197+receipts|json=0
 MERGE|repo=path2-two-shadow-recovery|pr=2|scope=path2+dbwh+rust197|json=0
@@ -46,6 +46,8 @@ MERGE|repo=asolaria-hbi-hbp|pr=1|scope=trilateral-hot-path-receipts|json=0
 MERGE|repo=omnicoder---better-than-termux|pr=4|scope=device-endpoint-evidence|json=0
 MERGE|repo=free-claude-code|pr=4|scope=asolaria-local-provider-evidence|upstream_root_rewritten=0|json=0
 MERGE|repo=Asolaria-helper|pr=1|scope=asolaria-local-helper-evidence|upstream_root_rewritten=0|json=0
+WAVE|id=4|name=public-coverage-seal|merged=1|json=0
+MERGE|repo=HYPER-BECHS--the-third-set|pr=5|scope=account-coverage-ledger+HBP+README-index|json=0
 VERIFY|agent=CLAUDE-FABLE-5|path1=rustc1.97:19of19|path2=rustc1.97:30of30|provenance=operator-supplied-third-seat|json=0
 VERIFY|agent=GPT-5.6-PRO|path1_run=29134650286:success|path2_run=29134657224:success|qprism3d_run=29134662404:success|provenance=directed-github-actions|json=0
 CLASS|id=native-asolaria|action=doctrine-or-role-evidence-merged|json=0
