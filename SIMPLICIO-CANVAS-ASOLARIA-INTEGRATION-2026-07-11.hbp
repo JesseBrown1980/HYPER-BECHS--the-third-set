@@ -1,0 +1,12 @@
+CANVAS-ASOLARIA-v1|date=2026-07-11|producer=wesleysimplicio/simplicio-mapper|consumer=wesleysimplicio/simplicio-canvas|source_policy=public-metadata-only|json=0
+CONTRACT|schema=simplicio.ecosystem-graph/v1|mapper_pr=203|status=PR_OPEN_AUDITED|native_canvas_issue=65|json=0
+FIXTURE|authoritative=contracts/ecosystem/v1/fixtures/asolaria-ecosystem/ecosystem-graph.json|compatibility=contracts/ecosystem/v1/fixtures/asolaria-ecosystem/canvas-flow.json|json=0
+GRAPH|origin=AI-healthCare-project|sidecar=asolaria-behcs-256|trained=Asolaria-fnns-trained-and-reverse-gnns-many|scorer=bigpickle-rebuild|json=0
+GRAPH|emitter=Asolaria-the-full-works-200-nanoseconds-agent-emitter-plus-|router=omni-dispatcher|fleet=Asolaria-hermes-work|stage=Shannon-and-the-gnns-stage|json=0
+GRAPH|curation=asolaria-whiteroom-engine|storage=Asolaria-the-after-100-billion-run-absorption-and-decomposition-and-cubes|path1=dbbh-coms-quant-prism|path2=path2-two-shadow-recovery|watcher=qprism-3d-slice-harness|json=0
+GRAPH|formula_owner=Algorithms-of-Asolaria|substrate=HYPER-BECHS--the-third-set|inverse_gate=N-Nest-Prime-INFINITE-SELF-REFLECT-AGENTS-NESTED|json=0
+RESEARCH|encrypted_cloning=quantum-sibling-not-classical-identity|matter_wave=simulator-calibration-not-neural-control|global_workspace=visual-focus-motivation-not-consciousness|json=0
+AUDIT|canvas_import=flattens-rich-metadata|canvas_landscape=hardcoded-fixture|graph_ids=fnv32-local-handle|recovery_checksum=fnv32-noncryptographic|edge_type_drift=calls-vs-call|json=0
+CI|mapper_pr_runs=failed-or-skipped-before-steps|fresh_green_claim=0|local_clone=blocked-by-no-dns|json=0
+BOUNDARY|private_corpus=0|keys=0|model_bodies=0|pii=0|device_credentials=0|runtime_authority=0|json=0
+NEXT|action=review-mapper-pr-203-then-implement-canvas-issue-65|compatibility_path_available_now=1|json=0
