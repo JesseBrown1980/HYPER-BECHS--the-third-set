@@ -39,19 +39,32 @@ The coverage ledger records **45 campaign pull requests merged**—44 substantiv
 plus the final public coverage seal—zero remaining campaign PRs, and the explicit classification of
 native organs, direct lineage, integration forks, upstream dependencies, and unrelated repositories.
 
-## Simplicio Canvas shared visualization integration
+## Simplicio Mapper ↔ Runtime ↔ Canvas shared visualization
 
-The organized repository/evidence graph now has a versioned producer and a Canvas-native follow-up:
+The organized repository/evidence graph now has a three-part producer/consumer path:
 
 - [`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md`](SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md)
 - [`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.hbp`](SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.hbp)
-- Mapper producer PR: [`wesleysimplicio/simplicio-mapper#203`](https://github.com/wesleysimplicio/simplicio-mapper/pull/203)
+- Canonical graph contract and fixture: [`wesleysimplicio/simplicio-mapper#203`](https://github.com/wesleysimplicio/simplicio-mapper/pull/203)
+- Runtime-owned compatibility/evidence snapshot: [`wesleysimplicio/simplicio-runtime#3090`](https://github.com/wesleysimplicio/simplicio-runtime/pull/3090)
+- Runtime watcher-selector hardening: [`wesleysimplicio/simplicio-runtime#3091`](https://github.com/wesleysimplicio/simplicio-runtime/pull/3091)
 - Canvas native-import issue: [`wesleysimplicio/simplicio-canvas#65`](https://github.com/wesleysimplicio/simplicio-canvas/issues/65)
 
-The proposed `simplicio.ecosystem-graph/v1` fixture carries actual repository links, immutable
-revisions, typed cross-repository relationships, evidence classes, research references and explicit
-boundaries. The current `simplicio-mapper-flow` projection can be imported into Canvas today; native
-rich metadata rendering remains open and is not silently labeled complete.
+The ownership split is explicit:
+
+```text
+Mapper
+  owns simplicio.ecosystem-graph/v1, validation and the authoritative public fixture
+
+Runtime
+  owns executable crate/runtime evidence and a bounded Canvas-v1 snapshot
+
+Canvas
+  owns native import, rendering, graph diff, policy and proposal UX
+```
+
+Mapper's independently executed fixture is green. Runtime PRs remain draft and their repository
+Actions currently stop at `startup_failure` with no jobs, so no green runtime CI claim is made.
 
 ## 2026-07-11 measured recovery/storage map
 
@@ -87,8 +100,8 @@ to perform matrix multiplication.
    vantage, merge, and authority doctrine.
 5. **`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md`** — complete repository campaign,
    merge, inclusion, and exclusion ledger.
-6. **`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md`** — versioned visualization contract,
-   shared repository links, research overlay and current implementation boundary.
+6. **`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md`** — Mapper/Runtime/Canvas contracts,
+   repository links, research overlay, identity boundaries and current review status.
 
 ## Independent verification
 
@@ -97,14 +110,15 @@ to perform matrix multiplication.
 - GPT-5.6 Pro complete source/test/lineage audit.
 - GPT-directed Rust 1.97.0 GitHub Actions: runs `29134408321`, `29134413119`, `29134419389` all
   successful; latest receipt-bearing runs are recorded in the coverage ledger.
-- The Mapper/Canvas integration is currently `PR_OPEN / ISSUE_OPEN`; its GitHub Actions are not
-  independently green because the repository runners fail or skip before steps execute.
+- Mapper PR #203's immutable-input external workflow passed twice, with 9/9 focused ecosystem tests.
+- Runtime PRs #3090/#3091 have no green or red code verdict yet because Actions fail before creating
+  jobs; they remain `DRAFT / REVIEW_REQUESTED / CI_UNVERIFIED`.
 
 ## Branch convention
 
 | Branch | Owner | Contents |
 |---|---|---|
-| `main` | shared | shared index, doctrine, and cross-colony measured receipts |
+| `main` | shared | shared index, doctrine, cross-colony measured receipts and integration maps |
 | `acer` | acer colony | acer maps and origin-local evidence |
 | `liris` | liris colony | liris maps and attack-verify evidence |
 
