@@ -1,4 +1,4 @@
-# HYPER-BEHCS — the third set
+# HYPER-BECHS — the third set
 
 Tracking repo for **HyperBEHCS**, the fourth-generation Asolaria substrate:
 
@@ -7,6 +7,28 @@ Old Index → BEHCS-256 → BEHCS-1024 → HyperBEHCS
 ```
 
 “The third set” is the third new generation after the two BEHCS alphabets.
+
+## Reality doctrine — bilateral execution, trilateral evidence
+
+Acer↔Liris remains the real bilateral implementation and attack-verification pair. Shared claims now
+require a **trilateral evidence minimum** wherever a third execution seat is available:
+
+```text
+Acer origin/measurement
++ Liris attack-verify/reimplementation
++ independent third-seat execution
++ optional immutable-head CI verification
+```
+
+This does not rename or invalidate existing bilateral code. It prevents one seat—or an outside
+model—from erasing another seat's measured result because it cannot see the same drive, corpus,
+process, or private body. It also preserves the no-inflate gate: capacity is not residency, disk is
+not a GPU tensor core, and classical Q-PRISM is not physical quantum cloning.
+
+Canonical doctrine and machine-readable receipt:
+
+- [`TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.md`](TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.md)
+- [`TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.hbp`](TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.hbp)
 
 ## 2026-07-11 measured recovery/storage map
 
@@ -38,6 +60,8 @@ to perform matrix multiplication.
    scoreboard.
 3. **`MEASURED-PATH2-STORAGE-SUBSTRATE-2026-07-11.md`** — exact recovery, inverse readback,
    hardware tiering, and independent verification.
+4. **`TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.md`** — shared no-deflate/no-inflate,
+   vantage, merge, and authority doctrine.
 
 ## Independent verification
 
@@ -51,12 +75,12 @@ to perform matrix multiplication.
 
 | Branch | Owner | Contents |
 |---|---|---|
-| `main` | shared | shared index and cross-colony measured receipts |
-| `acer` | acer colony | acer maps |
-| `liris` | liris colony | liris maps |
+| `main` | shared | shared index, doctrine, and cross-colony measured receipts |
+| `acer` | acer colony | acer maps and origin-local evidence |
+| `liris` | liris colony | liris maps and attack-verify evidence |
 
 Push colony-local maps to colony branches; place cross-verified shared results on `main` through a
-reviewed PR.
+reviewed PR. The independent third seat and CI add evidence; they do not acquire operator authority.
 
 *All maps remain carve-out clean: names, roles, structure, and public hashes only—no keys, seeds,
 signing bytes, private corpus, or PII.*
