@@ -1,0 +1,16 @@
+TRILATERALv1|date=2026-07-11|doctrine=bilateral-execution-trilateral-evidence|operator=OP-JESSE|json=0
+SEAT|id=ACER|role=origin+implementation+measurement|truth_scope=vantage-tagged|json=0
+SEAT|id=LIRIS|role=attack-verify+reimplementation+cross-vantage-correction|truth_scope=vantage-tagged|json=0
+SEAT|id=THIRD|role=independent-container-or-toolchain-execution|truth_scope=independent-measurement|json=0
+LANE|id=CI|role=immutable-commit-execution+artifact|truth_scope=additional-verifier|json=0
+RULE|name=no-deflate|cannot_see_not_false=1|unverified_live_not_unreal=1|staged_new_not_erase_measured_old=1|public_carveout_not_no_body=1|json=0
+RULE|name=no-inflate|capacity_not_resident=1|disk_not_gpu=1|selector_not_payload_entropy=1|classical_not_quantum-cloning=1|ideal_not_zero-hardware-error=1|json=0
+RULE|name=merge-obvious|additive=1|scope_tags=1|no_secret=1|no_conflict=1|checks_green_or_not_applicable=1|json=0
+RULE|name=hold-real-blocker|failed_check=1|merge_conflict=1|authority_change=1|secret_or_pii=1|unsupported_live_claim=1|json=0
+TAG|measured=MEASURED_ACER+MEASURED_LIRIS+MEASURED_THIRD_SEAT+MEASURED_CI+MEASURED_REPO|json=0
+TAG|boundary=REPOSITORY_REPORTED_TRAINING+OPERATOR_REPORTED_MEASURED+AUDITED+CANON+UNVERIFIED_LIVE+CANNOT_SEE+CONFLICT_KEPT+SUPERSEDED+FALSE|json=0
+ANCHOR|path1=rustc1.97:claude-third-seat:19of19+gpt-directed-ci:green|json=0
+ANCHOR|path2=rustc1.97:claude-third-seat:30of30+gpt-directed-ci:green|json=0
+ANCHOR|qprism3d=gpt-directed-rust1.97-all-targets-green|json=0
+HARDWARE|storage=HDD+SSD+USB+cloud|ram=bounded-active-window|cpu=hash+behcs+crt+gates+reprojection|accelerator=optional-trained-neural-inference|json=0
+AUTHORITY|third-seat-does-not-fire=1|operator-gates-preserved=1|cosign-preserved=1|json=0
