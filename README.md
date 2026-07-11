@@ -30,6 +30,15 @@ Canonical doctrine and machine-readable receipt:
 - [`TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.md`](TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.md)
 - [`TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.hbp`](TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.hbp)
 
+Account-wide application and merge coverage:
+
+- [`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md`](ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md)
+- [`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.hbp`](ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.hbp)
+
+The coverage ledger records **44 merged pull requests**, zero remaining campaign PRs, and the explicit
+classification of native organs, direct lineage, integration forks, upstream dependencies, and
+unrelated repositories.
+
 ## 2026-07-11 measured recovery/storage map
 
 HyperBEHCS now has a shared main-branch record connecting the tuple substrate to:
@@ -62,6 +71,8 @@ to perform matrix multiplication.
    hardware tiering, and independent verification.
 4. **`TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.md`** — shared no-deflate/no-inflate,
    vantage, merge, and authority doctrine.
+5. **`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md`** — complete repository campaign,
+   merge, inclusion, and exclusion ledger.
 
 ## Independent verification
 
@@ -69,7 +80,7 @@ to perform matrix multiplication.
   **30/30**.
 - GPT-5.6 Pro complete source/test/lineage audit.
 - GPT-directed Rust 1.97.0 GitHub Actions: runs `29134408321`, `29134413119`, `29134419389` all
-  successful.
+  successful; latest receipt-bearing runs are recorded in the coverage ledger.
 
 ## Branch convention
 
