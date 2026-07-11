@@ -35,9 +35,9 @@ Account-wide application and merge coverage:
 - [`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md`](ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md)
 - [`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.hbp`](ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.hbp)
 
-The coverage ledger records **44 merged pull requests**, zero remaining campaign PRs, and the explicit
-classification of native organs, direct lineage, integration forks, upstream dependencies, and
-unrelated repositories.
+The coverage ledger records **45 campaign pull requests merged**—44 substantive repository changes
+plus the final public coverage seal—zero remaining campaign PRs, and the explicit classification of
+native organs, direct lineage, integration forks, upstream dependencies, and unrelated repositories.
 
 ## 2026-07-11 measured recovery/storage map
 
