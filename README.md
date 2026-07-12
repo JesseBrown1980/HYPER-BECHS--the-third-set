@@ -35,6 +35,10 @@ Account-wide application and merge coverage:
 - [`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md`](ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md)
 - [`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.hbp`](ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.hbp)
 
+Branch-aware external discovery and receipt verification:
+
+- [`PUBLIC-VERIFICATION-INDEX-2026-07-12.md`](PUBLIC-VERIFICATION-INDEX-2026-07-12.md)
+
 The coverage ledger records **45 campaign pull requests merged**—44 substantive repository changes
 plus the final public coverage seal—zero remaining campaign PRs, and the explicit classification of
 native organs, direct lineage, integration forks, upstream dependencies, and unrelated repositories.
@@ -70,8 +74,9 @@ Actions currently stop at `startup_failure` with no jobs, so no green runtime CI
 
 HyperBEHCS now has a shared main-branch record connecting the tuple substrate to:
 
-- Path-1 retained-store recall;
-- Path-2 no-store CRT recovery;
+- [Path-1 retained-store recall](https://github.com/JesseBrown1980/dbbh-coms-quant-prism);
+- [Path-2 no-store CRT recovery](https://github.com/JesseBrown1980/path2-two-shadow-recovery);
+- [Q-PRISM 3D classical watcher/recovery harness](https://github.com/JesseBrown1980/qprism-3d-slice-harness);
 - DBBH→DBWH re-projection;
 - pre-Asolaria healthcare GNN provenance;
 - HDD/SSD/USB/cloud durable state with bounded RAM;
@@ -89,30 +94,21 @@ to perform matrix multiplication.
 
 ## What's tracked here
 
-1. **`ASOLARIA-HYPERBEHCS-SUBSTRATE-MAP.md`** — binary/hash/hex/crypto tuple substrate,
-   OmniQuant, HBP/HBI/SHA/HEX hot path, spindle waves, portal-per-level routing, on-disk layout,
-   and USB/disk access tools.
-2. **`ASOLARIA-DAEMON-HOST8-MIGRATION-MAP.md`** — daemon/OP implementation map and Host-8 migration
-   scoreboard.
-3. **`MEASURED-PATH2-STORAGE-SUBSTRATE-2026-07-11.md`** — exact recovery, inverse readback,
-   hardware tiering, and independent verification.
-4. **`TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.md`** — shared no-deflate/no-inflate,
-   vantage, merge, and authority doctrine.
-5. **`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md`** — complete repository campaign,
-   merge, inclusion, and exclusion ledger.
-6. **`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md`** — Mapper/Runtime/Canvas contracts,
-   repository links, research overlay, identity boundaries and current review status.
+1. **[HyperBEHCS fourth-generation substrate map — Acer branch](https://github.com/JesseBrown1980/HYPER-BECHS--the-third-set/blob/acer/ASOLARIA-HYPERBEHCS-SUBSTRATE-MAP.md)** — binary/hash/hex/crypto tuple substrate, OmniQuant, HBP/HBI/SHA/HEX hot path, spindle waves, portal-per-level routing, on-disk layout, and USB/disk access tools.
+2. **[Daemon/OP Host-8 migration map — Acer branch](https://github.com/JesseBrown1980/HYPER-BECHS--the-third-set/blob/acer/ASOLARIA-DAEMON-HOST8-MIGRATION-MAP.md)** — implementation map and Host-8 migration scoreboard.
+3. **`MEASURED-PATH2-STORAGE-SUBSTRATE-2026-07-11.md`** — exact recovery, inverse readback, hardware tiering, and independent verification.
+4. **`TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.md`** — shared no-deflate/no-inflate, vantage, merge, and authority doctrine.
+5. **`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md`** — complete repository campaign, merge, inclusion, and exclusion ledger.
+6. **`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md`** — Mapper/Runtime/Canvas contracts, repository links, research overlay, identity boundaries and current review status.
+7. **`PUBLIC-VERIFICATION-INDEX-2026-07-12.md`** — direct owner/repository/path index for HyperBEHCS, Rust recovery crates, quant/stress tools, throughput receipts and suite evidence.
 
 ## Independent verification
 
-- Claude Fable 5, operator-supplied third seats: Path 1 rustc 1.97 **19/19**, Path 2 rustc 1.97
-  **30/30**.
+- Claude Fable 5, operator-supplied third seats: Path 1 rustc 1.97 **19/19**, Path 2 rustc 1.97 **30/30**.
 - GPT-5.6 Pro complete source/test/lineage audit.
-- GPT-directed Rust 1.97.0 GitHub Actions: runs `29134408321`, `29134413119`, `29134419389` all
-  successful; latest receipt-bearing runs are recorded in the coverage ledger.
+- GPT-directed Rust 1.97.0 GitHub Actions: runs `29134408321`, `29134413119`, `29134419389` all successful; latest receipt-bearing runs are recorded in the coverage ledger.
 - Mapper PR #203's immutable-input external workflow passed twice, with 9/9 focused ecosystem tests.
-- Runtime PRs #3090/#3091 have no green or red code verdict yet because Actions fail before creating
-  jobs; they remain `DRAFT / REVIEW_REQUESTED / CI_UNVERIFIED`.
+- Runtime PRs #3090/#3091 have no green or red code verdict yet because Actions fail before creating jobs; they remain `DRAFT / REVIEW_REQUESTED / CI_UNVERIFIED`.
 
 ## Branch convention
 
