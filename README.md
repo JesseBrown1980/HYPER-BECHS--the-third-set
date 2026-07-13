@@ -45,10 +45,11 @@ native organs, direct lineage, integration forks, upstream dependencies, and unr
 
 ## Combined quant civilization
 
-The public quant system is now normalized in the canonical Algorithms repository:
+The public quant system is normalized in the canonical Algorithms repository:
 
 - [`ASOLARIA-COMBINED-QUANT-ATLAS-2026-07-13.md`](https://github.com/JesseBrown1980/Algorithms-of-Asolaria/blob/main/ASOLARIA-COMBINED-QUANT-ATLAS-2026-07-13.md)
 - [`ASOLARIA-COMBINED-QUANT-REGISTRY-2026-07-13.hbp`](https://github.com/JesseBrown1980/Algorithms-of-Asolaria/blob/main/ASOLARIA-COMBINED-QUANT-REGISTRY-2026-07-13.hbp)
+- [`ASOLARIA-COMBINED-QUANT-MEASURED-ADDENDUM-2026-07-13.md`](https://github.com/JesseBrown1980/Algorithms-of-Asolaria/blob/main/ASOLARIA-COMBINED-QUANT-MEASURED-ADDENDUM-2026-07-13.md)
 
 The atlas records **28 normalized public operator slots** across:
 
@@ -73,9 +74,61 @@ quant WITHIN each level
 The public list preserves the root operator-canon phrase “the quants (~28, combined)” while keeping
 the exact unpublished/local engine manifest open for owner reconciliation.
 
+## Twenty-lens prime-PID flashlight array
+
+The N-LENS experiment permanently containers twenty deterministic classical viewpoints around the
+same real object. “Digital quantum clone” is treated as a structural analogy, not a physical quantum
+claim.
+
+- [`n-lens-v1/N-LENS-20-FLASHLIGHT-SPEC.md`](n-lens-v1/N-LENS-20-FLASHLIGHT-SPEC.md)
+- [`n-lens-v1/N-LENS-20-CI-RECEIPT-2026-07-13.md`](n-lens-v1/N-LENS-20-CI-RECEIPT-2026-07-13.md)
+- [`n-lens-v1/N-LENS-20-CI-RECEIPT-2026-07-13.hbp`](n-lens-v1/N-LENS-20-CI-RECEIPT-2026-07-13.hbp)
+- [`n-lens-v1/n_lens_flashlight_array_v1.py`](n-lens-v1/n_lens_flashlight_array_v1.py)
+- [independent workflow](.github/workflows/n-lens-20-flashlight-array.yml)
+
+Measured highlights on the first 1,000,000 bytes of enwik8:
+
+```text
+20 unique prime-PID agents
+23 hash-chained OMNIEVENT rows
+60D nullity: 57 -> 0 across twenty 3-row views
+60D recovery/reprojection mismatches: 0
+conditional side-information rate: 0.395800 bpc versus 2.400600 standalone
+ensemble error exponent: -0.506940, matching the -1/2 law
+CRT capacity margin: 1.9999998 bits, 50,000 blocks restored
+result portal: 6.998018x
+Merkle root: a5faab607f7023bb5ce7e12f01fc9eebd66f47769755501e2ffdadb4f15354a4
+```
+
+The π/sphere result is promising but remains an exploratory diagnostic:
+
+```text
+raw pi error:              0.727903
+zstd-stream pi error:      0.034866
+Spearman(pi error, bpc):   0.754505 over eight selected views
+```
+
+The strongest formulas are the zero-nullspace law, DBWH reprojection, conditional side-information
+rate, ensemble square-root scaling and CRT arithmetic comb. The receipt retains weaker or conditional
+findings instead of smoothing them.
+
+## Catalog47-addressed OMNIEVENT and HyperBEHCS-60D
+
+The event civilization is grounded in the actual 47 semantic catalogs and a separate 60×10-bit
+Q-PRISM selector; it does not invent semantic D48–D60 names.
+
+- [`omni-event-v1/OMNIEVENT-CATALOG47-HYPER60-SPEC.md`](omni-event-v1/OMNIEVENT-CATALOG47-HYPER60-SPEC.md)
+- [`omni-event-v1/OMNIEVENT-CATALOG47-HYPER60-CI-RECEIPT-2026-07-13.md`](omni-event-v1/OMNIEVENT-CATALOG47-HYPER60-CI-RECEIPT-2026-07-13.md)
+- [`omni-event-v1/omnievent-v1.schema.json`](omni-event-v1/omnievent-v1.schema.json)
+- [`omni-event-v1/omniportal_v2.py`](omni-event-v1/omniportal_v2.py)
+
+Every full event can carry actor PID, surface PID, run/event/trace/span identity, UTC and HLC time,
+all D1–D47 semantic values, Brown–Hilbert glyph addresses, a Hyper60 selector, prior-event hash and
+full event hash. Compact portals are active indexes; the complete audit bodies remain retained.
+
 ## Simplicio Mapper ↔ Runtime ↔ Canvas shared visualization
 
-The organized repository/evidence graph now has a three-part producer/consumer path:
+The organized repository/evidence graph has a three-part producer/consumer path:
 
 - [`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md`](SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md)
 - [`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.hbp`](SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.hbp)
@@ -102,7 +155,7 @@ Actions currently stop at `startup_failure` with no jobs, so no green runtime CI
 
 ## 2026-07-11 measured recovery/storage map
 
-HyperBEHCS now has a shared main-branch record connecting the tuple substrate to:
+HyperBEHCS has a shared main-branch record connecting the tuple substrate to:
 
 - [Path-1 retained-store recall](https://github.com/JesseBrown1980/dbbh-coms-quant-prism);
 - [Path-2 no-store CRT recovery](https://github.com/JesseBrown1980/path2-two-shadow-recovery);
@@ -132,12 +185,17 @@ to perform matrix multiplication.
 6. **`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md`** — Mapper/Runtime/Canvas contracts, repository links, research overlay, identity boundaries and current review status.
 7. **`PUBLIC-VERIFICATION-INDEX-2026-07-12.md`** — direct owner/repository/path index for HyperBEHCS, Rust recovery crates, quant/stress tools, throughput receipts and suite evidence.
 8. **Algorithms combined quant atlas/registry** — the cross-repository list of local quants, level translators, recovery paths and learning-over-time composition.
+9. **`omni-event-v1/`** — Catalog47/Hyper60 event identity, scheduling, metrics, portals and 3D observer shadows.
+10. **`n-lens-v1/`** — twenty prime-PID formulas, multi-vantage measurements, zero-nullspace recovery and permanent receipts.
 
 ## Independent verification
 
 - Claude Fable 5, operator-supplied third seats: Path 1 rustc 1.97 **19/19**, Path 2 rustc 1.97 **30/30**.
 - GPT-5.6 Pro complete source/test/lineage audit.
 - GPT-directed Rust 1.97.0 GitHub Actions: runs `29134408321`, `29134413119`, `29134419389` all successful; latest receipt-bearing runs are recorded in the coverage ledger.
+- E8/E100 and recursive quant run `29221617743`: successful.
+- Catalog47/Hyper60 OMNIEVENT run `29241576454`: successful.
+- N-LENS 20-formula run `29245393755`: successful.
 - Mapper PR #203's immutable-input external workflow passed twice, with 9/9 focused ecosystem tests.
 - Runtime PRs #3090/#3091 have no green or red code verdict yet because Actions fail before creating jobs; they remain `DRAFT / REVIEW_REQUESTED / CI_UNVERIFIED`.
 
