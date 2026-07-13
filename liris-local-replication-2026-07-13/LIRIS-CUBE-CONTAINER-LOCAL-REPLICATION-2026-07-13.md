@@ -21,7 +21,9 @@ regenerated on LIRIS local metal, receipt-gated per field.
 
 ```text
 R1-R4   PASS exact   (properties 276+348 cases, codec sha pin 485e716b..., slice roundtrips)
-R5      BLOCKED      (cube-ab-vantage-comint-v1 inputs absent from artifact set)
+R5      PASS         (inputs restored blob-exact from agent/cube-ab-vantage-comint-2026-07-13;
+                      A 0b99a6c8.../B b23cf246... hash-gated; shared_unique=966,
+                      overlap 51.63014430785676 matches canonical receipt exactly)
 R6-R9   MATCH        (catalog holdout, quant8 law on full enwik8, multilevel BPE, prior curve)
 R10     PASS exact   (full-enwik8 BEHCS roundtrip, sha in==out 2b49720e...)
 R11     SCIENCE-EXACT 10/10 (only CI wrapper metadata absent locally; zero scientific diffs)

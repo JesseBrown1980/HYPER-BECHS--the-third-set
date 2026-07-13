@@ -1,0 +1,1 @@
+CUBEABVERIFY|A_sha=0b99a6c864f625f4b808c28adc31fd05140693fa619dc16462c294e06bfc7682|B_sha=b23cf246d7e4d671cbbf15ea5001fb5db1b3c31791c92e0b52e4dd1c9d76a5df|decoder_dag=PASS|latin1_projection=PASS|shared_unique=966|overlap_min_pct=51.630144|metrics=ARTIFACT_CARRIED_NOT_REPLAYED|encoder_law=MISSING_HELD|promotion=HELD|status=PASS

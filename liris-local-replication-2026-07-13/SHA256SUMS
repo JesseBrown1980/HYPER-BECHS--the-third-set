@@ -1,5 +1,5 @@
-4be53ff8031d1f0855862a94b34f92f290a1a314551b4eb88acc6959578c006d  ./LIRIS-CUBE-CONTAINER-LOCAL-REPLICATION-2026-07-13.md
-fa78980e79fe15f2ceb8872f99b27bb5e47a6222b80b9776c271602d5730dee6  ./REPLICATION-VERDICT-2026-07-13.md
+eb3ec53c7de578d23d861ebaccc555a11ebe412a01a0a66e84081974ce8de8ec  ./LIRIS-CUBE-CONTAINER-LOCAL-REPLICATION-2026-07-13.md
+41ca70ef2778b988f7e36c6faf60936432e715aa642e8f2fc2c5225edd549047  ./REPLICATION-VERDICT-2026-07-13.md
 f86cae0b3422f3554dc600acd4c481b7192fc8838e44ac671316671b36773f40  ./logs/r1-behcs-property.log
 c6a933a7e5c8f82dd0637caf9845ab2c49e853d6ee4793d26878fecf568a4014  ./logs/r10-behcs-enwik8.log
 dac2b15d3c1fb9681a6360f4118aa6e3b3ec80dbe2db07b96573111e63f27de2  ./logs/r11-audits-compare.log
@@ -16,6 +16,7 @@ a938991f34508c7d6b6e838bbe5610800d6d93dbed88a753c3511e25e408a616  ./logs/r13-ben
 dee008c34d01a07ef2a6dbd40b3b47a4fe4ac3594544acc4cf4c1febb4f5b2c9  ./logs/r3-quant8-selftest.log
 2ac9955c29ed0b54df4f581d9a3ed3eea2f22bb71ac02127d989d69f31dccae7  ./logs/r4-behcs-150k.log
 c4ea0a64a85bd89b3262da83e4115f185e9abe4a0317c0b5a2313cd874b88390  ./logs/r4-behcs-1m.log
+2be6559f7039dc122c00432fc720ba5a13eb72f13924fb77944151dc4be60204  ./logs/r5-cubeab-verify.log
 9160780d5c504b1c6e70039d6782e0de65a7dc60e0eaf55356ff930d2619bc6b  ./logs/r6-catalog-compare.log
 b8655cd681ee45018b5796bf1d8c4e634df9b99e1cb96fc370b8a808c4ada28e  ./logs/r6-catalog.log
 9160780d5c504b1c6e70039d6782e0de65a7dc60e0eaf55356ff930d2619bc6b  ./logs/r7-quant8-compare.log
@@ -52,5 +53,6 @@ aa7fe741ce92def9559f94d6f74c1c70a074a6cecf84d3ea72a4b2055aae8276  ./out/multilev
 8f1c98f5e32e67a51bee36b716f0869dd77effb5993e615ea0b678e3c54df409  ./scripts/compare_json.py
 c4964a30a920b18bab10699c6a9b72e3c4d9cae68336d8b5cf22e00034b7d4a7  ./scripts/run-fast.sh
 874b1b9318994121a838e78edaebfba9ed07e728f9f2a588180cb2605eb723b2  ./scripts/run-heavy.sh
+69dcc0b40a44efb53c7ecaf2d8999452f03933c1503cead493ddbc3ea9a57b17  ./scripts/run-r5.sh
 7073bbf3259216880f55b84a3b43e23c4db8918283c31dc8e20343302bb0c160  ./scripts/setup-deps.sh
 480273c45d105e66fbd719ef7f2fa6cd7cba592f432fa6ce4b5fd87712554d52  ./scripts/setup-env.sh

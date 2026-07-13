@@ -25,7 +25,7 @@ scripts: byte-identical from quarantine, never modified (fischer codec sha pin 4
 | R2 | Fischer codec sha pin + property, 348 cases | PASS exact |
 | R3 | 4 selftests (catalog/multilevel/quant8/prior) | PASS (exit 0 all) |
 | R4 | BEHCS roundtrip slices 150k + 1m | PASS exact (sha_in==sha_out, match=1) |
-| R5 | Cube A/B vantage verify | BLOCKED — cube-ab-vantage-comint-v1 inputs absent from artifact set |
+| R5 | Cube A/B vantage verify | PASS — inputs restored blob-exact from repo branch `agent/cube-ab-vantage-comint-2026-07-13` (A `0b99a6c8…`, B `b23cf246…` hash-gated); decoder_dag=PASS, latin1_projection=PASS, shared_unique=966, overlap_min_pct=51.630144 matching the canonical CUBE-AB-VANTAGE-COMINT receipt (`shared_pct=51.63014430785676`) exactly; encoder_law=MISSING_HELD and promotion=HELD preserved |
 | R6 | Catalog zstd holdout (7 train depths, holdout chunk 20) | MATCH byte-exact |
 | R7 | quant8 head/tail law on FULL enwik8 | MATCH byte-exact (q4/q8v2 tuple shas identical) |
 | R8 | Multilevel BPE 3 levels ×512 merges @1MB | MATCH byte-exact |
@@ -49,9 +49,9 @@ comparison shows: cloud container ≈ 4 GB ceiling; local default WSL was 3.7 Gi
 (the ~1.3 GiB-peak run that class of container kept dying on) completed cleanly here.
 
 ## Open items
-- R5 needs `cube-ab-vantage-comint-v1/ASOLARIA-CUBE-A.json` + `ASOLARIA-CUBE-B.json` (+ sidecars) restored binary-safe from the verified artifact, then re-run.
+- R5 CLOSED (2026-07-13, later same day): inputs restored blob-exact from `agent/cube-ab-vantage-comint-2026-07-13`; verdict PASS matching the canonical receipt. The plan's earlier `overlap_min_pct=51.629289` pin was stale; the authoritative in-artifact receipt pins `51.63014430785676`, which the local run reproduces exactly.
 - enwik9-scale replication deferred: no receipt in this artifact set pins enwik9 values for these scripts; the receipt's enwik9 test used the chunked `behcs_ladder_roundtrip.py` (present in `scripts/`).
 - Swap cleanup when batteries are fully done: `swapoff /swapfile-cube && rm /swapfile-cube` (and the parallel lane's `/swap-asolaria-retest`), plus fstab lines.
 ```text
-STATUS: REPLICATION COMPLETE — 12 of 13 lanes PASS/MATCH, 1 BLOCKED on missing inputs, 0 FAILURES
+STATUS: REPLICATION COMPLETE — 13 of 13 lanes PASS/MATCH, 0 FAILURES
 ```
