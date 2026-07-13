@@ -63,6 +63,7 @@ jobs:
         run: |
           python -m py_compile \
             omni-event-v1/omnievent_catalog47_60d_v1.py \
+            omni-event-v1/omniportal_v2.py \
             third-seat-2026-07-12/gpt-crosscheck/multilevel_bpe_zstd_v1.py
 
       - name: Run 32-event instrumented quant lifecycle
@@ -79,6 +80,14 @@ jobs:
             --alphabet256 /tmp/asolaria-catalog/alphabet.json \
             --output-dir omni-event-v1/out | tee omni-event-v1/out/run.log
           grep -q 'OMNIVERDICT|status=PASS' omni-event-v1/out/run.log
+
+      - name: Build and verify compact OMNIPORTALv2
+        run: |
+          python omni-event-v1/omniportal_v2.py \
+            --events omni-event-v1/out/omni_events_full.ndjson \
+            --summary omni-event-v1/out/omni_run_summary.json \
+            --output-dir omni-event-v1/out | tee omni-event-v1/out/portal-v2.log
+          grep -q 'OMNIPORTALv2|event_count=32' omni-event-v1/out/portal-v2.log
 
       - name: Validate all full events against OMNIEVENTv1 schema
         run: |
@@ -104,6 +113,7 @@ jobs:
           import json, re
           from pathlib import Path
           s=json.load(open('omni-event-v1/out/omni_run_summary.json'))
+          p=json.load(open('omni-event-v1/out/omni_portal_v2_summary.json'))
           assert s['event_count']==32
           assert s['accepted_levels']==[1]
           assert s['held_levels']==[2,3]
@@ -116,15 +126,26 @@ jobs:
           assert s['fabric_span_bpc'] > s['codec_plus_catalog_bpc']
           assert s['fabric_full_bpc'] > s['fabric_span_bpc']
           assert s['portal_quant_ratio'] > 1
+          assert p['event_count']==32
+          assert p['merkle_root']==s['merkle_root']
+          assert p['portal_bytes'] <= 3818
+          assert p['observability_pct_of_codec'] <= 1.18
+          assert p['portal_quant_ratio'] > s['portal_quant_ratio']
           portal=Path('omni-event-v1/out/omni_events_span.hbp').read_text()
+          portal2=Path('omni-event-v1/out/omni_events_span_v2.hbp').read_text()
           assert f"merkle_root={s['merkle_root']}" in portal
+          assert f"merkle_root={s['merkle_root']}" in portal2
           assert portal.count('\nSPAN|')==32
           print('OMNIMETRICVERIFY|'+'|'.join([
             f"codec_plus_catalog_bpc={s['codec_plus_catalog_bpc']:.6f}",
-            f"observability_span_bpc={s['observability_span_bpc']:.6f}",
-            f"fabric_span_bpc={s['fabric_span_bpc']:.6f}",
-            f"fabric_full_bpc={s['fabric_full_bpc']:.6f}",
-            f"portal_quant_ratio={s['portal_quant_ratio']:.6f}",
+            f"span_v1_bytes={s['telemetry_span_bytes']}",
+            f"span_v1_bpc={s['observability_span_bpc']:.6f}",
+            f"span_v2_bytes={p['portal_bytes']}",
+            f"span_v2_bpc={p['observability_bpc']:.6f}",
+            f"span_v2_pct={p['observability_pct_of_codec']:.6f}",
+            f"fabric_span_v2_bpc={p['fabric_bpc']:.6f}",
+            f"full_event_bytes={s['telemetry_full_bytes']}",
+            f"portal_v2_quant_ratio={p['portal_quant_ratio']:.6f}",
             f"merkle_root={s['merkle_root']}",
             'status=PASS','json=0']))
           PY
@@ -136,10 +157,14 @@ jobs:
           sha256sum \
             omni_events_full.ndjson \
             omni_events_span.hbp \
+            omni_events_span_v2.hbp \
             omni_events_3d.ndjson \
             omni_run_summary.json \
             omni_run_summary.hbp \
-            run.log > SHA256SUMS
+            omni_portal_v2_summary.json \
+            omni_portal_v2_summary.hbp \
+            run.log \
+            portal-v2.log > SHA256SUMS
           sha256sum -c SHA256SUMS
 
       - name: Upload instrumented run
@@ -151,4 +176,5 @@ jobs:
             omni-event-v1/OMNIEVENT-CATALOG47-HYPER60-SPEC.md
             omni-event-v1/omnievent-v1.schema.json
             omni-event-v1/omnievent_catalog47_60d_v1.py
+            omni-event-v1/omniportal_v2.py
             omni-event-v1/out/**
