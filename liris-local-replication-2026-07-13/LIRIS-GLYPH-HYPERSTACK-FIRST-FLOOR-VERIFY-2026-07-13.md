@@ -56,6 +56,23 @@ for CPython ≥3.12 on both OS families; the cross-version digest gate is correc
 a deterministic entropy representation (exact/quantized arithmetic in the canonical digest,
 floats display-only), with an interim interpreter floor of 3.12 defensible by measurement.
 
+## Corrective head rerun — LIRIS gate CLOSED (same evening)
+
+ACER's exact-Shannon fix (`d47b44bd57622d77f62bb22d5ac6357f5b38621a`: canonical TLV rejects
+floats; Shannon carried as exact integer count-ratio). LIRIS reran blob-exact:
+
+```text
+module  952cad7e6989c3283575e7c0858c3099eeaaef597dd7aaf549ba0473718b84e0
+test    02769c23760540c0508763311a139057c41605ac751e4c178af2682657c30af1
+LIRIS 3.12 WSL/glibc      10/10 OK  digest 067afd926f8f17ddc8dc36091ffba44d6bc1b530b2b62c80a84782a822e655ac
+LIRIS 3.14.3 Win/MSVC     10/10 OK  digest 067afd926f8f17ddc8dc36091ffba44d6bc1b530b2b62c80a84782a822e655ac
+```
+
+Both match the CI matrix pins (3.11/3.12/3.13, run 29285408828). Six interpreter/host/libm
+combinations now share one canonical digest — including 3.14, outside the CI matrix. The
+cross-version defect is fixed and the fix is measured, not asserted. LIRIS's rerun gate on
+PR #28 is closed; RELIC's rerun remains the final pending leg.
+
 ## Boundaries upheld
 
 `formation_27p4=HELD_UNDEFINED_AXES` preserved; no live absorption; no compression-record
