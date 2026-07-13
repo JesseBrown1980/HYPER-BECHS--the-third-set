@@ -25,14 +25,23 @@ jobs:
             if unzip -p /tmp/e8/enwik8.zip > /tmp/e8/enwik8; then fetched=1; fi
           fi
           if [ "$fetched" = 0 ]; then
-            curl -L --fail --retry 4 --retry-delay 3 --connect-timeout 20 \
+            if curl -L --fail --retry 4 --retry-delay 3 --connect-timeout 20 \
               -o /tmp/e8/enwik8 \
-              https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik8
+              https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik8; then
+              fetched=1
+            fi
+          fi
+          if [ "$fetched" = 0 ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq git-lfs
+            git lfs install
+            git clone --depth 1 https://github.com/amkillam/compression-test-data.git /tmp/e8/repo
+            cp /tmp/e8/repo/enwik/enwik8 /tmp/e8/enwik8
           fi
           test "$(stat -c%s /tmp/e8/enwik8)" = 100000000
           echo '2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8  /tmp/e8/enwik8' | sha256sum -c -
           head -c 150000 /tmp/e8/enwik8 > prepared/enwik8-first-150000.bin
-          sha256sum prepared/enwik8-first-150000.bin > prepared/enwik8-first-150000.bin.sha256
+          (cd prepared && sha256sum enwik8-first-150000.bin > enwik8-first-150000.bin.sha256)
           cat prepared/enwik8-first-150000.bin.sha256
       - uses: actions/upload-artifact@v4
         with:
@@ -180,12 +189,12 @@ jobs:
             | tee codec-out/codec-${{ matrix.name }}-encode.log
           python fischer-codec-v2/fischer_bidirectional_codec_v2.py decode \
             codec-out/${{ matrix.name }}.fsc codec-out/${{ matrix.name }}.restored \
-            --report codec-out/codec-${{ matrix.name }}-decode.json \
+            --report codec-out/decode-${{ matrix.name }}.json \
             | tee codec-out/codec-${{ matrix.name }}-decode.log
           cmp prepared/enwik8-first-150000.bin codec-out/${{ matrix.name }}.restored
           python - <<'PY'
           import hashlib,json
-          p='codec-out/codec-${{ matrix.name }}.json'; d='codec-out/codec-${{ matrix.name }}-decode.json'
+          p='codec-out/codec-${{ matrix.name }}.json'; d='codec-out/decode-${{ matrix.name }}.json'
           x=json.load(open(p)); y=json.load(open(d)); raw=open('prepared/enwik8-first-150000.bin','rb').read()
           x.update({'name':'${{ matrix.name }}','restore':True,'sha256_out':y['sha256_out'],'decode_s':y['decode_s']})
           assert x['sha256_out']==hashlib.sha256(raw).hexdigest()
@@ -226,7 +235,8 @@ jobs:
         run: |
           set -euo pipefail
           find gathered -maxdepth 2 -type f | sort
-          sha256sum -c gathered/enwik8-first-150000.bin.sha256
+          (cd gathered && sha256sum -c enwik8-first-150000.bin.sha256)
+          python fischer-codec-v2/normalize_fischer_lenses.py gathered | tee final/cpl-normalize.log
           python fischer-codec-v2/aggregate_fischer_bench_v2.py \
             --root gathered \
             --slice gathered/enwik8-first-150000.bin \
@@ -248,6 +258,7 @@ jobs:
             fischer_events_portal_v1.hbp \
             fischer_events_portal_v2.hbp \
             fischer_views3d.ndjson \
+            cpl-normalize.log \
             aggregate.log > SHA256SUMS
           sha256sum -c SHA256SUMS
       - uses: actions/upload-artifact@v4
@@ -259,5 +270,7 @@ jobs:
             gathered/codec-*.json
             gathered/fischer-kernel-test.log
             gathered/omnishannon-types.log
+            fischer-codec-v2/FISCHER-BIDIRECTIONAL-10-SEAT-SPEC.md
             fischer-codec-v2/fischer_bidirectional_codec_v2.py
             fischer-codec-v2/aggregate_fischer_bench_v2.py
+            fischer-codec-v2/normalize_fischer_lenses.py
