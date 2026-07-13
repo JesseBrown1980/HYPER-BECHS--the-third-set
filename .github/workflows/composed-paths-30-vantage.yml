@@ -56,25 +56,32 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/e8
-          fetched=0
+          wanted='2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8'
+          valid_file() {
+            [ -f /tmp/e8/enwik8 ] &&
+            [ "$(stat -c%s /tmp/e8/enwik8)" = 100000000 ] &&
+            [ "$(sha256sum /tmp/e8/enwik8 | awk '{print $1}')" = "$wanted" ]
+          }
+          rm -f /tmp/e8/enwik8 /tmp/e8/enwik8.zip
           if curl -L --fail --retry 4 --retry-delay 3 --connect-timeout 20 \
             -o /tmp/e8/enwik8.zip https://mattmahoney.net/dc/enwik8.zip; then
-            if unzip -p /tmp/e8/enwik8.zip > /tmp/e8/enwik8; then fetched=1; fi
+            unzip -p /tmp/e8/enwik8.zip > /tmp/e8/enwik8 || true
           fi
-          if [ "$fetched" = 0 ]; then
-            if curl -L --fail --retry 4 --retry-delay 3 --connect-timeout 20 \
+          if ! valid_file; then
+            rm -f /tmp/e8/enwik8
+            curl -L --fail --retry 4 --retry-delay 3 --connect-timeout 20 \
               -o /tmp/e8/enwik8 \
-              https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik8; then
-              fetched=1
-            fi
+              https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik8 || true
           fi
-          if [ "$fetched" = 0 ]; then
+          if ! valid_file; then
+            rm -rf /tmp/e8/repo /tmp/e8/enwik8
             git lfs install
             git clone --depth 1 https://github.com/amkillam/compression-test-data.git /tmp/e8/repo
+            (cd /tmp/e8/repo && git lfs pull)
             cp /tmp/e8/repo/enwik/enwik8 /tmp/e8/enwik8
           fi
-          test "$(stat -c%s /tmp/e8/enwik8)" = 100000000
-          echo '2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8  /tmp/e8/enwik8' | sha256sum -c -
+          valid_file
+          echo "$wanted  /tmp/e8/enwik8" | sha256sum -c -
 
       - name: Compile composed bench and dependencies
         run: |
@@ -104,7 +111,6 @@ jobs:
         run: |
           python - <<'PY'
           import json, re
-          from pathlib import Path
           s=json.load(open('composed-paths-30-vantage-v1/out/composed_summary.json'))
           assert s['path1']['watchers']==8
           assert s['path1']['receipt_bytes']==710
