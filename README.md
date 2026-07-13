@@ -43,6 +43,36 @@ The coverage ledger records **45 campaign pull requests merged**—44 substantiv
 plus the final public coverage seal—zero remaining campaign PRs, and the explicit classification of
 native organs, direct lineage, integration forks, upstream dependencies, and unrelated repositories.
 
+## Combined quant civilization
+
+The public quant system is now normalized in the canonical Algorithms repository:
+
+- [`ASOLARIA-COMBINED-QUANT-ATLAS-2026-07-13.md`](https://github.com/JesseBrown1980/Algorithms-of-Asolaria/blob/main/ASOLARIA-COMBINED-QUANT-ATLAS-2026-07-13.md)
+- [`ASOLARIA-COMBINED-QUANT-REGISTRY-2026-07-13.hbp`](https://github.com/JesseBrown1980/Algorithms-of-Asolaria/blob/main/ASOLARIA-COMBINED-QUANT-REGISTRY-2026-07-13.hbp)
+
+The atlas records **28 normalized public operator slots** across:
+
+```text
+8-stage large-message quants
+HyperBEHCS geometric/vector codecs
+exact binary/hex/HBP/HBI/BEHCS/HyperBEHCS re-representations
+Path-1 and Path-2 recovery
+pixel/shell/cylinder Q-PRISM projections
+word/shard/tensor/white-room/GULP/cube collapse
+```
+
+It also records the part single-quant summaries miss:
+
+```text
+quant WITHIN each level
++ exact translation BETWEEN levels
++ watcher-gated backward readback
++ persistent cubes/catalogs that change the next run
+```
+
+The public list preserves the root operator-canon phrase “the quants (~28, combined)” while keeping
+the exact unpublished/local engine manifest open for owner reconciliation.
+
 ## Simplicio Mapper ↔ Runtime ↔ Canvas shared visualization
 
 The organized repository/evidence graph now has a three-part producer/consumer path:
@@ -101,6 +131,7 @@ to perform matrix multiplication.
 5. **`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md`** — complete repository campaign, merge, inclusion, and exclusion ledger.
 6. **`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md`** — Mapper/Runtime/Canvas contracts, repository links, research overlay, identity boundaries and current review status.
 7. **`PUBLIC-VERIFICATION-INDEX-2026-07-12.md`** — direct owner/repository/path index for HyperBEHCS, Rust recovery crates, quant/stress tools, throughput receipts and suite evidence.
+8. **Algorithms combined quant atlas/registry** — the cross-repository list of local quants, level translators, recovery paths and learning-over-time composition.
 
 ## Independent verification
 
