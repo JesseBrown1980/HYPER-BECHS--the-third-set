@@ -1,0 +1,343 @@
+name: Fischer codec — five black five white
+
+on:
+  pull_request:
+    paths:
+      - 'fischer-codec-v2/**'
+      - '.github/workflows/fischer-bidirectional-codec-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch and verify public enwik8
+        run: |
+          set -euo pipefail
+          mkdir -p fischer-codec-v2/input
+          fetched=0
+          if curl -L --fail --retry 4 --retry-delay 3 --connect-timeout 20 \
+            -o /tmp/enwik8.zip https://mattmahoney.net/dc/enwik8.zip; then
+            if unzip -p /tmp/enwik8.zip > /tmp/enwik8; then fetched=1; fi
+          fi
+          if [ "$fetched" = 0 ]; then
+            curl -L --fail --retry 4 --retry-delay 3 --connect-timeout 20 \
+              -o /tmp/enwik8 \
+              https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik8
+          fi
+          test "$(stat -c%s /tmp/enwik8)" = 100000000
+          echo '2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8  /tmp/enwik8' | sha256sum -c -
+          head -c 150000 /tmp/enwik8 > fischer-codec-v2/input/enwik8-150k
+          sha256sum fischer-codec-v2/input/enwik8-150k | tee fischer-codec-v2/input/SHA256SUMS
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fischer-enwik8-150k
+          path: fischer-codec-v2/input/**
+
+  expert-audit:
+    needs: prepare
+    runs-on: ubuntu-latest
+    container: python:3.12-slim
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: black-o1
+            direction: black
+            order: 1
+          - id: black-o2
+            direction: black
+            order: 2
+          - id: black-o3
+            direction: black
+            order: 3
+          - id: black-o4
+            direction: black
+            order: 4
+          - id: black-o5
+            direction: black
+            order: 5
+          - id: white-o1
+            direction: white
+            order: 1
+          - id: white-o2
+            direction: white
+            order: 2
+          - id: white-o3
+            direction: white
+            order: 3
+          - id: white-o4
+            direction: white
+            order: 4
+          - id: white-o5
+            direction: white
+            order: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: fischer-enwik8-150k
+          path: fischer-codec-v2/input
+
+      - name: Execute one isolated mathematical Fischer
+        run: |
+          set -euo pipefail
+          mkdir -p fischer-codec-v2/out
+          python fischer-codec-v2/fischer_codec_v2.py audit \
+            fischer-codec-v2/input/enwik8-150k \
+            --direction '${{ matrix.direction }}' \
+            --order '${{ matrix.order }}' \
+            --stride 4 \
+            --block-size 16384 \
+            --output 'fischer-codec-v2/out/${{ matrix.id }}.json' \
+            | tee 'fischer-codec-v2/out/${{ matrix.id }}.log'
+          python - <<'PY'
+          import json
+          p='fischer-codec-v2/out/${{ matrix.id }}.json'
+          x=json.load(open(p))
+          assert x['direction']=='${{ matrix.direction }}'
+          assert x['order']==${{ matrix.order }}
+          assert x['raw_bytes']==150000
+          assert len(x['actor_pid'])==16
+          print('FISCHER_EXPERT|id=${{ matrix.id }}|actor_pid='+x['actor_pid']+
+                '|ideal_bpb='+str(x['ideal_bpb'])+'|status=PASS|json=0')
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fischer-expert-${{ matrix.id }}
+          path: |
+            fischer-codec-v2/out/${{ matrix.id }}.json
+            fischer-codec-v2/out/${{ matrix.id }}.log
+
+  codec-bench:
+    needs: [prepare, expert-audit]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: fischer-enwik8-150k
+          path: fischer-codec-v2/input
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fischer-expert-*
+          path: fischer-codec-v2/out/experts
+          merge-multiple: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deterministic benchmark dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install zstandard
+          rustup toolchain install 1.97.0 --profile minimal
+          rustup override set 1.97.0
+
+      - name: Verify ten independent container receipts
+        run: |
+          python - <<'PY'
+          import glob,json
+          paths=sorted(glob.glob('fischer-codec-v2/out/experts/*.json'))
+          assert len(paths)==10, paths
+          rows=[json.load(open(p)) for p in paths]
+          assert sorted((x['direction'],x['order']) for x in rows)==[(d,o) for d in ('black','white') for o in range(1,6)]
+          assert len({x['actor_pid'] for x in rows})==10
+          json.dump(rows,open('fischer-codec-v2/out/expert-audits.json','w'),indent=2)
+          print('EXPERT_ARRAY|containers=10|black=5|white=5|unique_pids=10|status=PASS|json=0')
+          PY
+
+      - name: Run the actual Host-8 Fischer evaluator tests
+        run: |
+          set -euo pipefail
+          git clone --filter=blob:none https://github.com/JesseBrown1980/asolaria-federation-1024.git /tmp/asolaria-federation-1024
+          git -C /tmp/asolaria-federation-1024 checkout 99e7ab91f1ca8c6df2f16bd00780a0e1a38934f4
+          cargo test --manifest-path /tmp/asolaria-federation-1024/servers/fischer-eval/Cargo.toml --all-targets -- --nocapture \
+            2>&1 | tee fischer-codec-v2/out/fischer-eval-rust-tests.log
+
+      - name: Property-test the range coder and both legal model paths
+        run: |
+          python - <<'PY'
+          import importlib.util,random
+          p='fischer-codec-v2/fischer_codec_v2.py'
+          s=importlib.util.spec_from_file_location('fc',p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+          rng=random.Random(20260713)
+          cases=[b'',b'a',bytes(range(256)),b'abracadabra\n'*50]
+          cases += [bytes(rng.randrange(256) for _ in range(n)) for n in (2,3,7,31,257,4097)]
+          for raw in cases:
+              for mode,schedule in [('black','sequential'),('both','pyramid')]:
+                  st=m.ModelState(mode);payload=m.encode_block(raw,st,schedule,4)
+                  enc_digest=st.digest();dst=m.ModelState(mode);rest=m.decode_block(payload,len(raw),dst,schedule,4)
+                  assert rest==raw and dst.digest()==enc_digest
+          print(f'FISCHER_PROPERTY|cases={len(cases)}|paths=2|restore=PASS|state=PASS|json=0')
+          PY
+
+      - name: Run decoder-valid Fischer tournaments at three prism strides
+        run: |
+          set -euo pipefail
+          for stride in 2 4 8; do
+            mkdir -p "fischer-codec-v2/out/stride-$stride"
+            python fischer-codec-v2/fischer_codec_v2.py bench \
+              fischer-codec-v2/input/enwik8-150k \
+              --block-size 16384 \
+              --stride "$stride" \
+              --output-dir "fischer-codec-v2/out/stride-$stride" \
+              | tee "fischer-codec-v2/out/stride-$stride/run.log"
+          done
+
+      - name: Run the future-byte oracle audit separately
+        run: |
+          python fischer-codec-v2/fischer_codec_v2.py oracle \
+            fischer-codec-v2/input/enwik8-150k \
+            --output fischer-codec-v2/out/oracle.json \
+            | tee fischer-codec-v2/out/oracle.log
+
+      - name: Measure same-slice standard baselines
+        run: |
+          python - <<'PY'
+          import bz2,gzip,hashlib,json,lzma
+          import zstandard as zstd
+          raw=open('fischer-codec-v2/input/enwik8-150k','rb').read()
+          rows={}
+          codecs={
+            'gzip-9':gzip.compress(raw,compresslevel=9),
+            'bzip2-9':bz2.compress(raw,compresslevel=9),
+            'xz-6':lzma.compress(raw,preset=6),
+            'zstd-19':zstd.ZstdCompressor(level=19).compress(raw),
+          }
+          for name,comp in codecs.items():
+            if name=='gzip-9':rest=gzip.decompress(comp)
+            elif name=='bzip2-9':rest=bz2.decompress(comp)
+            elif name=='xz-6':rest=lzma.decompress(comp)
+            else:rest=zstd.ZstdDecompressor().decompress(comp,max_output_size=len(raw))
+            assert rest==raw
+            rows[name]={'bytes':len(comp),'bpc':len(comp)*8/len(raw),'restore':True,'sha256':hashlib.sha256(comp).hexdigest()}
+          json.dump(rows,open('fischer-codec-v2/out/baselines.json','w'),indent=2)
+          for name,row in rows.items():print(f"BASELINE|name={name}|bytes={row['bytes']}|bpc={row['bpc']:.6f}|restore=1|json=0")
+          PY
+
+      - name: Aggregate Fischer, Shannon, white-room, and claim-boundary results
+        run: |
+          python - <<'PY'
+          import json,os
+          out='fischer-codec-v2/out'
+          strides=[]
+          for stride in (2,4,8):
+            x=json.load(open(f'{out}/stride-{stride}/bench.json'))
+            x['valid_white_gain_pct']=100*(1-x['always_blackwhite_payload_bytes']/x['always_black_payload_bytes'])
+            x['candidate_winner']='blackwhite' if x['valid_white_gain_pct']>0 else 'black'
+            strides.append(x)
+          oracle=json.load(open(f'{out}/oracle.json'))
+          baselines=json.load(open(f'{out}/baselines.json'))
+          experts=json.load(open(f'{out}/expert-audits.json'))
+          best=min(strides,key=lambda x:x['archive_bytes'])
+          white_room=[]
+          for x in strides:
+            for row in x['choices']:
+              white_room.append({'stride':x['pyramid_stride'],'block':row['block'],
+                'verdict':'GENIUS_KEEP' if row['selected']=='blackwhite-pyramid' else 'MISTAKE_COMPACT',
+                'selected':row['selected'],'delta_black_minus_blackwhite':row['delta_black_minus_blackwhite']})
+          summary={
+            'schema':'FISCHER-BIDIRECTIONAL-BENCH-v2',
+            'raw_bytes':150000,
+            'strides':strides,
+            'best_stride':best['pyramid_stride'],
+            'best_archive_bytes':best['archive_bytes'],
+            'best_bpc':best['bpc'],
+            'best_restore':best['restore'],
+            'best_state_match':best['state_match'],
+            'best_black_selected':best['black_selected'],
+            'best_blackwhite_selected':best['blackwhite_selected'],
+            'best_valid_white_gain_pct':best['valid_white_gain_pct'],
+            'best_black_trust_pct':best['blackwhite_state']['black_trust_pct'],
+            'best_white_trust_pct':best['blackwhite_state']['white_trust_pct'],
+            'oracle':oracle,
+            'baselines':baselines,
+            'experts':experts,
+            'white_room':white_room,
+            'fischer_rust_commit':'99e7ab91f1ca8c6df2f16bd00780a0e1a38934f4',
+            'gnn_probability_path':'HELD_UNPACKAGED_WEIGHTS',
+            'live_omnidispatcher_exercised':False,
+            'ten_isolated_containers_exercised':True,
+          }
+          json.dump(summary,open(f'{out}/fischer-summary.json','w'),indent=2)
+          json.dump(white_room,open(f'{out}/white-room.json','w'),indent=2)
+          with open(f'{out}/fischer-summary.hbp','w') as f:
+            f.write('FISCHERBENCHv2|raw_bytes=150000|best_stride=%s|best_archive_bytes=%s|best_bpc=%.6f|restore=%d|state_match=%d|black_blocks=%s|blackwhite_blocks=%s|valid_white_gain_pct=%.6f|black_trust_pct=%.6f|white_trust_pct=%.6f|json=0\n' % (
+              summary['best_stride'],summary['best_archive_bytes'],summary['best_bpc'],summary['best_restore'],summary['best_state_match'],summary['best_black_selected'],summary['best_blackwhite_selected'],summary['best_valid_white_gain_pct'],summary['best_black_trust_pct'],summary['best_white_trust_pct']))
+            f.write('FISCHERORACLE|scope=ORACLE_NOT_CODEC|black_bpc=%.6f|blackwhite_bpc=%.6f|apparent_gain_pct=%.6f|json=0\n' % (oracle['black_ideal_bpc'],oracle['blackwhite_ideal_bpc'],oracle['apparent_gain_pct']))
+            f.write('FISCHERBOUNDARY|containers=10|black=5|white=5|gnn=HELD_UNPACKAGED_WEIGHTS|live_dispatcher=0|future_oracle_is_codec=0|json=0\n')
+          print('FISCHER_SUMMARY|best_stride=%s|best_bpc=%.6f|blackwhite_blocks=%s|valid_white_gain_pct=%.6f|oracle_gain_pct=%.6f|restore=%d|state_match=%d|json=0' % (
+            summary['best_stride'],summary['best_bpc'],summary['best_blackwhite_selected'],summary['best_valid_white_gain_pct'],oracle['apparent_gain_pct'],summary['best_restore'],summary['best_state_match']))
+          PY
+
+      - name: Stamp Catalog47/Hyper60 OMNIEVENT and compact portal
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/asolaria-catalog
+          curl -L --fail --retry 3 -o /tmp/asolaria-catalog/catalogs.json \
+            https://raw.githubusercontent.com/JesseBrown1980/asolaria-behcs-256/802023a9588cf3c72be9f9b353c847f22c616092/data/behcs/codex/catalogs.json
+          curl -L --fail --retry 3 -o /tmp/asolaria-catalog/alphabet.json \
+            https://raw.githubusercontent.com/JesseBrown1980/asolaria-behcs-256/802023a9588cf3c72be9f9b353c847f22c616092/data/behcs/codex/alphabet.json
+          python - <<'PY'
+          import importlib.util,json,os
+          from pathlib import Path
+          def load(name,path):
+            s=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+          omni=load('omni','omni-event-v1/omnievent_catalog47_60d_v1.py')
+          portal=load('portal','omni-event-v1/omniportal_v2.py')
+          catalog,alphabet=omni.load_specs(Path('/tmp/asolaria-catalog/catalogs.json'),Path('/tmp/asolaria-catalog/alphabet.json'))
+          summary=json.load(open('fischer-codec-v2/out/fischer-summary.json'))
+          ew=omni.EventWriter(catalog,alphabet,'FISCHER-CODEC-v2|'+os.environ.get('GITHUB_SHA','local'),os.environ.get('GITHUB_SHA','local'))
+          ew.emit('RUN_OPENED','asolaria','enwik8-150k','executing',{'containers':10,'black':5,'white':5},surface='fischer-codec')
+          for x in summary['experts']:
+            ew.emit('EXPERT_AUDITED',x['direction'],x['actor_pid'],'completed',x,surface='fischer-expert',proof='test')
+          for x in summary['strides']:
+            ew.emit('FISCHER_CANDIDATES_PLAYED','fischer','codec','completed',{
+              'stride':x['pyramid_stride'],'black_payload':x['always_black_payload_bytes'],
+              'blackwhite_payload':x['always_blackwhite_payload_bytes'],'tournament_bpc':x['bpc'],
+              'black_blocks':x['black_selected'],'blackwhite_blocks':x['blackwhite_selected'],
+              'restore':x['restore'],'state_match':x['state_match']},surface='fischer-codec',proof='test')
+          ew.emit('ORACLE_HELD','shannon','future-context','blocked',summary['oracle'],surface='omnishannon',outcome='HOLD',proof='test')
+          ew.emit('WHITE_ROOM_KEEP_COMPACT','white-room','candidate-lines','completed',{'rows':len(summary['white_room'])},surface='white-room')
+          ew.emit('GNN_MIXER_HELD','shannon','gnn-weights','blocked',{'reason':'weights/features not packaged in standalone decoder'},surface='gnn-oracle',outcome='HOLD')
+          ew.emit('FINAL_READBACK_PASS','shannon','codec','completed',{'restore':summary['best_restore'],'state_match':summary['best_state_match'],'bpc':summary['best_bpc']},surface='dbbh-dbwh',proof='hash')
+          ew.emit('RUN_CLOSED','asolaria','enwik8-150k','completed',{'best_stride':summary['best_stride'],'best_bpc':summary['best_bpc']},surface='fischer-codec',omega='sealed')
+          check=omni.validate_events(ew.events)
+          full=b''.join(omni.canonical(e)+b'\n' for e in ew.events)
+          Path('fischer-codec-v2/out/fischer-events.ndjson').write_bytes(full)
+          prefix,ps=portal.build(ew.events);p=portal.finish(prefix,ps,{'chain_head':check['chain_head'],'merkle_root':check['merkle_root'],'final_readback':True})
+          Path('fischer-codec-v2/out/fischer-events-portal.hbp').write_bytes(p)
+          summary['events']={'count':len(ew.events),'full_bytes':len(full),'portal_bytes':len(p),'chain_head':check['chain_head'],'merkle_root':check['merkle_root']}
+          json.dump(summary,open('fischer-codec-v2/out/fischer-summary.json','w'),indent=2)
+          print(f"FISCHER_EVENTS|count={len(ew.events)}|full_bytes={len(full)}|portal_bytes={len(p)}|merkle_root={check['merkle_root']}|status=PASS|json=0")
+          PY
+
+      - name: Seal and upload all evidence
+        if: always()
+        run: |
+          set -euo pipefail
+          cd fischer-codec-v2/out
+          find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
+          sha256sum -c SHA256SUMS
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fischer-bidirectional-codec-v2
+          path: |
+            fischer-codec-v2/FISCHER-BIDIRECTIONAL-CODEC-SPEC.md
+            fischer-codec-v2/fischer_codec_v2.py
+            fischer-codec-v2/out/**
