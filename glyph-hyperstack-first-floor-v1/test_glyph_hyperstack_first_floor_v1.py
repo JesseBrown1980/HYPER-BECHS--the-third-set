@@ -37,7 +37,7 @@ def canonical_tlv_bytes(value: Any) -> bytes:
     if isinstance(value, int):
         return tlv(b"I", str(value).encode("ascii"))
     if isinstance(value, float):
-        return tlv(b"F", value.hex().encode("ascii"))
+        raise TypeError("floats are not canonical")
     if isinstance(value, str):
         return tlv(b"S", value.encode("utf-8"))
     if isinstance(value, bytes):
@@ -107,6 +107,39 @@ class GlyphHyperstackFirstFloorContract(unittest.TestCase):
                 self.assertTrue(all(type(token) is int for token in base))
                 self.assertTrue(all(0 <= token <= 1023 for token in base))
                 self.assertEqual(subject.behcs1024_decode(frame), raw)
+
+    def test_shannon_receipt_is_exact_and_contains_no_float(self) -> None:
+        entropy = subject._shannon_entropy_exact(Counter({"left": 15, "right": 15}), 30)
+        self.assertEqual(entropy["ratio_numerator"], 30 ** 30)
+        self.assertEqual(entropy["ratio_denominator"], 15 ** 30)
+        self.assertEqual(entropy["voters"], 30)
+        boundary_counts = Counter(dict(enumerate((2, 4, 4, 4, 5, 5, 6))))
+        boundary = subject._shannon_entropy_exact(boundary_counts, 30)
+        self.assertEqual(boundary["ratio_numerator"], 30 ** 30)
+        self.assertEqual(boundary["ratio_denominator"], 30_576_476_160_000_000_000)
+
+        def reject_float(value: Any) -> None:
+            self.assertNotIsInstance(value, float)
+            if isinstance(value, Mapping):
+                for key, item in value.items():
+                    reject_float(key)
+                    reject_float(item)
+            elif isinstance(value, (list, tuple)):
+                for item in value:
+                    reject_float(item)
+
+        reject_float(self.first)
+        for cube in self.first["cubes"].values():
+            for row in cube["passes"]:
+                counts = [int(count) for count in row["vote_histogram"].values()]
+                expected_denominator = 1
+                for count in counts:
+                    expected_denominator *= count ** count
+                sealed = row["shannon_vote_entropy_exact"]
+                self.assertEqual(sum(counts), 30)
+                self.assertEqual(sealed["voters"], 30)
+                self.assertEqual(sealed["ratio_numerator"], 30 ** 30)
+                self.assertEqual(sealed["ratio_denominator"], expected_denominator)
 
     def test_canonical_seats_and_rule_of_three_vantages(self) -> None:
         self.assertEqual(len(subject.CANONICAL_SEATS), 27)

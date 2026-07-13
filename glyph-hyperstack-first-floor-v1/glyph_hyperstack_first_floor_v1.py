@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import math
 from collections import Counter, defaultdict
 from collections.abc import Mapping
 from pathlib import Path
@@ -95,9 +94,7 @@ def canonical_tlv_bytes(value: Any) -> bytes:
     if isinstance(value, int):
         return _tlv(b"I", str(value).encode("ascii"))
     if isinstance(value, float):
-        if not math.isfinite(value):
-            raise ValueError("non-finite float is not canonical")
-        return _tlv(b"F", value.hex().encode("ascii"))
+        raise TypeError("floats are not canonical; use an exact integer or string form")
     if isinstance(value, str):
         return _tlv(b"S", value.encode("utf-8"))
     if isinstance(value, bytes):
@@ -230,6 +227,32 @@ def _vantage_vote(vantage: dict[str, Any], candidates: list[dict[str, Any]]) -> 
             "reverse_gain_score": chosen["reverse_gain_score"], "eligible": chosen["net_gain_bytes"] > 0}
 
 
+def _shannon_entropy_exact(histogram: Mapping[Any, int], voters: int) -> dict[str, Any]:
+    """Encode Shannon entropy exactly, without a platform libm calculation.
+
+    For integer vote counts c_i summing to N:
+
+        H = log2(N**N / product(c_i**c_i)) / N
+
+    The two integers and N preserve the exact mathematical value. Consumers
+    may render decimal bits for display, but canonical result bytes never bind
+    a runtime-dependent floating approximation.
+    """
+    counts = [int(count) for count in histogram.values() if count]
+    if voters <= 0 or sum(counts) != voters:
+        raise ValueError("Shannon histogram must contain exactly voters votes")
+    denominator = 1
+    for count in counts:
+        denominator *= count ** count
+    return {
+        "codec": "SHANNON_EXACT_COUNT_RATIO_V1",
+        "voters": voters,
+        "ratio_numerator": voters ** voters,
+        "ratio_denominator": denominator,
+        "formula": "log2(ratio_numerator/ratio_denominator)/voters",
+    }
+
+
 def _train_cube(cube_id: str, raw: bytes, seat: dict[str, Any], passes: int,
                 merges_per_pass: int) -> dict[str, Any]:
     frame = behcs1024_encode(raw)
@@ -247,8 +270,7 @@ def _train_cube(cube_id: str, raw: bytes, seat: dict[str, Any], passes: int,
             candidates = _candidate_rows(tokens, pass_index + 1, cube_id)
             votes = [_vantage_vote(vantage, candidates) for vantage in VANTAGES]
             histogram = Counter(tuple(row["pair"]) if row["pair"] is not None else None for row in votes)
-            probabilities = [count / len(VANTAGES) for count in histogram.values()]
-            entropy = round(-sum(p * math.log2(p) for p in probabilities if p), 12)
+            entropy = _shannon_entropy_exact(histogram, len(VANTAGES))
             by_pair = {tuple(row["pair"]): row for row in candidates}
             voted_pairs = [pair for pair in histogram if pair is not None]
             if voted_pairs:
@@ -302,7 +324,7 @@ def _train_cube(cube_id: str, raw: bytes, seat: dict[str, Any], passes: int,
                 "net_gain_bytes": chosen["net_gain_bytes"] if chosen else 0,
                 "forward_gnn_score": chosen["forward_gnn_score"] if chosen else 0,
                 "reverse_gain_score": chosen["reverse_gain_score"] if chosen else 0,
-                "shannon_vote_entropy_bits": entropy,
+                "shannon_vote_entropy_exact": entropy,
                 "vote_histogram": {"none" if k is None else f"{k[0]}:{k[1]}": v for k, v in sorted(histogram.items(), key=lambda item: str(item[0]))},
                 "vote_receipts": votes,
                 "hookwall": {
@@ -577,6 +599,7 @@ def _write_receipts(result: dict[str, Any], output_dir: Path,
             pair = row.get("chosen_pair")
             pair_text = "none" if pair is None else f"{pair[0]}:{pair[1]}"
             hookwall = row["hookwall"]
+            entropy = row.get("shannon_vote_entropy_exact", {})
             rows.append(_hbp("PASS", cube=cube["cube_id"], n=row["pass"], cycle=row["cycle"],
                              within=row["within_cycle"], slot=row.get("merge_slot", 0),
                              chosen_pair=pair_text, new_id=row.get("new_id", "none"),
@@ -587,7 +610,10 @@ def _write_receipts(result: dict[str, Any], output_dir: Path,
                              catalog=row.get("catalog_bytes", 0), net=row.get("net_gain_bytes", 0),
                              forward=row.get("forward_gnn_score", 0),
                              reverse=row.get("reverse_gain_score", 0),
-                             shannon_entropy=row.get("shannon_vote_entropy_bits", 0),
+                             shannon_entropy_codec=entropy.get("codec", "none"),
+                             shannon_entropy_voters=entropy.get("voters", 0),
+                             shannon_entropy_num=entropy.get("ratio_numerator", 0),
+                             shannon_entropy_den=entropy.get("ratio_denominator", 0),
                              decision=row["decision"], hookwall_net=hookwall["net_gain"],
                              hookwall_accepted=int(hookwall["accepted"]),
                              hookwall_status=hookwall["status"],

@@ -157,10 +157,15 @@ of record.
 
 Result and learned-language digests use deterministic `HBP_TLV_V1` canonical
 bytes: a one-byte type tag, decimal byte length, colon, and payload; mappings
-are ordered by their encoded keys, sequences retain order, and finite floats
-use their exact hexadecimal representation. Shannon entropy is rounded to 12
-decimal places before sealing. The result digest is verified again before any
-receipt is written.
+are ordered by their encoded keys and sequences retain order. Floats are
+rejected from canonical result bodies. Shannon vote entropy is sealed in the
+exact count-ratio form
+`H = log2(N^N / product(c_i^c_i)) / N`, carrying `N`, the integer
+numerator, and the integer denominator. Decimal bits may be rendered outside
+the canonical body for display only. This closes the measured Python
+3.11/3.13 `math.log2` last-bit divergence without dropping Shannon evidence
+from the receipt. The result digest is verified again before any receipt is
+written.
 
 ## Held formation boundary
 
