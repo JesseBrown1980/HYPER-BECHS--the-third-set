@@ -1,0 +1,365 @@
+name: Fischer bidirectional ten-runner prediction bench
+
+on:
+  pull_request:
+    paths:
+      - 'fischer-codec-v3/**'
+      - '.github/workflows/fischer-bidirectional-10-runner.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare-corpus:
+    name: Prepare one immutable enwik8 object
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Install Git LFS fallback
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq git-lfs
+
+      - name: Fetch and verify public enwik8
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/e8
+          fetched=0
+          if curl -L --fail --retry 6 --retry-delay 4 --connect-timeout 20 \
+            -o /tmp/e8/enwik8.zip https://mattmahoney.net/dc/enwik8.zip; then
+            if unzip -p /tmp/e8/enwik8.zip > /tmp/e8/enwik8; then fetched=1; fi
+          fi
+          if [ "$fetched" = 0 ]; then
+            if curl -L --fail --retry 6 --retry-delay 4 --connect-timeout 20 \
+              -o /tmp/e8/enwik8 \
+              https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik8; then
+              fetched=1
+            fi
+          fi
+          if [ "$fetched" = 0 ]; then
+            git lfs install
+            git clone --depth 1 https://github.com/amkillam/compression-test-data.git /tmp/e8/repo
+            cp /tmp/e8/repo/enwik/enwik8 /tmp/e8/enwik8
+          fi
+          test "$(stat -c%s /tmp/e8/enwik8)" = 100000000
+          echo '2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8  /tmp/e8/enwik8' | sha256sum -c -
+          sha256sum /tmp/e8/enwik8 | tee /tmp/e8/enwik8.sha256
+
+      - name: Upload immutable corpus object
+        uses: actions/upload-artifact@v4
+        with:
+          name: fischer-enwik8
+          path: |
+            /tmp/e8/enwik8
+            /tmp/e8/enwik8.sha256
+          retention-days: 1
+
+  expert-audits:
+    name: ${{ matrix.label }} independent audit
+    needs: prepare-corpus
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { label: black-o1, direction: black, order: 1 }
+          - { label: black-o2, direction: black, order: 2 }
+          - { label: black-o3, direction: black, order: 3 }
+          - { label: black-o4, direction: black, order: 4 }
+          - { label: black-o5, direction: black, order: 5 }
+          - { label: white-o1, direction: white, order: 1 }
+          - { label: white-o2, direction: white, order: 2 }
+          - { label: white-o3, direction: white, order: 3 }
+          - { label: white-o4, direction: white, order: 4 }
+          - { label: white-o5, direction: white, order: 5 }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: fischer-enwik8
+          path: /tmp/e8
+
+      - name: Verify the shared object inside this runner
+        run: |
+          test "$(stat -c%s /tmp/e8/enwik8)" = 100000000
+          echo '2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8  /tmp/e8/enwik8' | sha256sum -c -
+
+      - name: Run one prime-rooted Fischer audit
+        run: |
+          set -euo pipefail
+          mkdir -p fischer-codec-v3/out/expert-audits
+          python fischer-codec-v3/fischer_bidirectional_codec_v3.py audit /tmp/e8/enwik8 \
+            --bytes 150000 \
+            --direction '${{ matrix.direction }}' \
+            --order '${{ matrix.order }}' \
+            --schedule pyramid \
+            --stride 32 \
+            --block-size 4096 \
+            --table-bits 17 \
+            --report 'fischer-codec-v3/out/expert-audits/${{ matrix.label }}.json' \
+            | tee 'fischer-codec-v3/out/expert-audits/${{ matrix.label }}.log'
+          LABEL='${{ matrix.label }}' DIRECTION='${{ matrix.direction }}' ORDER='${{ matrix.order }}' \
+          python - <<'PY'
+          import json, os, platform
+          from pathlib import Path
+          label=os.environ['LABEL']
+          path=Path(f'fischer-codec-v3/out/expert-audits/{label}.json')
+          row=json.loads(path.read_text())
+          row['label']=label
+          row['matrix_direction']=os.environ['DIRECTION']
+          row['matrix_order']=int(os.environ['ORDER'])
+          row['github_run_id']=os.environ.get('GITHUB_RUN_ID')
+          row['github_run_attempt']=os.environ.get('GITHUB_RUN_ATTEMPT')
+          row['github_job']=os.environ.get('GITHUB_JOB')
+          row['github_sha']=os.environ.get('GITHUB_SHA')
+          row['runner_name']=os.environ.get('RUNNER_NAME')
+          row['runner_os']=os.environ.get('RUNNER_OS')
+          row['python']=platform.python_version()
+          path.write_text(json.dumps(row,indent=2),encoding='utf-8')
+          assert row['direction']==row['matrix_direction']
+          assert row['order']==row['matrix_order']
+          assert row['raw_bytes']==150000
+          PY
+          cd fischer-codec-v3/out/expert-audits
+          sha256sum '${{ matrix.label }}.json' '${{ matrix.label }}.log' > '${{ matrix.label }}.sha256'
+          sha256sum -c '${{ matrix.label }}.sha256'
+
+      - name: Upload independent expert receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: fischer-expert-${{ matrix.label }}
+          path: fischer-codec-v3/out/expert-audits/${{ matrix.label }}.*
+
+  compose:
+    name: Compose ten Fischers through Shannon and restore
+    needs: [prepare-corpus, expert-audits]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install codec, baseline, and Rust dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'zstandard>=0.22,<1'
+          rustup toolchain install 1.97.0 --profile minimal
+          rustup override set 1.97.0
+          rustc -Vv | tee fischer-rustc-version.txt
+          cargo -V | tee fischer-cargo-version.txt
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: fischer-enwik8
+          path: /tmp/e8
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fischer-expert-*
+          path: fischer-codec-v3/out/expert-audits
+          merge-multiple: true
+
+      - name: Verify the shared object inside the composed runner
+        run: |
+          test "$(stat -c%s /tmp/e8/enwik8)" = 100000000
+          echo '2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8  /tmp/e8/enwik8' | sha256sum -c -
+
+      - name: Run exact property and corruption gates
+        run: |
+          set -euo pipefail
+          python -m py_compile fischer-codec-v3/fischer_bidirectional_codec_v3.py
+          python fischer-codec-v3/fischer_bidirectional_codec_v3.py property \
+            | tee fischer-codec-v3/out/property.log
+          grep -q 'FISCHER_PROPERTY' fischer-codec-v3/out/property.log
+          grep -q 'status=PASS' fischer-codec-v3/out/property.log
+          python - <<'PY' | tee fischer-codec-v3/out/corruption-gate.log
+          import importlib.util, os, sys
+          spec=importlib.util.spec_from_file_location('fischer','fischer-codec-v3/fischer_bidirectional_codec_v3.py')
+          mod=importlib.util.module_from_spec(spec)
+          sys.modules[spec.name]=mod
+          spec.loader.exec_module(mod)
+          raw=(b'Fischer Shannon black white world model prediction gate\n'*300)+os.urandom(4096)
+          archive,_=mod.encode(raw,mode='both',schedule='pyramid',stride=16,block_size=1024,table_bits=12,backend='zlib')
+          restored,report=mod.decode(archive)
+          assert restored==raw and report['restore']
+          changed=bytearray(archive); changed[-1]^=1
+          held=0
+          try:
+              bad,bad_report=mod.decode(bytes(changed))
+              held=int(bad!=raw or not bad_report['restore'])
+          except Exception:
+              held=1
+          assert held==1
+          print(f'FISCHER_CORRUPTION|clean_restore=1|changed_bit=1|held={held}|status=PASS|json=0')
+          PY
+
+      - name: Run same-schedule black/white comparison at 150 KB
+        run: |
+          set -euo pipefail
+          python fischer-codec-v3/fischer_bidirectional_codec_v3.py bench /tmp/e8/enwik8 \
+            --bytes 150000 \
+            --output-dir fischer-codec-v3/out/150k \
+            --backend zstd \
+            --stride 32 \
+            --block-size 4096 \
+            --table-bits 17 \
+            | tee fischer-codec-v3/out/150k.log
+          grep -q 'FISCHER_VERDICT' fischer-codec-v3/out/150k.log
+          grep -q 'all_restore=True' fischer-codec-v3/out/150k.log
+
+      - name: Run scaling comparison at one million bytes
+        run: |
+          set -euo pipefail
+          python fischer-codec-v3/fischer_bidirectional_codec_v3.py bench /tmp/e8/enwik8 \
+            --bytes 1000000 \
+            --output-dir fischer-codec-v3/out/1m \
+            --backend zstd \
+            --stride 32 \
+            --block-size 4096 \
+            --table-bits 18 \
+            | tee fischer-codec-v3/out/1m.log
+          grep -q 'FISCHER_VERDICT' fischer-codec-v3/out/1m.log
+          grep -q 'all_restore=True' fischer-codec-v3/out/1m.log
+
+      - name: Run exact same-slice standard baselines
+        run: |
+          python - <<'PY'
+          import bz2, gzip, hashlib, json, lzma, subprocess, tempfile
+          from pathlib import Path
+          import zstandard as zstd
+          corpus=Path('/tmp/e8/enwik8').read_bytes()
+          rows={}
+          for n in (150000,1000000):
+              data=corpus[:n]
+              methods={
+                  'gzip9':gzip.compress(data,compresslevel=9),
+                  'bzip2_9':bz2.compress(data,compresslevel=9),
+                  'xz6':lzma.compress(data,preset=6),
+                  'zstd19':zstd.ZstdCompressor(level=19).compress(data),
+              }
+              out={}
+              for name,comp in methods.items():
+                  if name=='gzip9':rest=gzip.decompress(comp)
+                  elif name=='bzip2_9':rest=bz2.decompress(comp)
+                  elif name=='xz6':rest=lzma.decompress(comp)
+                  else:rest=zstd.ZstdDecompressor().decompress(comp,max_output_size=n)
+                  assert rest==data
+                  out[name]={'bytes':len(comp),'bpc':len(comp)*8/n,'restore':True,
+                             'sha256':hashlib.sha256(comp).hexdigest()}
+              with tempfile.TemporaryDirectory() as td:
+                  src=Path(td)/'slice.bin'; arc=Path(td)/'slice.7z'; src.write_bytes(data)
+                  try:
+                      subprocess.run(['7z','a','-bd','-y','-t7z','-m0=PPMd:o=16:mem=256m','-mx=9',str(arc),str(src)],
+                                     check=True,stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT)
+                      restored=subprocess.run(['7z','x','-so',str(arc)],check=True,capture_output=True).stdout
+                      assert restored==data
+                      out['7z_ppmd_o16']={'bytes':arc.stat().st_size,'bpc':arc.stat().st_size*8/n,
+                                         'restore':True,'sha256':hashlib.sha256(arc.read_bytes()).hexdigest()}
+                  except Exception as exc:
+                      out['7z_ppmd_o16']={'available':False,'error':type(exc).__name__+': '+str(exc)}
+              rows[str(n)]={'raw_sha256':hashlib.sha256(data).hexdigest(),'raw_bytes':n,'baselines':out}
+          Path('fischer-codec-v3/out/same-slice-baselines.json').write_text(json.dumps(rows,indent=2))
+          for n,row in rows.items():
+              print('FISCHER_BASELINES|bytes='+n+'|'+'|'.join(
+                  f"{k}_bpc={v['bpc']:.6f}" for k,v in row['baselines'].items() if 'bpc' in v)+'|json=0')
+          PY
+
+      - name: Compile and test the public Host-8 Fischer evaluator
+        run: |
+          set -euo pipefail
+          git clone https://github.com/JesseBrown1980/asolaria-federation-1024.git /tmp/asolaria-federation
+          git -C /tmp/asolaria-federation checkout 99e7ab91f1ca8c6df2f16bd00780a0e1a38934f4
+          cargo test --manifest-path /tmp/asolaria-federation/Cargo.toml \
+            -p asolaria-server-fischer-eval --all-targets -- --nocapture \
+            2>&1 | tee fischer-codec-v3/out/fischer-kernel-cargo-test.log
+          grep -q 'test result: ok' fischer-codec-v3/out/fischer-kernel-cargo-test.log
+
+      - name: Aggregate ten independent runners and composed receipts
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root=Path('fischer-codec-v3/out')
+          experts=[]
+          for path in sorted((root/'expert-audits').glob('*.json')):
+              experts.append(json.loads(path.read_text()))
+          assert len(experts)==10, len(experts)
+          assert len({x['label'] for x in experts})==10
+          assert len({x['actor_pid'] for x in experts})==10
+          assert sum(x['direction']=='black' for x in experts)==5
+          assert sum(x['direction']=='white' for x in experts)==5
+          assert {x['order'] for x in experts if x['direction']=='black'}==set(range(1,6))
+          assert {x['order'] for x in experts if x['direction']=='white'}==set(range(1,6))
+          assert len({x['sha256_in'] for x in experts})==1
+          benches={size:json.loads((root/size/'bench.json').read_text()) for size in ('150k','1m')}
+          for size,bench in benches.items():
+              assert bench['summary']['all_restore'] is True
+              assert all(row['restore'] for row in bench['rows'])
+              assert len({row['sha256_out'] for row in bench['rows']})==1
+              assert len({row['sha256_raw'] for row in bench['rows']})==1
+              assert next(iter({row['sha256_out'] for row in bench['rows']}))==next(iter({row['sha256_raw'] for row in bench['rows']}))
+          baselines=json.loads((root/'same-slice-baselines.json').read_text())
+          target={'black_bpc':3.6304,'blackwhite_bpc':3.0820,'white_gain_pct':15.1}
+          summary={
+              'schema':'FISCHER-BIDIRECTIONAL-10-RUNNER-v1',
+              'github_sha':experts[0]['github_sha'],
+              'independent_runner_reports':len(experts),
+              'black_runners':5,'white_runners':5,
+              'unique_actor_pids':len({x['actor_pid'] for x in experts}),
+              'slice_150k_sha256':experts[0]['sha256_in'],
+              'experts':experts,
+              'bench_150k':benches['150k'],
+              'bench_1m':benches['1m'],
+              'same_slice_baselines':baselines,
+              'operator_reported_target':target,
+              'target_reproduced_exactly':False,
+              'all_restore':True,
+              'codec_sha256':hashlib.sha256(Path('fischer-codec-v3/fischer_bidirectional_codec_v3.py').read_bytes()).hexdigest(),
+              'fischer_kernel_commit':'99e7ab91f1ca8c6df2f16bd00780a0e1a38934f4',
+          }
+          for key in ('150k','1m'):
+              measured=benches[key]['summary']
+              measured['white_gain_delta_from_reported_pct_points']=measured['white_gain_vs_black_pct']-target['white_gain_pct']
+          (root/'ten-runner-summary.json').write_text(json.dumps(summary,indent=2),encoding='utf-8')
+          print('FISCHER_AGGREGATE|'+'|'.join([
+              'runners=10','black=5','white=5',
+              f"gain150k={benches['150k']['summary']['white_gain_vs_black_pct']:.6f}",
+              f"gain1m={benches['1m']['summary']['white_gain_vs_black_pct']:.6f}",
+              f"black_trust1m={benches['1m']['summary']['blackwhite_black_trust_pct']:.6f}",
+              f"white_trust1m={benches['1m']['summary']['blackwhite_white_trust_pct']:.6f}",
+              'all_restore=1','json=0']))
+          PY
+
+      - name: Seal composed evidence
+        run: |
+          set -euo pipefail
+          cd fischer-codec-v3/out
+          find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
+          sha256sum -c SHA256SUMS
+
+      - name: Upload the ten-runner Fischer evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fischer-bidirectional-10-runner
+          path: |
+            fischer-codec-v3/FISCHER-BIDIRECTIONAL-10-RUNNER-SPEC.md
+            fischer-codec-v3/fischer_bidirectional_codec_v3.py
+            fischer-codec-v3/out/**
+            fischer-rustc-version.txt
+            fischer-cargo-version.txt
