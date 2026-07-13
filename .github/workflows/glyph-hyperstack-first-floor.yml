@@ -14,13 +14,17 @@ jobs:
   first-floor-shadow:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.python-version }}
 
       - name: Compile with the standard library only
         run: |
@@ -77,7 +81,7 @@ jobs:
               if isinstance(value, int):
                   return tlv(b'I', str(value).encode('ascii'))
               if isinstance(value, float):
-                  return tlv(b'F', value.hex().encode('ascii'))
+                  raise TypeError('floats are not canonical')
               if isinstance(value, str):
                   return tlv(b'S', value.encode('utf-8'))
               if isinstance(value, bytes):
@@ -113,6 +117,8 @@ jobs:
           assert result['training']['passes_per_cube'] == 30
           assert result['summary']['cubes_completed'] == 27
           assert result['summary']['measured_pass_rows'] == 810
+          assert result['summary']['accepted_merges'] == 780
+          assert result['summary']['held_events'] == 30
           assert result['summary']['all_restore'] is True
           assert result['summary']['accepted_merges'] > 0
           assert result['summary']['held_events'] > 0
@@ -127,6 +133,8 @@ jobs:
           body = dict(result)
           result_hash = body.pop('result_sha256')
           assert hashlib.sha256(canonical_tlv(body)).hexdigest() == result_hash
+          assert result_hash == \
+              '067afd926f8f17ddc8dc36091ffba44d6bc1b530b2b62c80a84782a822e655ac'
           assert hashlib.sha256(canonical_tlv(subject.CANONICAL_SEATS)).hexdigest() == \
               subject.CANONICAL_SEATS_SHA256
           assert hashlib.sha256((root / 'canonical-l3-27.hbp').read_bytes()).hexdigest() == \
@@ -200,7 +208,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: glyph-hyperstack-first-floor
+          name: glyph-hyperstack-first-floor-py${{ matrix.python-version }}
           if-no-files-found: warn
           path: |
             glyph-hyperstack-first-floor-v1/GLYPH-HYPERSTACK-FIRST-FLOOR-SPEC.md
@@ -210,4 +218,3 @@ jobs:
             glyph-hyperstack-first-floor-v1/unittest.log
             glyph-hyperstack-first-floor-v1/selftest.log
             glyph-hyperstack-first-floor-v1/out/**
-
