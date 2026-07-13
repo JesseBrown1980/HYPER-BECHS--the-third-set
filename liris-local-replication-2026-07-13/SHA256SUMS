@@ -1,5 +1,8 @@
 eb3ec53c7de578d23d861ebaccc555a11ebe412a01a0a66e84081974ce8de8ec  ./LIRIS-CUBE-CONTAINER-LOCAL-REPLICATION-2026-07-13.md
+a6e06641751fa4fa32bc1890f63ded312bc0702d7accee8bfb1b4bf7c8d105e6  ./LIRIS-GLYPH-HYPERSTACK-FIRST-FLOOR-VERIFY-2026-07-13.md
 41ca70ef2778b988f7e36c6faf60936432e715aa642e8f2fc2c5225edd549047  ./REPLICATION-VERDICT-2026-07-13.md
+fdea34c964ab528ed8b818e0d789de039126737ba9843d479b04543404a09ab9  ./logs/hyperstack-selftest.log
+4c3a9a4f516c8b53fe1ca6f668769b82c5f46a68c304ae88e404c27301d30f0e  ./logs/hyperstack-verify.log
 f86cae0b3422f3554dc600acd4c481b7192fc8838e44ac671316671b36773f40  ./logs/r1-behcs-property.log
 c6a933a7e5c8f82dd0637caf9845ab2c49e853d6ee4793d26878fecf568a4014  ./logs/r10-behcs-enwik8.log
 dac2b15d3c1fb9681a6360f4118aa6e3b3ec80dbe2db07b96573111e63f27de2  ./logs/r11-audits-compare.log
@@ -53,6 +56,7 @@ aa7fe741ce92def9559f94d6f74c1c70a074a6cecf84d3ea72a4b2055aae8276  ./out/multilev
 8f1c98f5e32e67a51bee36b716f0869dd77effb5993e615ea0b678e3c54df409  ./scripts/compare_json.py
 c4964a30a920b18bab10699c6a9b72e3c4d9cae68336d8b5cf22e00034b7d4a7  ./scripts/run-fast.sh
 874b1b9318994121a838e78edaebfba9ed07e728f9f2a588180cb2605eb723b2  ./scripts/run-heavy.sh
+985d73bf0bcc255a9a4cba2dfa2a76a41456b5fe9f8f2e305781ad3841413bc9  ./scripts/run-hyperstack-verify.sh
 69dcc0b40a44efb53c7ecaf2d8999452f03933c1503cead493ddbc3ea9a57b17  ./scripts/run-r5.sh
 7073bbf3259216880f55b84a3b43e23c4db8918283c31dc8e20343302bb0c160  ./scripts/setup-deps.sh
 480273c45d105e66fbd719ef7f2fa6cd7cba592f432fa6ce4b5fd87712554d52  ./scripts/setup-env.sh
