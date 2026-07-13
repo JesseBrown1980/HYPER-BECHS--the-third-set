@@ -39,6 +39,23 @@ Branch-aware external discovery and receipt verification:
 
 - [`PUBLIC-VERIFICATION-INDEX-2026-07-12.md`](PUBLIC-VERIFICATION-INDEX-2026-07-12.md)
 
+Canonical composed quant atlas:
+
+- [`Algorithms-of-Asolaria/ASOLARIA-COMBINED-QUANT-ATLAS-2026-07-13.md`](https://github.com/JesseBrown1980/Algorithms-of-Asolaria/blob/main/ASOLARIA-COMBINED-QUANT-ATLAS-2026-07-13.md)
+- [`Algorithms-of-Asolaria/ASOLARIA-COMBINED-QUANT-REGISTRY-2026-07-13.hbp`](https://github.com/JesseBrown1980/Algorithms-of-Asolaria/blob/main/ASOLARIA-COMBINED-QUANT-REGISTRY-2026-07-13.hbp)
+
+The atlas normalizes **28 publicly recoverable quant/prism operators** and explicitly composes:
+
+```text
+within-level local quant bundles
++ exact between-level translators
++ address/cube minting
++ N-D watchers/readback
++ persistent catalog updates between runs
+```
+
+It also records that the 3,200-byte tuple is one organ, not the whole quant civilization.
+
 The coverage ledger records **45 campaign pull requests merged**—44 substantive repository changes
 plus the final public coverage seal—zero remaining campaign PRs, and the explicit classification of
 native organs, direct lineage, integration forks, upstream dependencies, and unrelated repositories.
@@ -101,6 +118,7 @@ to perform matrix multiplication.
 5. **`ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md`** — complete repository campaign, merge, inclusion, and exclusion ledger.
 6. **`SIMPLICIO-CANVAS-ASOLARIA-INTEGRATION-2026-07-11.md`** — Mapper/Runtime/Canvas contracts, repository links, research overlay, identity boundaries and current review status.
 7. **`PUBLIC-VERIFICATION-INDEX-2026-07-12.md`** — direct owner/repository/path index for HyperBEHCS, Rust recovery crates, quant/stress tools, throughput receipts and suite evidence.
+8. **`Algorithms-of-Asolaria/ASOLARIA-COMBINED-QUANT-ATLAS-2026-07-13.md`** — public cross-repository inventory of the combined quant/prism lattice.
 
 ## Independent verification
 
