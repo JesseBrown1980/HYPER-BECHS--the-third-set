@@ -33,13 +33,28 @@ bf7172b1d7287c2c9a187d0dd14974538fa7fd860b568fcf63b9ada030e6a51b  acer-old-cube-
 FIRSTFLOORVERDICT|cubes=27|passes=810|accepted=780|held=30|languages=27|restore=1|source_manifest_format=SELFTEST|legacy_json_intake=0|formation_27p4=HELD_UNDEFINED_AXES|result_sha256=931ddb78dcfade4e7d09453553edf9b4e69f054d04f77e1a774c270c5b778c3d|status=PASS|json=0
 ```
 
-## Cross-host determinism: PROVEN
+## Cross-host determinism: PROVEN — scope corrected to cross-VERSION defect (RELIC finding)
 
 GitHub Actions CI (run 29284292820, independent Linux runner) produced the byte-identical
 verdict line, including `result_sha256=931ddb78dcfade4e7d09453553edf9b4e69f054d04f77e1a774c270c5b778c3d`.
-Two independent hosts, one canonical digest. The pre-review's recommendation #3 is demonstrated
-working. Remaining optional third leg: an ACER-metal post-refactor selftest digest
-(ACER's pre-refactor `b8de175b…` predates the corpus/HBP changes and is not comparable).
+
+SCOPE CORRECTION (same day): RELIC found the digest splits across CPython VERSIONS —
+3.11 yields `52691326…04bd` while 3.13 yields `931ddb78…c3d` — from a 1-ulp `math.log2`
+Shannon-entropy difference (rounds `2.749255397169` vs `…168`). LIRIS follow-up measurements:
+
+```text
+3.11  RELIC  Windows/MSVC  → 52691326…04bd   (entropy rounds …169)
+3.12  LIRIS  WSL/glibc     → 931ddb78…c3d    (LIRIS HBP carries 2.749255397168 — MEASURED)
+3.12  CI     Linux/glibc   → 931ddb78…c3d
+3.13  RELIC  Windows/MSVC  → 931ddb78…c3d
+3.14  LIRIS  Windows/MSVC  → 931ddb78…c3d    (9/9 unit OK; NEW LIRIS measurement)
+```
+
+The 3.14-on-Windows result is decisive: the split is NOT OS/libm (MSVC 3.13/3.14 match glibc
+3.12) — it is the CPython 3.11 lineage vs ≥3.12. Verdict stands as cross-host deterministic
+for CPython ≥3.12 on both OS families; the cross-version digest gate is correctly HELD pending
+a deterministic entropy representation (exact/quantized arithmetic in the canonical digest,
+floats display-only), with an interim interpreter floor of 3.12 defensible by measurement.
 
 ## Boundaries upheld
 
