@@ -45,10 +45,19 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/e8
+          fetched=0
           if curl -L --fail --retry 4 --retry-delay 3 --connect-timeout 20 \
             -o /tmp/e8/enwik8.zip https://mattmahoney.net/dc/enwik8.zip; then
-            unzip -p /tmp/e8/enwik8.zip > /tmp/e8/enwik8
-          else
+            if unzip -p /tmp/e8/enwik8.zip > /tmp/e8/enwik8; then fetched=1; fi
+          fi
+          if [ "$fetched" = 0 ]; then
+            if curl -L --fail --retry 4 --retry-delay 3 --connect-timeout 20 \
+              -o /tmp/e8/enwik8 \
+              https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik8; then
+              fetched=1
+            fi
+          fi
+          if [ "$fetched" = 0 ]; then
             git lfs install
             git clone --depth 1 https://github.com/amkillam/compression-test-data.git /tmp/e8/repo
             cp /tmp/e8/repo/enwik/enwik8 /tmp/e8/enwik8
@@ -83,7 +92,6 @@ jobs:
         run: |
           python - <<'PY'
           import json, re
-          from pathlib import Path
           results=json.load(open('n-lens-v1/out/n_lens_results.json'))
           summary=json.load(open('n-lens-v1/out/n_lens_summary.json'))
           assert len(results)==20
@@ -152,5 +160,7 @@ jobs:
           name: n-lens-20-flashlight-array
           path: |
             n-lens-v1/N-LENS-20-FLASHLIGHT-SPEC.md
+            n-lens-v1/N-LENS-20-CI-RECEIPT-2026-07-13.md
+            n-lens-v1/N-LENS-20-CI-RECEIPT-2026-07-13.hbp
             n-lens-v1/n_lens_flashlight_array_v1.py
             n-lens-v1/out/**
