@@ -65,8 +65,13 @@ jobs:
             --catalog47 /tmp/asolaria-catalog/catalogs.json \
             --multilevel-module third-seat-2026-07-12/gpt-crosscheck/multilevel_bpe_zstd_v1.py \
             --output-dir /tmp/omnievent47 | tee /tmp/omnievent47-run.log
+          python omnievent47-2026-07-13/omnisppan_min_v1.py \
+            --full /tmp/omnievent47/omni_events_full.ndjson \
+            --metrics /tmp/omnievent47/omni_run_metrics.json \
+            --output /tmp/omnievent47/omni_events_span_min.hbp \
+            --receipt /tmp/omnievent47/omni_span_min_receipt.hbp | tee /tmp/omnievent47-span-min.log
 
-      - name: Attack-verify hashes, catalogs, portal, metrics and 3D shadow
+      - name: Attack-verify hashes, catalogs, portals, metrics and 3D shadow
         run: |
           python - <<'PY'
           import hashlib, json, math
@@ -117,18 +122,25 @@ jobs:
 
           nd=(root/'omni_events_full.ndjson').read_bytes()
           span=(root/'omni_events_span.hbp').read_bytes()
+          span_min=(root/'omni_events_span_min.hbp').read_bytes()
           vis=(root/'omni3d_frame.json').read_bytes().rstrip(b'\n')
           assert metrics['full_event_bytes']==len(nd)
           assert metrics['span_bytes']==len(span)
+          assert metrics['span_min_bytes']==len(span_min)
           assert metrics['visual_bytes']==len(vis)
           assert metrics['full_ndjson_sha256']==h(nd)
           assert metrics['span_sha256']==h(span)
+          assert metrics['span_min_sha256']==h(span_min)
           assert metrics['visual_sha256']==h(vis)
           raw=metrics['input_bytes']; best=metrics['codec_plus_catalog_bytes']
           assert math.isclose(metrics['codec_plus_catalog_bpc'],best*8/raw,rel_tol=0,abs_tol=1e-12)
           assert math.isclose(metrics['compact_full_fabric_bpc'],(best+len(span)+len(vis))*8/raw,rel_tol=0,abs_tol=1e-12)
+          assert math.isclose(metrics['compact_min_full_fabric_bpc'],(best+len(span_min)+len(vis))*8/raw,rel_tol=0,abs_tol=1e-12)
           assert math.isclose(metrics['full_audit_fabric_bpc'],(best+len(nd)+len(vis))*8/raw,rel_tol=0,abs_tol=1e-12)
           assert math.isclose(metrics['portal_quant_ratio'],len(nd)/len(span),rel_tol=0,abs_tol=1e-12)
+          assert math.isclose(metrics['portal_min_quant_ratio'],len(nd)/len(span_min),rel_tol=0,abs_tol=1e-12)
+          assert len(span_min) < 3818
+          assert metrics['portal_min_quant_ratio'] > 4.1
 
           lines=span.decode().splitlines()
           assert lines[0].startswith('RUN_HEADER|')
@@ -136,20 +148,29 @@ jobs:
           assert len([x for x in lines if x.startswith('SPAN|')])==32
           assert all(x.endswith('|json=0') for x in lines)
 
+          min_lines=span_min.decode().splitlines()
+          assert min_lines[0].startswith('H|1|')
+          assert min_lines[-1].startswith('F|')
+          assert len(min_lines)==34
+          assert min_lines[-1].split('|')[1]==metrics['merkle_root']
+          assert min_lines[-1].split('|')[2]==metrics['full_ndjson_sha256']
+
           frame=json.loads((root/'omni3d_frame.json').read_text())
           assert frame['projection_axes']==['D1_ACTOR','D5_LAYER','D20_TIME.sequence']
           assert frame['projection_status']=='DERIVED_3D_SHADOW_NOT_FULL_47D_OR_60D_OBJECT'
           assert len(frame['nodes'])==32
 
-          print('OMNIEVENT47VERIFY|events=32|hash_chain=PASS|merkle=PASS|d47=PASS|hyper60_boundary=PASS|scheduler=1_ACCEPT_2_HOLD_3_HOLD|portal=PASS|metrics=PASS|omni3d=PASS|json=0')
+          print('OMNIEVENT47VERIFY|events=32|hash_chain=PASS|merkle=PASS|d47=PASS|hyper60_boundary=PASS|scheduler=1_ACCEPT_2_HOLD_3_HOLD|portal=PASS|portal_min=PASS|metrics=PASS|omni3d=PASS|json=0')
           print((root/'omni_run_receipt.hbp').read_text(),end='')
+          print((root/'omni_span_min_receipt.hbp').read_text(),end='')
           PY
 
       - name: Seal output files
         run: |
           cd /tmp/omnievent47
-          sha256sum omni_events_full.ndjson omni_events_span.hbp omni3d_frame.json \
-            omni_run_metrics.json omni_run_receipt.hbp > SHA256SUMS
+          sha256sum omni_events_full.ndjson omni_events_span.hbp omni_events_span_min.hbp \
+            omni3d_frame.json omni_run_metrics.json omni_run_receipt.hbp \
+            omni_span_min_receipt.hbp > SHA256SUMS
           cat SHA256SUMS
 
       - name: Upload reference-run evidence
@@ -160,5 +181,6 @@ jobs:
           path: |
             /tmp/omnievent47/**
             /tmp/omnievent47-run.log
+            /tmp/omnievent47-span-min.log
             omnievent47-2026-07-13/*.py
             omnievent47-2026-07-13/*.md
