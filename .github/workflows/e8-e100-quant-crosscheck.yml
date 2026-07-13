@@ -53,6 +53,15 @@ jobs:
     timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
+      - name: Check out pinned enwik8 LFS object
+        uses: actions/checkout@v4
+        with:
+          repository: amkillam/compression-test-data
+          ref: e8da60efe169a1eadc74213f85ce0eaf6c382fa5
+          path: corpus-mirror
+          lfs: true
+          sparse-checkout: enwik/enwik8
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -61,15 +70,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y zstd p7zip-full
           python -m pip install --upgrade pip numpy zstandard
-      - name: Fetch and verify enwik8
+      - name: Stage and verify enwik8
         run: |
           set -euo pipefail
           mkdir -p corpora results
-          if curl -fL --retry 4 --retry-delay 3 -o corpora/enwik8.zip https://mattmahoney.net/dc/enwik8.zip; then
-            unzip -q -o corpora/enwik8.zip -d corpora
-          else
-            curl -fL --retry 4 --retry-delay 3 -o corpora/enwik8 https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik8
-          fi
+          cp corpus-mirror/enwik/enwik8 corpora/enwik8
           test "$(stat -c %s corpora/enwik8)" = 100000000
           echo '2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8  corpora/enwik8' | sha256sum -c -
       - name: Reproduce E8 ladder and codec v0.1
@@ -107,20 +112,25 @@ jobs:
     timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
+      - name: Check out pinned enwik9 LFS object
+        uses: actions/checkout@v4
+        with:
+          repository: amkillam/compression-test-data
+          ref: e8da60efe169a1eadc74213f85ce0eaf6c382fa5
+          path: corpus-mirror
+          lfs: true
+          sparse-checkout: enwik/enwik9
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
         run: python -m pip install --upgrade pip numpy
-      - name: Fetch and verify enwik9
+      - name: Stage and verify enwik9
         run: |
           set -euo pipefail
           mkdir -p corpora results
-          if curl -fL --retry 4 --retry-delay 3 -o corpora/enwik9.zip https://mattmahoney.net/dc/enwik9.zip; then
-            unzip -q -o corpora/enwik9.zip -d corpora
-          else
-            curl -fL --retry 4 --retry-delay 3 -o corpora/enwik9 https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik9
-          fi
+          cp corpus-mirror/enwik/enwik9 corpora/enwik9
           test "$(stat -c %s corpora/enwik9)" = 1000000000
           echo '159b85351e5f76e60cbe32e04c677847a9ecba3adc79addab6f4c6c7aa3744bc  corpora/enwik9' | sha256sum -c -
       - name: Reproduce E9 exact ladder
