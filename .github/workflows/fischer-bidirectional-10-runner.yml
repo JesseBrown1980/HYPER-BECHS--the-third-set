@@ -11,10 +11,56 @@ permissions:
   contents: read
 
 jobs:
+  prepare-corpus:
+    name: Prepare one immutable enwik8 object
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Install Git LFS fallback
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq git-lfs
+
+      - name: Fetch and verify public enwik8
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/e8
+          fetched=0
+          if curl -L --fail --retry 6 --retry-delay 4 --connect-timeout 20 \
+            -o /tmp/e8/enwik8.zip https://mattmahoney.net/dc/enwik8.zip; then
+            if unzip -p /tmp/e8/enwik8.zip > /tmp/e8/enwik8; then fetched=1; fi
+          fi
+          if [ "$fetched" = 0 ]; then
+            if curl -L --fail --retry 6 --retry-delay 4 --connect-timeout 20 \
+              -o /tmp/e8/enwik8 \
+              https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik8; then
+              fetched=1
+            fi
+          fi
+          if [ "$fetched" = 0 ]; then
+            git lfs install
+            git clone --depth 1 https://github.com/amkillam/compression-test-data.git /tmp/e8/repo
+            cp /tmp/e8/repo/enwik/enwik8 /tmp/e8/enwik8
+          fi
+          test "$(stat -c%s /tmp/e8/enwik8)" = 100000000
+          echo '2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8  /tmp/e8/enwik8' | sha256sum -c -
+          sha256sum /tmp/e8/enwik8 | tee /tmp/e8/enwik8.sha256
+
+      - name: Upload immutable corpus object
+        uses: actions/upload-artifact@v4
+        with:
+          name: fischer-enwik8
+          path: |
+            /tmp/e8/enwik8
+            /tmp/e8/enwik8.sha256
+          retention-days: 1
+
   expert-audits:
     name: ${{ matrix.label }} independent audit
+    needs: prepare-corpus
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -37,35 +83,13 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install expert dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install 'zstandard>=0.22,<1'
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq git-lfs
+      - uses: actions/download-artifact@v4
+        with:
+          name: fischer-enwik8
+          path: /tmp/e8
 
-      - name: Fetch and verify public enwik8 independently
-        shell: bash
+      - name: Verify the shared object inside this runner
         run: |
-          set -euo pipefail
-          mkdir -p /tmp/e8
-          fetched=0
-          if curl -L --fail --retry 5 --retry-delay 3 --connect-timeout 20 \
-            -o /tmp/e8/enwik8.zip https://mattmahoney.net/dc/enwik8.zip; then
-            if unzip -p /tmp/e8/enwik8.zip > /tmp/e8/enwik8; then fetched=1; fi
-          fi
-          if [ "$fetched" = 0 ]; then
-            if curl -L --fail --retry 5 --retry-delay 3 --connect-timeout 20 \
-              -o /tmp/e8/enwik8 \
-              https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik8; then
-              fetched=1
-            fi
-          fi
-          if [ "$fetched" = 0 ]; then
-            git lfs install
-            git clone --depth 1 https://github.com/amkillam/compression-test-data.git /tmp/e8/repo
-            cp /tmp/e8/repo/enwik/enwik8 /tmp/e8/enwik8
-          fi
           test "$(stat -c%s /tmp/e8/enwik8)" = 100000000
           echo '2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8  /tmp/e8/enwik8' | sha256sum -c -
 
@@ -117,7 +141,7 @@ jobs:
 
   compose:
     name: Compose ten Fischers through Shannon and restore
-    needs: expert-audits
+    needs: [prepare-corpus, expert-audits]
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
@@ -137,7 +161,12 @@ jobs:
           rustc -Vv | tee fischer-rustc-version.txt
           cargo -V | tee fischer-cargo-version.txt
           sudo apt-get update -qq
-          sudo apt-get install -y -qq git-lfs p7zip-full
+          sudo apt-get install -y -qq p7zip-full
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: fischer-enwik8
+          path: /tmp/e8
 
       - uses: actions/download-artifact@v4
         with:
@@ -145,28 +174,8 @@ jobs:
           path: fischer-codec-v3/out/expert-audits
           merge-multiple: true
 
-      - name: Fetch and verify public enwik8 for the composed run
-        shell: bash
+      - name: Verify the shared object inside the composed runner
         run: |
-          set -euo pipefail
-          mkdir -p /tmp/e8
-          fetched=0
-          if curl -L --fail --retry 5 --retry-delay 3 --connect-timeout 20 \
-            -o /tmp/e8/enwik8.zip https://mattmahoney.net/dc/enwik8.zip; then
-            if unzip -p /tmp/e8/enwik8.zip > /tmp/e8/enwik8; then fetched=1; fi
-          fi
-          if [ "$fetched" = 0 ]; then
-            if curl -L --fail --retry 5 --retry-delay 3 --connect-timeout 20 \
-              -o /tmp/e8/enwik8 \
-              https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik8; then
-              fetched=1
-            fi
-          fi
-          if [ "$fetched" = 0 ]; then
-            git lfs install
-            git clone --depth 1 https://github.com/amkillam/compression-test-data.git /tmp/e8/repo
-            cp /tmp/e8/repo/enwik/enwik8 /tmp/e8/enwik8
-          fi
           test "$(stat -c%s /tmp/e8/enwik8)" = 100000000
           echo '2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8  /tmp/e8/enwik8' | sha256sum -c -
 
