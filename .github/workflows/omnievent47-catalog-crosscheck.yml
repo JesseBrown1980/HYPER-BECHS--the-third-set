@@ -57,7 +57,7 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf /tmp/omnievent47
-          python omnievent47-2026-07-13/omnievent47_instrumented_quant_v1.py \
+          python omnievent47-2026-07-13/omnievent47_instrumented_quant_v1_1.py \
             /tmp/e8/enwik8 \
             --bytes 1000000 \
             --levels 3 \
