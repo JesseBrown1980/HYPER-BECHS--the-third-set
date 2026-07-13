@@ -179,10 +179,11 @@ jobs:
           grep -q 'FISCHER_PROPERTY' fischer-codec-v3/out/property.log
           grep -q 'status=PASS' fischer-codec-v3/out/property.log
           python - <<'PY' | tee fischer-codec-v3/out/corruption-gate.log
-          import importlib.util, os
-          from pathlib import Path
+          import importlib.util, os, sys
           spec=importlib.util.spec_from_file_location('fischer','fischer-codec-v3/fischer_bidirectional_codec_v3.py')
-          mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+          mod=importlib.util.module_from_spec(spec)
+          sys.modules[spec.name]=mod
+          spec.loader.exec_module(mod)
           raw=(b'Fischer Shannon black white world model prediction gate\n'*300)+os.urandom(4096)
           archive,_=mod.encode(raw,mode='both',schedule='pyramid',stride=16,block_size=1024,table_bits=12,backend='zlib')
           restored,report=mod.decode(archive)
