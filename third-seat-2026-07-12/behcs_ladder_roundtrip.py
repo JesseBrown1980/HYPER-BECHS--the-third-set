@@ -36,7 +36,7 @@ def main(path):
             v2 = (gv[:,0]<<30)|(gv[:,1]<<20)|(gv[:,2]<<10)|gv[:,3]
             b = np.empty((len(v2), 5), dtype=np.uint8)
             b[:,0]=(v2>>32)&0xFF; b[:,1]=(v2>>24)&0xFF; b[:,2]=(v2>>16)&0xFF
-            b[:,3]=(v2>>8)&0xFF; b[:,4]=v2&0xFF
+            b[:,3]=(v2>>8)&0xFF;  b[:,4]=v2&0xFF
             t_dec += time.time() - t0
             h_white.update(b.tobytes())
 
