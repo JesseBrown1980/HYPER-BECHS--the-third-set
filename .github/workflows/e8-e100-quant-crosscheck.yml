@@ -74,6 +74,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p corpora results
+          (cd corpus-mirror && git lfs pull --include='enwik/enwik8' && git lfs checkout enwik/enwik8)
+          ls -lh corpus-mirror/enwik/enwik8
           cp corpus-mirror/enwik/enwik8 corpora/enwik8
           test "$(stat -c %s corpora/enwik8)" = 100000000
           echo '2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8  corpora/enwik8' | sha256sum -c -
@@ -130,6 +132,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p corpora results
+          (cd corpus-mirror && git lfs pull --include='enwik/enwik9' && git lfs checkout enwik/enwik9)
+          ls -lh corpus-mirror/enwik/enwik9
           cp corpus-mirror/enwik/enwik9 corpora/enwik9
           test "$(stat -c %s corpora/enwik9)" = 1000000000
           echo '159b85351e5f76e60cbe32e04c677847a9ecba3adc79addab6f4c6c7aa3744bc  corpora/enwik9' | sha256sum -c -
