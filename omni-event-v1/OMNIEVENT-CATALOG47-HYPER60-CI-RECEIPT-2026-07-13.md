@@ -182,7 +182,7 @@ retained elsewhere, not erased from the global storage ledger.
 
 ```text
 chain head
-  3e2c1dc2c186c7ed64aca529c81db2c6d24891ec7c997042ea7c2df99ec3b69c
+  e95f9f309031b1354b36e809f56c3d73bd20ccddaeb4b55904b9550123eef162
 
 Merkle root
   4a045e23bb3cb8bcb1e1cd68dfcfadacbf0a460fb9a9828c90194dc03c60f39a
