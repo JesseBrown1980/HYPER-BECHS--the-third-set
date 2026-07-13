@@ -311,8 +311,8 @@ jobs:
               assert bench['summary']['all_restore'] is True
               assert all(row['restore'] for row in bench['rows'])
               assert len({row['sha256_out'] for row in bench['rows']})==1
-              assert len({row['sha256_in'] for row in bench['rows']})==1
-              assert next(iter({row['sha256_out'] for row in bench['rows']}))==next(iter({row['sha256_in'] for row in bench['rows']}))
+              assert len({row['sha256_raw'] for row in bench['rows']})==1
+              assert next(iter({row['sha256_out'] for row in bench['rows']}))==next(iter({row['sha256_raw'] for row in bench['rows']}))
           baselines=json.loads((root/'same-slice-baselines.json').read_text())
           target={'black_bpc':3.6304,'blackwhite_bpc':3.0820,'white_gain_pct':15.1}
           summary={
