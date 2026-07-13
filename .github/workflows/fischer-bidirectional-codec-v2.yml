@@ -48,36 +48,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - id: black-o1
-            direction: black
-            order: 1
-          - id: black-o2
-            direction: black
-            order: 2
-          - id: black-o3
-            direction: black
-            order: 3
-          - id: black-o4
-            direction: black
-            order: 4
-          - id: black-o5
-            direction: black
-            order: 5
-          - id: white-o1
-            direction: white
-            order: 1
-          - id: white-o2
-            direction: white
-            order: 2
-          - id: white-o3
-            direction: white
-            order: 3
-          - id: white-o4
-            direction: white
-            order: 4
-          - id: white-o5
-            direction: white
-            order: 5
+          - { id: black-o1, direction: black, order: 1 }
+          - { id: black-o2, direction: black, order: 2 }
+          - { id: black-o3, direction: black, order: 3 }
+          - { id: black-o4, direction: black, order: 4 }
+          - { id: black-o5, direction: black, order: 5 }
+          - { id: white-o1, direction: white, order: 1 }
+          - { id: white-o2, direction: white, order: 2 }
+          - { id: white-o3, direction: white, order: 3 }
+          - { id: white-o4, direction: white, order: 4 }
+          - { id: white-o5, direction: white, order: 5 }
     steps:
       - uses: actions/checkout@v4
 
@@ -170,9 +150,12 @@ jobs:
       - name: Property-test the range coder and both legal model paths
         run: |
           python - <<'PY'
-          import importlib.util,random
+          import importlib.util,random,sys
           p='fischer-codec-v2/fischer_codec_v2.py'
-          s=importlib.util.spec_from_file_location('fc',p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+          s=importlib.util.spec_from_file_location('fc',p)
+          m=importlib.util.module_from_spec(s)
+          sys.modules[s.name]=m
+          s.loader.exec_module(m)
           rng=random.Random(20260713)
           cases=[b'',b'a',bytes(range(256)),b'abracadabra\n'*50]
           cases += [bytes(rng.randrange(256) for _ in range(n)) for n in (2,3,7,31,257,4097)]
@@ -231,7 +214,7 @@ jobs:
       - name: Aggregate Fischer, Shannon, white-room, and claim-boundary results
         run: |
           python - <<'PY'
-          import json,os
+          import json
           out='fischer-codec-v2/out'
           strides=[]
           for stride in (2,4,8):
@@ -250,26 +233,16 @@ jobs:
                 'verdict':'GENIUS_KEEP' if row['selected']=='blackwhite-pyramid' else 'MISTAKE_COMPACT',
                 'selected':row['selected'],'delta_black_minus_blackwhite':row['delta_black_minus_blackwhite']})
           summary={
-            'schema':'FISCHER-BIDIRECTIONAL-BENCH-v2',
-            'raw_bytes':150000,
-            'strides':strides,
-            'best_stride':best['pyramid_stride'],
-            'best_archive_bytes':best['archive_bytes'],
-            'best_bpc':best['bpc'],
-            'best_restore':best['restore'],
-            'best_state_match':best['state_match'],
-            'best_black_selected':best['black_selected'],
-            'best_blackwhite_selected':best['blackwhite_selected'],
+            'schema':'FISCHER-BIDIRECTIONAL-BENCH-v2','raw_bytes':150000,'strides':strides,
+            'best_stride':best['pyramid_stride'],'best_archive_bytes':best['archive_bytes'],'best_bpc':best['bpc'],
+            'best_restore':best['restore'],'best_state_match':best['state_match'],
+            'best_black_selected':best['black_selected'],'best_blackwhite_selected':best['blackwhite_selected'],
             'best_valid_white_gain_pct':best['valid_white_gain_pct'],
             'best_black_trust_pct':best['blackwhite_state']['black_trust_pct'],
             'best_white_trust_pct':best['blackwhite_state']['white_trust_pct'],
-            'oracle':oracle,
-            'baselines':baselines,
-            'experts':experts,
-            'white_room':white_room,
+            'oracle':oracle,'baselines':baselines,'experts':experts,'white_room':white_room,
             'fischer_rust_commit':'99e7ab91f1ca8c6df2f16bd00780a0e1a38934f4',
-            'gnn_probability_path':'HELD_UNPACKAGED_WEIGHTS',
-            'live_omnidispatcher_exercised':False,
+            'gnn_probability_path':'HELD_UNPACKAGED_WEIGHTS','live_omnidispatcher_exercised':False,
             'ten_isolated_containers_exercised':True,
           }
           json.dump(summary,open(f'{out}/fischer-summary.json','w'),indent=2)
@@ -292,10 +265,14 @@ jobs:
           curl -L --fail --retry 3 -o /tmp/asolaria-catalog/alphabet.json \
             https://raw.githubusercontent.com/JesseBrown1980/asolaria-behcs-256/802023a9588cf3c72be9f9b353c847f22c616092/data/behcs/codex/alphabet.json
           python - <<'PY'
-          import importlib.util,json,os
+          import importlib.util,json,os,sys
           from pathlib import Path
           def load(name,path):
-            s=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+            s=importlib.util.spec_from_file_location(name,path)
+            m=importlib.util.module_from_spec(s)
+            sys.modules[name]=m
+            s.loader.exec_module(m)
+            return m
           omni=load('omni','omni-event-v1/omnievent_catalog47_60d_v1.py')
           portal=load('portal','omni-event-v1/omniportal_v2.py')
           catalog,alphabet=omni.load_specs(Path('/tmp/asolaria-catalog/catalogs.json'),Path('/tmp/asolaria-catalog/alphabet.json'))
@@ -318,7 +295,8 @@ jobs:
           check=omni.validate_events(ew.events)
           full=b''.join(omni.canonical(e)+b'\n' for e in ew.events)
           Path('fischer-codec-v2/out/fischer-events.ndjson').write_bytes(full)
-          prefix,ps=portal.build(ew.events);p=portal.finish(prefix,ps,{'chain_head':check['chain_head'],'merkle_root':check['merkle_root'],'final_readback':True})
+          prefix,ps=portal.build(ew.events)
+          p=portal.finish(prefix,ps,{'chain_head':check['chain_head'],'merkle_root':check['merkle_root'],'final_readback':True})
           Path('fischer-codec-v2/out/fischer-events-portal.hbp').write_bytes(p)
           summary['events']={'count':len(ew.events),'full_bytes':len(full),'portal_bytes':len(p),'chain_head':check['chain_head'],'merkle_root':check['merkle_root']}
           json.dump(summary,open('fischer-codec-v2/out/fischer-summary.json','w'),indent=2)
