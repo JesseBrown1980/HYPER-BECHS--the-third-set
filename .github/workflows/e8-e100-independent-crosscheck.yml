@@ -49,6 +49,7 @@ jobs:
           python gpt-crosscheck/quant8_corpus_crosscheck_v1.py --selftest | tee quant8-selftest.log
           python gpt-crosscheck/persistent_order2_curve_v1.py --selftest | tee prior-selftest.log
           python gpt-crosscheck/catalog_zstd_holdout_v1.py --selftest | tee catalog-selftest.log
+          python gpt-crosscheck/multilevel_bpe_zstd_v1.py --selftest | tee multilevel-bpe-selftest.log
           python - <<'PY' | tee codec-fuzz.log
           import importlib.util, hashlib, os, random
           spec=importlib.util.spec_from_file_location('codec','asolaria_codec_v0_1.py')
@@ -93,6 +94,14 @@ jobs:
         working-directory: third-seat-2026-07-12
         run: |
           python gpt-crosscheck/quant8_corpus_crosscheck_v1.py /tmp/e8/enwik8 --output quant8-enwik8.json | tee quant8-enwik8.log
+
+      - name: Run exact multi-level BPE quant-down/readback
+        working-directory: third-seat-2026-07-12
+        run: |
+          python gpt-crosscheck/multilevel_bpe_zstd_v1.py /tmp/e8/enwik8 \
+            --bytes 1000000 --levels 3 --merges 512 \
+            --output multilevel-bpe-enwik8.json | tee multilevel-bpe-enwik8.log
+          test "$(grep -c 'restore=True' multilevel-bpe-enwik8.log)" = 3
 
       - name: Run fully gated 20-read persistent-prior curve
         working-directory: third-seat-2026-07-12
