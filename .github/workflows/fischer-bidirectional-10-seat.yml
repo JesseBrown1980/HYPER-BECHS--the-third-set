@@ -1,0 +1,263 @@
+name: Fischer bidirectional ten-seat codec
+
+on:
+  pull_request:
+    paths:
+      - 'fischer-codec-v2/**'
+      - '.github/workflows/fischer-bidirectional-10-seat.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and verify enwik8, then seal the 150-KB test object
+        run: |
+          set -euo pipefail
+          mkdir -p prepared /tmp/e8
+          fetched=0
+          if curl -L --fail --retry 4 --retry-delay 3 --connect-timeout 20 \
+            -o /tmp/e8/enwik8.zip https://mattmahoney.net/dc/enwik8.zip; then
+            if unzip -p /tmp/e8/enwik8.zip > /tmp/e8/enwik8; then fetched=1; fi
+          fi
+          if [ "$fetched" = 0 ]; then
+            curl -L --fail --retry 4 --retry-delay 3 --connect-timeout 20 \
+              -o /tmp/e8/enwik8 \
+              https://media.githubusercontent.com/media/amkillam/compression-test-data/e8da60efe169a1eadc74213f85ce0eaf6c382fa5/enwik/enwik8
+          fi
+          test "$(stat -c%s /tmp/e8/enwik8)" = 100000000
+          echo '2b49720ec4d78c3c9fabaee6e4179a5e997302b3a70029f30f2d582218c024a8  /tmp/e8/enwik8' | sha256sum -c -
+          head -c 150000 /tmp/e8/enwik8 > prepared/enwik8-first-150000.bin
+          sha256sum prepared/enwik8-first-150000.bin > prepared/enwik8-first-150000.bin.sha256
+          cat prepared/enwik8-first-150000.bin.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fischer-enwik8-slice
+          path: prepared/
+
+  property:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile and run exact round-trip property surface
+        run: |
+          python -m py_compile fischer-codec-v2/fischer_bidirectional_codec_v2.py
+          python fischer-codec-v2/fischer_bidirectional_codec_v2.py property | tee fischer-property.log
+          grep -q 'status=PASS' fischer-property.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fischer-property
+          path: fischer-property.log
+
+  kernel-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Rust 1.97
+        run: |
+          rustup toolchain install 1.97.0 --profile minimal
+          rustup override set 1.97.0
+          rustc -Vv | tee rustc-version.txt
+      - name: Run the actual public Fischer evaluator kernel
+        run: |
+          set -euo pipefail
+          git clone https://github.com/JesseBrown1980/asolaria-federation-1024.git /tmp/federation
+          git -C /tmp/federation checkout 99e7ab91f1ca8c6df2f16bd00780a0e1a38934f4
+          cd /tmp/federation
+          cargo test -p asolaria-server-fischer-eval --all-targets -- --nocapture 2>&1 | tee "$GITHUB_WORKSPACE/fischer-kernel-test.log"
+      - name: Guard the canonical 12 OmniShannon finding types
+        run: |
+          curl -L --fail --retry 3 \
+            -o shannon-types.js \
+            https://raw.githubusercontent.com/JesseBrown1980/asolaria-behcs-256/802023a9588cf3c72be9f9b353c847f22c616092/tools/shannon-consensus/shannon-types.js
+          node - <<'NODE' | tee omnishannon-types.log
+          const s=require('./shannon-types.js');
+          if(s.TOTAL_TYPES!==12) throw new Error(`expected 12, got ${s.TOTAL_TYPES}`);
+          console.log(`OMNISHANNON_TYPES|count=${s.TOTAL_TYPES}|status=PASS|json=0`);
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fischer-kernel-guard
+          path: |
+            rustc-version.txt
+            fischer-kernel-test.log
+            omnishannon-types.log
+
+  lens:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { direction: black, order: 1, prime: 11 }
+          - { direction: black, order: 2, prime: 13 }
+          - { direction: black, order: 3, prime: 17 }
+          - { direction: black, order: 4, prime: 19 }
+          - { direction: black, order: 5, prime: 23 }
+          - { direction: white, order: 1, prime: 29 }
+          - { direction: white, order: 2, prime: 31 }
+          - { direction: white, order: 3, prime: 37 }
+          - { direction: white, order: 4, prime: 41 }
+          - { direction: white, order: 5, prime: 43 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: fischer-enwik8-slice
+          path: prepared
+      - name: Verify object and run one isolated Fischer lens
+        run: |
+          set -euo pipefail
+          cd prepared
+          sha256sum -c enwik8-first-150000.bin.sha256
+          cd ..
+          mkdir -p lens-out
+          python fischer-codec-v2/fischer_bidirectional_codec_v2.py audit \
+            prepared/enwik8-first-150000.bin \
+            --direction '${{ matrix.direction }}' --order '${{ matrix.order }}' \
+            --schedule pyramid --stride 32 --block-size 4096 --table-bits 18 \
+            --report lens-out/lens-${{ matrix.direction }}-o${{ matrix.order }}.json \
+            | tee lens-out/lens-${{ matrix.direction }}-o${{ matrix.order }}.log
+          python - <<'PY'
+          import json
+          p='lens-out/lens-${{ matrix.direction }}-o${{ matrix.order }}.json'
+          x=json.load(open(p)); assert x['prime']==${{ matrix.prime }}
+          assert x['direction']=='${{ matrix.direction }}' and x['order']==${{ matrix.order }}
+          print(f"FISCHER_LENS|expert={x['expert']}|ideal_bpb={x['ideal_bpb']:.6f}|accuracy={x['accuracy']:.6f}|blunders={x['blunders']}|status=PASS|json=0")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fischer-lens-${{ matrix.direction }}-o${{ matrix.order }}
+          path: lens-out/
+
+  codec:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: black-seq, mode: black, schedule: sequential, stride: 32 }
+          - { name: black-pyr32, mode: black, schedule: pyramid, stride: 32 }
+          - { name: white-pyr32, mode: white, schedule: pyramid, stride: 32 }
+          - { name: both-pyr32, mode: both, schedule: pyramid, stride: 32 }
+          - { name: omni-pyr32, mode: omni, schedule: pyramid, stride: 32 }
+          - { name: both-pyr64, mode: both, schedule: pyramid, stride: 64 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: fischer-enwik8-slice
+          path: prepared
+      - name: Encode, decode, and require byte identity
+        run: |
+          set -euo pipefail
+          cd prepared && sha256sum -c enwik8-first-150000.bin.sha256 && cd ..
+          mkdir -p codec-out
+          python fischer-codec-v2/fischer_bidirectional_codec_v2.py encode \
+            prepared/enwik8-first-150000.bin codec-out/${{ matrix.name }}.fsc \
+            --mode '${{ matrix.mode }}' --schedule '${{ matrix.schedule }}' \
+            --stride '${{ matrix.stride }}' --block-size 4096 --table-bits 18 \
+            --report codec-out/codec-${{ matrix.name }}.json \
+            | tee codec-out/codec-${{ matrix.name }}-encode.log
+          python fischer-codec-v2/fischer_bidirectional_codec_v2.py decode \
+            codec-out/${{ matrix.name }}.fsc codec-out/${{ matrix.name }}.restored \
+            --report codec-out/codec-${{ matrix.name }}-decode.json \
+            | tee codec-out/codec-${{ matrix.name }}-decode.log
+          cmp prepared/enwik8-first-150000.bin codec-out/${{ matrix.name }}.restored
+          python - <<'PY'
+          import hashlib,json
+          p='codec-out/codec-${{ matrix.name }}.json'; d='codec-out/codec-${{ matrix.name }}-decode.json'
+          x=json.load(open(p)); y=json.load(open(d)); raw=open('prepared/enwik8-first-150000.bin','rb').read()
+          x.update({'name':'${{ matrix.name }}','restore':True,'sha256_out':y['sha256_out'],'decode_s':y['decode_s']})
+          assert x['sha256_out']==hashlib.sha256(raw).hexdigest()
+          open(p,'w').write(json.dumps(x,indent=2))
+          print(f"FISCHER_CODEC|name={x['name']}|bytes={x['archive_bytes']}|bpc={x['bpc']:.6f}|restore=1|json=0")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fischer-codec-${{ matrix.name }}
+          path: codec-out/
+
+  aggregate:
+    needs: [prepare, property, kernel-guard, lens, codec]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install aggregate dependencies
+        run: python -m pip install 'numpy==2.4.4' zstandard
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fischer-*
+          path: gathered
+          merge-multiple: true
+      - name: Fetch pinned Catalog47 and BEHCS alphabet
+        run: |
+          mkdir -p /tmp/asolaria-catalog final
+          curl -L --fail --retry 3 -o /tmp/asolaria-catalog/catalogs.json \
+            https://raw.githubusercontent.com/JesseBrown1980/asolaria-behcs-256/802023a9588cf3c72be9f9b353c847f22c616092/data/behcs/codex/catalogs.json
+          curl -L --fail --retry 3 -o /tmp/asolaria-catalog/alphabet.json \
+            https://raw.githubusercontent.com/JesseBrown1980/asolaria-behcs-256/802023a9588cf3c72be9f9b353c847f22c616092/data/behcs/codex/alphabet.json
+          test "$(git hash-object /tmp/asolaria-catalog/catalogs.json)" = 51af0b536c45e8e769066bfd886bf6f08daff75d
+          test "$(git hash-object /tmp/asolaria-catalog/alphabet.json)" = 8d4a3298576ce2c9d4a1683ffab667c8a743fc42
+      - name: Aggregate ten seats, same-slice baselines, and Omni receipts
+        run: |
+          set -euo pipefail
+          find gathered -maxdepth 2 -type f | sort
+          sha256sum -c gathered/enwik8-first-150000.bin.sha256
+          python fischer-codec-v2/aggregate_fischer_bench_v2.py \
+            --root gathered \
+            --slice gathered/enwik8-first-150000.bin \
+            --v01 third-seat-2026-07-12/asolaria_codec_v0_1.py \
+            --catalog47 /tmp/asolaria-catalog/catalogs.json \
+            --alphabet256 /tmp/asolaria-catalog/alphabet.json \
+            --omnievent-script omni-event-v1/omnievent_catalog47_60d_v1.py \
+            --portal-script omni-event-v1/omniportal_v2.py \
+            --output-dir final | tee final/aggregate.log
+          grep -q 'VERDICT' final/aggregate.log
+      - name: Seal aggregate evidence
+        run: |
+          cd final
+          sha256sum \
+            fischer_summary.json \
+            FISCHER-BIDIRECTIONAL-10-SEAT-CI-RECEIPT.md \
+            FISCHER-BIDIRECTIONAL-10-SEAT-CI-RECEIPT.hbp \
+            fischer_events_full.ndjson \
+            fischer_events_portal_v1.hbp \
+            fischer_events_portal_v2.hbp \
+            fischer_views3d.ndjson \
+            aggregate.log > SHA256SUMS
+          sha256sum -c SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fischer-bidirectional-10-seat-final
+          path: |
+            final/**
+            gathered/lens-*.json
+            gathered/codec-*.json
+            gathered/fischer-kernel-test.log
+            gathered/omnishannon-types.log
+            fischer-codec-v2/fischer_bidirectional_codec_v2.py
+            fischer-codec-v2/aggregate_fischer_bench_v2.py
