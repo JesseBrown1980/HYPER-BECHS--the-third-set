@@ -1,0 +1,23 @@
+{
+  "expert": "black-o3",
+  "direction": "black",
+  "order": 3,
+  "prime": 17,
+  "actor_pid": "97447c5c35f73aeb",
+  "accuracy": 0.2834466666666667,
+  "error_rate": 0.7165533333333334,
+  "mean_confidence": 9.209833333333334,
+  "high_confidence_blunders": 4232,
+  "touched_slots": 44684,
+  "replacements": 50140,
+  "codec_cpl_vs_best": 0,
+  "fischer_verdict": "PROCEED",
+  "trust_pct": 100.0,
+  "raw_bytes": 150000,
+  "schedule": "pyramid",
+  "stride": 32,
+  "block_size": 4096,
+  "table_bits": 17,
+  "elapsed_s": 1.440824325021822,
+  "sha256_in": "3803c167dfeb4a91936ac52011be24639822204896b8d0a4658e0480f0f5dc1f"
+}
