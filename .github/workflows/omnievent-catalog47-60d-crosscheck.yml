@@ -69,6 +69,7 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf omni-event-v1/out
+          mkdir -p omni-event-v1/out
           python omni-event-v1/omnievent_catalog47_60d_v1.py \
             --input /tmp/e8/enwik8 \
             --bytes 1000000 \
