@@ -28,11 +28,16 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq git-lfs
 
-      - name: Verify supplied receipt and source package
+      - name: Verify every third-seat receipt sidecar and source package
         working-directory: third-seat-2026-07-12
         run: |
-          sha256sum -c E8-E100-THIRD-SEAT-RECEIPT-2026-07-12.md.sha256
-          python -m py_compile asolaria_codec_v0_1.py behcs_ladder_roundtrip.py
+          set -euo pipefail
+          while IFS= read -r -d '' sidecar; do
+            dir="$(dirname "$sidecar")"
+            base="$(basename "$sidecar")"
+            (cd "$dir" && sha256sum -c "$base")
+          done < <(find . -type f -name '*.sha256' -print0 | sort -z)
+          python -m py_compile asolaria_codec_v0_1.py behcs_ladder_roundtrip.py gpt-crosscheck/*.py
           sha256sum E8-E100-THIRD-SEAT-RECEIPT-2026-07-12.md \
                     asolaria_codec_v0_1.py behcs_ladder_roundtrip.py | tee supplied-package.sha256
 
@@ -111,7 +116,7 @@ jobs:
         working-directory: third-seat-2026-07-12
         run: |
           python - <<'PY' | tee e100-address-math.log
-          import hashlib, math, random
+          import math, random
           assert 1024**33 < 10**100 <= 1024**34
           assert 1024**60 == 2**600
           rng=random.Random(20260713)
@@ -135,5 +140,5 @@ jobs:
             third-seat-2026-07-12/*.log
             third-seat-2026-07-12/*.json
             third-seat-2026-07-12/*.sha256
-            third-seat-2026-07-12/gpt-crosscheck/*.py
+            third-seat-2026-07-12/gpt-crosscheck/*
             third-seat-2026-07-12/E8-E100-THIRD-SEAT-RECEIPT-2026-07-12.md
