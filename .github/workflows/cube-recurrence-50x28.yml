@@ -67,6 +67,7 @@ jobs:
         run: |
           python -m py_compile \
             research/cube-recurrence-50x28-v1/cube_recurrence_50x28.py \
+            research/cube-recurrence-50x28-v1/cube_recurrence_50x28_v2.py \
             research/cube-recurrence-50x28-v1/aggregate_cube_recurrence.py \
             research/hutter-cube-swarm-v1/cube_session.py \
             research/wolfram-open-math-cubes-v1/wolfram_cube_forge.py \
@@ -82,7 +83,8 @@ jobs:
           out="research/cube-recurrence-50x28-v1/out/${SOURCE_SET}--${CUBE_LANE}"
           rm -rf "$out"
           mkdir -p "$out"
-          python research/cube-recurrence-50x28-v1/cube_recurrence_50x28.py \
+          PYTHONPATH=research/cube-recurrence-50x28-v1 \
+          python research/cube-recurrence-50x28-v1/cube_recurrence_50x28_v2.py \
             --set "$SOURCE_SET" \
             --lane "$CUBE_LANE" \
             --output "$out" \
@@ -111,6 +113,7 @@ jobs:
               assert all(x['restore'] and x['state_match'] for x in rows if x['ring']=='C_PERSISTENT_RECURRENCE')
               assert all(math.isfinite(x['estimated_bpc']) for x in rows if x['ring']=='B_FISCHER_PREDICTOR')
               assert r['base_cube']['restore']
+              assert r['base_cube'].get('fixed_start_id', 256)==256 or r['base_cube'].get('alphabet_reserved', 256)==256
               assert r['recurrence']['all_restore'] and r['recurrence']['all_state_match']
           else:
               assert r['status'].startswith('HELD')
@@ -118,7 +121,8 @@ jobs:
           PY
           status="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["status"])' "$out/perspective-result.json")"
           if [ "$status" = "MEASURED" ]; then
-            python research/cube-recurrence-50x28-v1/cube_recurrence_50x28.py \
+            PYTHONPATH=research/cube-recurrence-50x28-v1 \
+            python research/cube-recurrence-50x28-v1/cube_recurrence_50x28_v2.py \
               --set "$SOURCE_SET" --lane "$CUBE_LANE" --output "$out" --verify-output
           fi
 
@@ -173,10 +177,11 @@ jobs:
           r=json.load(open(p))
           assert r['returned_cubes']==50, r['returned_cubes']
           assert not r['invalid_receipts'], r['invalid_receipts']
-          assert r['measured_cubes']>=48, r['status_counts']
+          assert r['measured_cubes']>=49, r['status_counts']
           assert r['returned_perspective_passes']==r['measured_cubes']*28
           assert all(row['all_restore'] for row in r['ring_a'])
           assert r['recurrence']['cubes']==r['measured_cubes']
+          assert r['recurrence']['improved_cubes']>0
           print('CUBERECURRENCEAGGVERIFY|'+'|'.join([
             f"returned={r['returned_cubes']}",
             f"measured={r['measured_cubes']}",
@@ -195,4 +200,5 @@ jobs:
             research/cube-recurrence-50x28-v1/aggregate-out/**
             research/cube-recurrence-50x28-v1/PLAN.md
             research/cube-recurrence-50x28-v1/cube_recurrence_50x28.py
+            research/cube-recurrence-50x28-v1/cube_recurrence_50x28_v2.py
             research/cube-recurrence-50x28-v1/aggregate_cube_recurrence.py
