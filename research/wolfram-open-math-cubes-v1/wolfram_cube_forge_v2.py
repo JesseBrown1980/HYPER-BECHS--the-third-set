@@ -7,6 +7,10 @@ issues rather than source failures:
 2. bundle lanes allowed the first large repository to consume the whole corpus;
 3. method shadows tokenized binary framing headers along with source bytes.
 
+Attempt 2 fixed those three paths but showed that canonical MIT notices may wrap
+"to deal in the Software" across lines. License text is therefore normalized to
+single-space form before exact phrase classification.
+
 This wrapper patches those functions and then runs the original forge unchanged.
 """
 from __future__ import annotations
@@ -20,7 +24,7 @@ import wolfram_cube_forge as forge
 
 
 def classify_license(text: str) -> str:
-    low = text.lower()
+    low = " ".join(text.lower().split())
     if (
         "permission is hereby granted, free of charge" in low
         and "to deal in the software without restriction" in low
