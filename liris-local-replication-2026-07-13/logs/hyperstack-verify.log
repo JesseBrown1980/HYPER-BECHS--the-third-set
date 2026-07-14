@@ -1,0 +1,15 @@
+test_arbitrary_bytes_roundtrip_through_behcs1024_frame (test_glyph_hyperstack_first_floor_v1.GlyphHyperstackFirstFloorContract.test_arbitrary_bytes_roundtrip_through_behcs1024_frame) ... ok
+test_canonical_seats_and_rule_of_three_vantages (test_glyph_hyperstack_first_floor_v1.GlyphHyperstackFirstFloorContract.test_canonical_seats_and_rule_of_three_vantages) ... ok
+test_each_cube_has_one_cold_and_thirty_three_rule_passes (test_glyph_hyperstack_first_floor_v1.GlyphHyperstackFirstFloorContract.test_each_cube_has_one_cold_and_thirty_three_rule_passes) ... ok
+test_every_accepted_merge_is_positive_and_exactly_reversible (test_glyph_hyperstack_first_floor_v1.GlyphHyperstackFirstFloorContract.test_every_accepted_merge_is_positive_and_exactly_reversible) ... ok
+test_four_axis_27_power_4_formation_remains_held (test_glyph_hyperstack_first_floor_v1.GlyphHyperstackFirstFloorContract.test_four_axis_27_power_4_formation_remains_held) ... ok
+test_hbp_hbi_are_default_and_json_is_debug_only (test_glyph_hyperstack_first_floor_v1.GlyphHyperstackFirstFloorContract.test_hbp_hbi_are_default_and_json_is_debug_only) ... ok
+test_hookwall_holds_every_nonpositive_gain (test_glyph_hyperstack_first_floor_v1.GlyphHyperstackFirstFloorContract.test_hookwall_holds_every_nonpositive_gain) ... ok
+test_same_inputs_produce_identical_output (test_glyph_hyperstack_first_floor_v1.GlyphHyperstackFirstFloorContract.test_same_inputs_produce_identical_output) ... ok
+test_selftest_units_are_five_byte_aligned_with_hold_control (test_glyph_hyperstack_first_floor_v1.GlyphHyperstackFirstFloorContract.test_selftest_units_are_five_byte_aligned_with_hold_control) ... ok
+test_shannon_receipt_is_exact_and_contains_no_float (test_glyph_hyperstack_first_floor_v1.GlyphHyperstackFirstFloorContract.test_shannon_receipt_is_exact_and_contains_no_float) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.258s
+
+OK

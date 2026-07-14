@@ -1,0 +1,113 @@
+[
+  {
+    "levels": 1,
+    "raw_bytes": 1000000,
+    "merges_per_level": 512,
+    "catalog_bytes": 2068,
+    "token_count": 446900,
+    "packed_token_bytes": 893800,
+    "payload_bytes": 322929,
+    "total_bytes": 324997,
+    "bpc": 2.599976,
+    "payload_bpc": 2.583432,
+    "raw_zstd19_bytes": 300075,
+    "raw_zstd19_bpc": 2.4006,
+    "delta_vs_raw_zstd_pct": 8.30525701907856,
+    "sha256": "369b688978f649681136198fb96db14c1616756260c55fb4b65e9bc049552cad",
+    "restore": true,
+    "enc_s": 3.9277007469790988,
+    "dec_s": 0.21187276300042868,
+    "trace": [
+      {
+        "level": 1,
+        "input_tokens": 1000000,
+        "output_tokens": 446900,
+        "rules": 512,
+        "train_s": 3.5022877780138515,
+        "max_token": 749
+      }
+    ]
+  },
+  {
+    "levels": 2,
+    "raw_bytes": 1000000,
+    "merges_per_level": 512,
+    "catalog_bytes": 4122,
+    "token_count": 375174,
+    "packed_token_bytes": 750348,
+    "payload_bytes": 321102,
+    "total_bytes": 325224,
+    "bpc": 2.601792,
+    "payload_bpc": 2.568816,
+    "raw_zstd19_bytes": 300075,
+    "raw_zstd19_bpc": 2.4006,
+    "delta_vs_raw_zstd_pct": 8.380904773806552,
+    "sha256": "369b688978f649681136198fb96db14c1616756260c55fb4b65e9bc049552cad",
+    "restore": true,
+    "enc_s": 4.595987496024463,
+    "dec_s": 0.2648944939719513,
+    "trace": [
+      {
+        "level": 1,
+        "input_tokens": 1000000,
+        "output_tokens": 446900,
+        "rules": 512,
+        "train_s": 3.34130313701462,
+        "max_token": 749
+      },
+      {
+        "level": 2,
+        "input_tokens": 446900,
+        "output_tokens": 375174,
+        "rules": 512,
+        "train_s": 0.7946477350196801,
+        "max_token": 1261
+      }
+    ]
+  },
+  {
+    "levels": 3,
+    "raw_bytes": 1000000,
+    "merges_per_level": 512,
+    "catalog_bytes": 6176,
+    "token_count": 336938,
+    "packed_token_bytes": 673876,
+    "payload_bytes": 320408,
+    "total_bytes": 326584,
+    "bpc": 2.612672,
+    "payload_bpc": 2.563264,
+    "raw_zstd19_bytes": 300075,
+    "raw_zstd19_bpc": 2.4006,
+    "delta_vs_raw_zstd_pct": 8.834124802132791,
+    "sha256": "369b688978f649681136198fb96db14c1616756260c55fb4b65e9bc049552cad",
+    "restore": true,
+    "enc_s": 5.620563331991434,
+    "dec_s": 0.29039939801441506,
+    "trace": [
+      {
+        "level": 1,
+        "input_tokens": 1000000,
+        "output_tokens": 446900,
+        "rules": 512,
+        "train_s": 3.6176919669960625,
+        "max_token": 749
+      },
+      {
+        "level": 2,
+        "input_tokens": 446900,
+        "output_tokens": 375174,
+        "rules": 512,
+        "train_s": 0.8942962809815072,
+        "max_token": 1261
+      },
+      {
+        "level": 3,
+        "input_tokens": 375174,
+        "output_tokens": 336938,
+        "rules": 512,
+        "train_s": 0.6602882709703408,
+        "max_token": 1773
+      }
+    ]
+  }
+]

@@ -1,0 +1,5 @@
+FISCHER_BENCH|name=black-sequential|bpc=3.213024|baseline_bpc=2.400600|hit_rate=0.457544|black_trust=100.000|white_trust=0.000|restore=1|json=0
+FISCHER_BENCH|name=black-pyramid|bpc=4.530328|baseline_bpc=2.400600|hit_rate=0.266374|black_trust=100.000|white_trust=0.000|restore=1|json=0
+FISCHER_BENCH|name=white-pyramid|bpc=4.541392|baseline_bpc=2.400600|hit_rate=0.265739|black_trust=0.000|white_trust=100.000|restore=1|json=0
+FISCHER_BENCH|name=blackwhite-pyramid|bpc=4.395544|baseline_bpc=2.400600|hit_rate=0.308997|black_trust=50.268|white_trust=49.732|restore=1|json=0
+FISCHER_VERDICT|raw_bytes=1000000|backend=zstd|black_pyramid_bytes=566291|blackwhite_pyramid_bytes=549443|white_gain_vs_black_pct=2.975149|black_pyramid_bpc=4.530328|blackwhite_pyramid_bpc=4.395544|blackwhite_black_trust_pct=50.267963|blackwhite_white_trust_pct=49.732037|all_restore=True|sha256=369b688978f649681136198fb96db14c1616756260c55fb4b65e9bc049552cad|json=0
