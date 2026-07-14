@@ -1,0 +1,93 @@
+name: Repo orbit (8 views x 800 passes on Asolaria's own repos)
+
+on:
+  pull_request:
+    paths:
+      - 'repo-orbit-v1/**'
+      - '.github/workflows/repo-orbit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CORPUS_SHA256: cf34464d06eb498a3674b821aff5a6039751b13d660296bf67510ca71c11ae01
+
+jobs:
+  view:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        view: [i, r, n, nr, q, qr, nq, nqr]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify frozen corpus against pinned sha
+        run: echo "${CORPUS_SHA256}  repo-orbit-v1/asolaria-repo-corpus.txt" | sha256sum -c -
+      - name: Cut 27 sha-pinned repo cubes
+        run: |
+          set -euo pipefail
+          python3 repo-orbit-v1/make_repo_cubes.py --corpus repo-orbit-v1/asolaria-repo-corpus.txt --slice-bytes 26000 --count 27 --output-dir repo-orbit-v1/work
+      - name: Transform through vertex view ${{ matrix.view }} (round-trips + group gates)
+        run: |
+          set -euo pipefail
+          python3 pyramid-views-v1/make_views.py --native-snapshot repo-orbit-v1/work/snapshot --view ${{ matrix.view }} --group-gates --output-dir repo-orbit-v1/view-${{ matrix.view }}
+          grep -q 'group=C2\^3_CONFIRMED_ON_INPUTS' repo-orbit-v1/view-${{ matrix.view }}/GROUP-GATES.hbp
+          grep -q 'all_inputs_distinct=1' repo-orbit-v1/view-${{ matrix.view }}/GROUP-GATES.hbp
+      - name: Train view language (uniform 800 passes)
+        run: |
+          set -euo pipefail
+          python3 glyph-hyperstack-first-floor-v1/glyph_hyperstack_first_floor_v1.py run --snapshot-root repo-orbit-v1/view-${{ matrix.view }}/snapshot --source-hbp-manifest repo-orbit-v1/view-${{ matrix.view }}/manifest.hbp --count 27 --passes-per-cycle 10 --three-rule-cycles 80 --merges-per-pass 1 --output-dir repo-orbit-v1/out-${{ matrix.view }} 2>&1 | tee repo-orbit-v1/${{ matrix.view }}.log
+      - name: Verify receipts and exact restore
+        run: |
+          set -euo pipefail
+          grep -q 'restore=1' repo-orbit-v1/${{ matrix.view }}.log
+          grep -q 'status=PASS' repo-orbit-v1/${{ matrix.view }}.log
+          cd repo-orbit-v1/out-${{ matrix.view }} && sha256sum -c SHA256SUMS --quiet && echo "REPO VIEW ${{ matrix.view }} SUMS_OK"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: repo-${{ matrix.view }}
+          if-no-files-found: error
+          path: |
+            repo-orbit-v1/out-${{ matrix.view }}
+            repo-orbit-v1/view-${{ matrix.view }}/views-map.hbp
+            repo-orbit-v1/view-${{ matrix.view }}/GROUP-GATES.hbp
+            repo-orbit-v1/${{ matrix.view }}.log
+  compare:
+    needs: view
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          path: arms
+      - name: Compare the 8 orientation languages on the repo corpus + seal sidecars
+        run: |
+          set -euo pipefail
+          MAPS=""
+          for v in i r n nr q qr nq nqr; do MAPS="$MAPS --map arms/repo-$v/view-$v/views-map.hbp"; done
+          python3 pyramid-views-v1/compare_views.py $MAPS arms/repo-i/out-i arms/repo-r/out-r arms/repo-n/out-n arms/repo-nr/out-nr arms/repo-q/out-q arms/repo-qr/out-qr arms/repo-nq/out-nq arms/repo-nqr/out-nqr 2>&1 | tee REPO-ORBIT-COMPARISON.hbp
+          grep -q 'PVVERDICT' REPO-ORBIT-COMPARISON.hbp
+          # Omega over the 8 view HBP digests + HBI projection + SHA sidecars
+          for v in i r n nr q qr nq nqr; do d=$(sha256sum arms/repo-$v/out-$v/FIRST-FLOOR-RESULT.hbp | cut -d' ' -f1); echo "$v:$d"; done | sort > omega-leaves.txt
+          OMEGA=$(sha256sum omega-leaves.txt | cut -d' ' -f1)
+          echo "REPOOMEGA|epoch=0|method=sha256_over_sorted_view_colon_hbp_sha256_lines_LF|views=8|corpus=asolaria_own_repos|omega=$OMEGA|json=0" >> REPO-ORBIT-COMPARISON.hbp
+          bash repo-orbit-v1/seal_hbi.sh REPO-ORBIT-COMPARISON.hbp
+      - uses: actions/upload-artifact@v4
+        with:
+          name: repo-orbit-comparison
+          if-no-files-found: error
+          path: |
+            REPO-ORBIT-COMPARISON.hbp
+            REPO-ORBIT-COMPARISON.hbi
+            REPO-ORBIT-COMPARISON.hbp.sha256
+            REPO-ORBIT-COMPARISON.hbi.sha256
+            omega-leaves.txt
