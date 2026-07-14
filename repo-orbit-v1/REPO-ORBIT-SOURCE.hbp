@@ -1,0 +1,6 @@
+REPOSRCHDR|run=REPO-ORBIT-V1|date=2026-07-14|seat=LIRIS|source=asolaria_own_repos_github_trimmed|note=github_is_omega_over_seats_trimmed_projection|json=0
+REPOSRC|corpus=asolaria-repo-corpus.txt|sha256=cf34464d06eb498a3674b821aff5a6039751b13d660296bf67510ca71c11ae01|bytes=727827|repos=Algorithms-of-Asolaria,dbbh-coms-quant-prism,qprism-3d-slice-harness,Q-PRISM-human-organoid,Metatagging-data-for-a-Quantum-universe|json=0
+REPOCUBES|count=27|slice_bytes=26000|geometry=contiguous|json=0
+REPOBASELINE|view=i|passes=100|cohort_net_gain=165262|cold_glyphs=561600|density_gain_per_glyph=165262/561600|vs_enwik9_density=211182/800000|denser_pct=~11|tier=MEASURED_REPO_ledger_gain_not_archive|json=0
+REPOBOUNDARY|archive_ratio=NOT_CLAIMED|full_local_tree=DWARFS_GITHUB_TRIM_deferred|trilateral_per_seat=DESIGN|json=0
+REPOSRCEND|run=REPO-ORBIT-V1|state=LIRIS_FROZEN_SOURCE|json=0
