@@ -83,14 +83,18 @@ def group_gates(cubes) -> list[str]:
         assert sq, f"{name}: generator square failed"
         assert comm, f"{name}: commutator failed"
         assert full_rev, f"{name}: RNQ is not total bit reversal"
+        # Hard gate (ACER attack-review 2026-07-14, council 184/251): coinciding
+        # views on any input invalidate the faithful-8-view premise — fail, never
+        # label. Without this, an all-zero cube prints CONFIRMED beside distinct=0.
+        assert distinct, f"{name}: views COINCIDE on this input — faithful-8 orbit FAILED"
         rows.append(
             f"GGATE|cube={name}|squares=PASS|commutators=PASS"
-            f"|views_distinct={'PASS' if distinct else 'COINCIDE_ON_THIS_INPUT'}"
-            f"|rnq_total_bit_reversal=PASS|json=0"
+            f"|views_distinct=PASS|rnq_total_bit_reversal=PASS|json=0"
         )
+    assert all_distinct
     rows.append(
-        f"GGATESEND|group=C2^3_CONFIRMED_ON_INPUTS"
-        f"|all_inputs_distinct={'1' if all_distinct else '0'}|json=0"
+        "GGATESEND|group=C2^3_CONFIRMED_ON_INPUTS|all_inputs_distinct=1"
+        "|distinctness=HARD_ASSERTED|json=0"
     )
     return rows
 

@@ -66,6 +66,7 @@ jobs:
             --group-gates \
             --output-dir pyramid-views-v1/view-${{ matrix.view }}
           grep -q 'group=C2\^3_CONFIRMED_ON_INPUTS' pyramid-views-v1/view-${{ matrix.view }}/GROUP-GATES.hbp
+          grep -q 'all_inputs_distinct=1' pyramid-views-v1/view-${{ matrix.view }}/GROUP-GATES.hbp
 
       - name: Train view language (uniform 800 passes, own container)
         run: |
