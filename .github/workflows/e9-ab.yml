@@ -1,0 +1,124 @@
+name: E9 super-cube A/B (30 vs 100 uniform passes)
+
+on:
+  pull_request:
+    paths:
+      - 'e9-ab-v1/**'
+      - '.github/workflows/e9-ab.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ENWIK9_SHA256: 159b85351e5f76e60cbe32e04c677847a9ecba3adc79addab6f4c6c7aa3744bc
+
+jobs:
+  arm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arm: old-30
+            cycles: 3
+          - arm: new-100
+            cycles: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache enwik9
+        id: cache-e9
+        uses: actions/cache@v4
+        with:
+          path: enwik9.zip
+          key: enwik9-zip-v1
+
+      - name: Download enwik9
+        if: steps.cache-e9.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          curl -fsSL -o enwik9.zip https://mattmahoney.net/dc/enwik9.zip
+
+      - name: Verify corpus against the pinned receipt hash
+        run: |
+          set -euo pipefail
+          unzip -o -q enwik9.zip
+          echo "${ENWIK9_SHA256}  enwik9" | sha256sum -c -
+
+      - name: Cut 27 sha-pinned E9 cubes (mid-corpus, beyond enwik8 prefix)
+        run: |
+          set -euo pipefail
+          python e9-ab-v1/make_e9_cubes.py \
+            --enwik9 enwik9 \
+            --offset 500000000 \
+            --slice-bytes 37037 \
+            --count 27 \
+            --output-dir e9-ab-v1/work \
+            2>&1 | tee e9-ab-v1/cubes-${{ matrix.arm }}.log
+
+      - name: Run uniform-pass arm on E9 cubes (own cloud container)
+        run: |
+          set -euo pipefail
+          python glyph-hyperstack-first-floor-v1/glyph_hyperstack_first_floor_v1.py \
+            run \
+            --snapshot-root e9-ab-v1/work/snapshot \
+            --source-hbp-manifest e9-ab-v1/work/manifest.hbp \
+            --count 27 \
+            --passes-per-cycle 10 \
+            --three-rule-cycles ${{ matrix.cycles }} \
+            --merges-per-pass 1 \
+            --output-dir e9-ab-v1/out-${{ matrix.arm }} \
+            2>&1 | tee e9-ab-v1/${{ matrix.arm }}.log
+
+      - name: Verify receipts and exact restore
+        run: |
+          set -euo pipefail
+          grep -q 'restore=1' e9-ab-v1/${{ matrix.arm }}.log
+          grep -q 'status=PASS' e9-ab-v1/${{ matrix.arm }}.log
+          cd e9-ab-v1/out-${{ matrix.arm }}
+          sha256sum -c SHA256SUMS --quiet && echo "ARM ${{ matrix.arm }} SUMS_OK"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e9-ab-${{ matrix.arm }}
+          if-no-files-found: error
+          path: |
+            e9-ab-v1/out-${{ matrix.arm }}
+            e9-ab-v1/${{ matrix.arm }}.log
+            e9-ab-v1/cubes-${{ matrix.arm }}.log
+
+  compare:
+    needs: arm
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: arms
+
+      - name: Compare E9 floor densities (exact arithmetic)
+        run: |
+          set -euo pipefail
+          python thirty-vs-new-ab-v1/analyze_ab.py \
+            arms/e9-ab-old-30/out-old-30 \
+            arms/e9-ab-new-100/out-new-100 \
+            2>&1 | tee E9-AB-COMPARISON.hbp
+          grep -q 'ABVERDICT' E9-AB-COMPARISON.hbp
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e9-ab-comparison
+          if-no-files-found: error
+          path: E9-AB-COMPARISON.hbp
