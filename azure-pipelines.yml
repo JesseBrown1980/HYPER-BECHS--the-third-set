@@ -1,7 +1,16 @@
 # Azure Pipelines — full-depth wide-orbit fleet (6h/job OSS grant; ~10 parallel).
 # Activates when an Azure DevOps pipeline is pointed at this repo/branch.
 # Runs the FULL 800-pass wide views — a second full-depth provider alongside GitHub.
-trigger: none
+trigger:
+  branches:
+    include:
+      - agent/liris-multiplex-platforms-2026-07-14
+  paths:
+    include:
+      - azure-pipelines.yml
+      - e9-wide-v1/*
+      - pyramid-views-v1/*
+      - glyph-hyperstack-first-floor-v1/*
 pr: none
 
 strategy:
