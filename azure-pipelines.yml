@@ -1,0 +1,54 @@
+# Azure Pipelines — full-depth wide-orbit fleet (6h/job OSS grant; ~10 parallel).
+# Activates when an Azure DevOps pipeline is pointed at this repo/branch.
+# Runs the FULL 800-pass wide views — a second full-depth provider alongside GitHub.
+trigger: none
+pr: none
+
+strategy:
+  matrix:
+    view_i:   { VIEW: i }
+    view_r:   { VIEW: r }
+    view_n:   { VIEW: n }
+    view_nr:  { VIEW: nr }
+    view_q:   { VIEW: q }
+    view_qr:  { VIEW: qr }
+    view_nq:  { VIEW: nq }
+    view_nqr: { VIEW: nqr }
+  maxParallel: 8
+
+pool:
+  vmImage: ubuntu-latest
+
+timeoutInMinutes: 340
+
+steps:
+  - checkout: self
+
+  - bash: |
+      set -euo pipefail
+      curl -fsSL --retry 6 --retry-delay 15 -o enwik9.zip https://mattmahoney.net/dc/enwik9.zip
+      unzip -o -q enwik9.zip
+      echo "159b85351e5f76e60cbe32e04c677847a9ecba3adc79addab6f4c6c7aa3744bc  enwik9" | sha256sum -c -
+    displayName: Corpus (verified against pinned receipt hash)
+
+  - bash: |
+      set -euo pipefail
+      python3 e9-wide-v1/make_e9_wide_cubes.py --enwik9 enwik9 --base-offset 500000 --stride 37000000 --slice-bytes 37037 --count 27 --output-dir work
+      python3 pyramid-views-v1/make_views.py --native-snapshot work/snapshot --view $(VIEW) --group-gates --output-dir view
+      grep -q 'all_inputs_distinct=1' view/GROUP-GATES.hbp
+    displayName: Wide cubes + view transform + group gates
+
+  - bash: |
+      set -euo pipefail
+      python3 glyph-hyperstack-first-floor-v1/glyph_hyperstack_first_floor_v1.py run \
+        --snapshot-root view/snapshot --source-hbp-manifest view/manifest.hbp \
+        --count 27 --passes-per-cycle 10 --three-rule-cycles 80 --merges-per-pass 1 \
+        --output-dir out 2>&1 | tail -2
+      (cd out && sha256sum -c SHA256SUMS --quiet && echo AZURE_SUMS_OK)
+      echo "SEAT=AZURE_PIPELINES_CONTAINER VIEW=$(VIEW)"
+      sha256sum out/FIRST-FLOOR-RESULT.hbp out/FIRST-FLOOR-RESULT.hbi
+    displayName: Train 800 uniform passes + verify
+
+  - publish: out
+    artifact: azure-wide-$(VIEW)
+    displayName: Publish receipts

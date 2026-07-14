@@ -1,0 +1,37 @@
+# Cirrus CI — cross-provider determinism anchors (fits Cirrus community-cluster time limits).
+# Activates when the Cirrus CI GitHub App is installed on this repository.
+# Runs the 100-pass mid-corpus tier per view: sealed GitHub/LIRIS numbers exist for these,
+# so every Cirrus task is a NEW independent host family verifying known receipts.
+task:
+  matrix:
+    - name: cirrus-anchor-i
+      env: { VIEW: i }
+    - name: cirrus-anchor-n
+      env: { VIEW: n }
+    - name: cirrus-anchor-r
+      env: { VIEW: r }
+    - name: cirrus-anchor-nqr
+      env: { VIEW: nqr }
+  container:
+    image: python:3.12
+    cpu: 2
+    memory: 4G
+  timeout_in: 120m
+  corpus_script:
+    - curl -fsSL --retry 6 --retry-delay 15 -o enwik9.zip https://mattmahoney.net/dc/enwik9.zip
+    - apt-get update -qq && apt-get install -y -qq unzip >/dev/null
+    - unzip -o -q enwik9.zip
+    - echo "159b85351e5f76e60cbe32e04c677847a9ecba3adc79addab6f4c6c7aa3744bc  enwik9" | sha256sum -c -
+  cubes_script:
+    - python3 e9-ab-v1/make_e9_cubes.py --enwik9 enwik9 --offset 500000000 --slice-bytes 37037 --count 27 --output-dir work
+  view_script:
+    - python3 pyramid-views-v1/make_views.py --native-snapshot work/snapshot --view $VIEW --group-gates --output-dir view
+    - grep -q 'all_inputs_distinct=1' view/GROUP-GATES.hbp
+  train_script:
+    - python3 glyph-hyperstack-first-floor-v1/glyph_hyperstack_first_floor_v1.py run --snapshot-root view/snapshot --source-hbp-manifest view/manifest.hbp --count 27 --passes-per-cycle 10 --three-rule-cycles 10 --merges-per-pass 1 --output-dir out 2>&1 | tail -2
+  verify_script:
+    - cd out && sha256sum -c SHA256SUMS --quiet && echo CIRRUS_SUMS_OK
+    - echo "SEAT=CIRRUS_COMMUNITY_CONTAINER VIEW=$VIEW" && sha256sum out/FIRST-FLOOR-RESULT.hbp
+  always:
+    receipts_artifacts:
+      path: "out/**"
