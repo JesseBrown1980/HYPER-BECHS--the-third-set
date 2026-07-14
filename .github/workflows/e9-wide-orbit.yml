@@ -1,0 +1,136 @@
+name: E9-wide orbit (8 views x 800 passes, full-corpus sampling)
+
+on:
+  pull_request:
+    paths:
+      - 'e9-wide-v1/**'
+      - '.github/workflows/e9-wide-orbit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ENWIK9_SHA256: 159b85351e5f76e60cbe32e04c677847a9ecba3adc79addab6f4c6c7aa3744bc
+
+jobs:
+  view:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        view: [i, r, n, nr, q, qr, nq, nqr]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache enwik9
+        id: cache-e9
+        uses: actions/cache@v4
+        with:
+          path: enwik9.zip
+          key: enwik9-zip-v1
+
+      - name: Download enwik9
+        if: steps.cache-e9.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          curl -fsSL -o enwik9.zip https://mattmahoney.net/dc/enwik9.zip
+
+      - name: Verify corpus against the pinned receipt hash
+        run: |
+          set -euo pipefail
+          unzip -o -q enwik9.zip
+          echo "${ENWIK9_SHA256}  enwik9" | sha256sum -c -
+
+      - name: Cut 27 cubes spanning the FULL corpus (one per ~37 MB)
+        run: |
+          set -euo pipefail
+          python e9-wide-v1/make_e9_wide_cubes.py \
+            --enwik9 enwik9 \
+            --base-offset 500000 \
+            --stride 37000000 \
+            --slice-bytes 37037 \
+            --count 27 \
+            --output-dir e9-wide-v1/native
+
+      - name: Transform through vertex view ${{ matrix.view }} (round-trips + group gates)
+        run: |
+          set -euo pipefail
+          python pyramid-views-v1/make_views.py \
+            --native-snapshot e9-wide-v1/native/snapshot \
+            --view ${{ matrix.view }} \
+            --group-gates \
+            --output-dir e9-wide-v1/view-${{ matrix.view }}
+          grep -q 'group=C2\^3_CONFIRMED_ON_INPUTS' e9-wide-v1/view-${{ matrix.view }}/GROUP-GATES.hbp
+          grep -q 'all_inputs_distinct=1' e9-wide-v1/view-${{ matrix.view }}/GROUP-GATES.hbp
+
+      - name: Train view language (uniform 800 passes, own container)
+        run: |
+          set -euo pipefail
+          python glyph-hyperstack-first-floor-v1/glyph_hyperstack_first_floor_v1.py \
+            run \
+            --snapshot-root e9-wide-v1/view-${{ matrix.view }}/snapshot \
+            --source-hbp-manifest e9-wide-v1/view-${{ matrix.view }}/manifest.hbp \
+            --count 27 \
+            --passes-per-cycle 10 \
+            --three-rule-cycles 80 \
+            --merges-per-pass 1 \
+            --output-dir e9-wide-v1/out-${{ matrix.view }} \
+            2>&1 | tee e9-wide-v1/${{ matrix.view }}.log
+
+      - name: Verify receipts and exact restore
+        run: |
+          set -euo pipefail
+          grep -q 'restore=1' e9-wide-v1/${{ matrix.view }}.log
+          grep -q 'status=PASS' e9-wide-v1/${{ matrix.view }}.log
+          cd e9-wide-v1/out-${{ matrix.view }}
+          sha256sum -c SHA256SUMS --quiet && echo "WIDE VIEW ${{ matrix.view }} SUMS_OK"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wide-${{ matrix.view }}
+          if-no-files-found: error
+          path: |
+            e9-wide-v1/out-${{ matrix.view }}
+            e9-wide-v1/view-${{ matrix.view }}/views-map.hbp
+            e9-wide-v1/view-${{ matrix.view }}/GROUP-GATES.hbp
+            e9-wide-v1/${{ matrix.view }}.log
+
+  compare:
+    needs: view
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: arms
+
+      - name: Compare the 8 orientation languages across the full corpus
+        run: |
+          set -euo pipefail
+          MAPS=""
+          for v in i r n nr q qr nq nqr; do
+            MAPS="$MAPS --map arms/wide-$v/view-$v/views-map.hbp"
+          done
+          python pyramid-views-v1/compare_views.py $MAPS \
+            arms/wide-i/out-i arms/wide-r/out-r arms/wide-n/out-n arms/wide-nr/out-nr \
+            arms/wide-q/out-q arms/wide-qr/out-qr arms/wide-nq/out-nq arms/wide-nqr/out-nqr \
+            2>&1 | tee E9-WIDE-COMPARISON.hbp
+          grep -q 'PVVERDICT' E9-WIDE-COMPARISON.hbp
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e9-wide-comparison
+          if-no-files-found: error
+          path: E9-WIDE-COMPARISON.hbp
