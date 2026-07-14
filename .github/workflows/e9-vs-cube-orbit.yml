@@ -1,0 +1,109 @@
+name: e9-vs-cube 8-point orbit (800 passes, both corpora)
+
+on:
+  pull_request:
+    paths:
+      - 'e9-vs-cube-v1/**'
+      - '.github/workflows/e9-vs-cube-orbit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  view:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        corpus: [e9, ourcube]
+        view: [i, r, n, nr, q, qr, nq, nqr]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify frozen ${{ matrix.corpus }} corpus against pinned sha
+        run: |
+          set -euo pipefail
+          echo "$(cat e9-vs-cube-v1/${{ matrix.corpus }}-corpus.sha256.txt)  e9-vs-cube-v1/${{ matrix.corpus }}-corpus.txt" | sha256sum -c -
+      - name: Cut 27 sha-pinned cubes (${{ matrix.corpus }})
+        run: |
+          set -euo pipefail
+          python3 repo-orbit-v1/make_repo_cubes.py --corpus e9-vs-cube-v1/${{ matrix.corpus }}-corpus.txt --slice-bytes 26000 --count 27 --output-dir e9-vs-cube-v1/work-${{ matrix.corpus }}
+      - name: Transform ${{ matrix.corpus }} through vertex view ${{ matrix.view }}
+        run: |
+          set -euo pipefail
+          python3 pyramid-views-v1/make_views.py --native-snapshot e9-vs-cube-v1/work-${{ matrix.corpus }}/snapshot --view ${{ matrix.view }} --group-gates --output-dir e9-vs-cube-v1/view-${{ matrix.corpus }}-${{ matrix.view }}
+          grep -q 'group=C2\^3_CONFIRMED_ON_INPUTS' e9-vs-cube-v1/view-${{ matrix.corpus }}-${{ matrix.view }}/GROUP-GATES.hbp
+          grep -q 'all_inputs_distinct=1' e9-vs-cube-v1/view-${{ matrix.corpus }}-${{ matrix.view }}/GROUP-GATES.hbp
+      - name: Train ${{ matrix.corpus }} view ${{ matrix.view }} (uniform 800 passes)
+        run: |
+          set -euo pipefail
+          python3 glyph-hyperstack-first-floor-v1/glyph_hyperstack_first_floor_v1.py run --snapshot-root e9-vs-cube-v1/view-${{ matrix.corpus }}-${{ matrix.view }}/snapshot --source-hbp-manifest e9-vs-cube-v1/view-${{ matrix.corpus }}-${{ matrix.view }}/manifest.hbp --count 27 --passes-per-cycle 10 --three-rule-cycles 80 --merges-per-pass 1 --output-dir e9-vs-cube-v1/out-${{ matrix.corpus }}-${{ matrix.view }} 2>&1 | tee e9-vs-cube-v1/${{ matrix.corpus }}-${{ matrix.view }}.log
+      - name: Verify receipts + exact restore
+        run: |
+          set -euo pipefail
+          grep -q 'restore=1' e9-vs-cube-v1/${{ matrix.corpus }}-${{ matrix.view }}.log
+          grep -q 'status=PASS' e9-vs-cube-v1/${{ matrix.corpus }}-${{ matrix.view }}.log
+          cd e9-vs-cube-v1/out-${{ matrix.corpus }}-${{ matrix.view }} && sha256sum -c SHA256SUMS --quiet && echo "SUMS_OK ${{ matrix.corpus }} ${{ matrix.view }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.corpus }}-${{ matrix.view }}
+          if-no-files-found: error
+          path: |
+            e9-vs-cube-v1/out-${{ matrix.corpus }}-${{ matrix.view }}
+            e9-vs-cube-v1/view-${{ matrix.corpus }}-${{ matrix.view }}/views-map.hbp
+            e9-vs-cube-v1/view-${{ matrix.corpus }}-${{ matrix.view }}/GROUP-GATES.hbp
+            e9-vs-cube-v1/${{ matrix.corpus }}-${{ matrix.view }}.log
+
+  compare:
+    needs: view
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          path: arms
+      - name: Per-corpus 8-view orbit + Omega, then e9-vs-cube head-to-head
+        run: |
+          set -euo pipefail
+          declare -A DENS OME
+          : > E9-VS-CUBE-HEADTOHEAD.hbp
+          echo "H2HHDR|test=e9_vs_ourcube_8point_orbit|passes=800|cube_bytes=26000|count=27|matched=1|json=0" >> E9-VS-CUBE-HEADTOHEAD.hbp
+          for C in e9 ourcube; do
+            MAPS=""; for v in i r n nr q qr nq nqr; do MAPS="$MAPS --map arms/$C-$v/view-$C-$v/views-map.hbp"; done
+            python3 pyramid-views-v1/compare_views.py $MAPS arms/$C-i/out-$C-i arms/$C-r/out-$C-r arms/$C-n/out-$C-n arms/$C-nr/out-$C-nr arms/$C-q/out-$C-q arms/$C-qr/out-$C-qr arms/$C-nq/out-$C-nq arms/$C-nqr/out-$C-nqr > "$C-compare.hbp" 2>&1
+            grep -q 'PVVERDICT' "$C-compare.hbp"
+            for v in i r n nr q qr nq nqr; do d=$(sha256sum "arms/$C-$v/out-$C-$v/FIRST-FLOOR-RESULT.hbp" | cut -d' ' -f1); echo "$v:$d"; done | sort > "$C-omega-leaves.txt"
+            OMEGA=$(sha256sum "$C-omega-leaves.txt" | cut -d' ' -f1)
+            g=$(grep -o '|net_gain=[0-9]*' "arms/$C-i/out-$C-i/FIRST-FLOOR-RESULT.hbp" | grep -o '[0-9]*' | awk '{s+=$1} END{print s}')
+            gl=$(grep -o '|cold_glyphs=[0-9]*' "arms/$C-i/out-$C-i/FIRST-FLOOR-RESULT.hbp" | grep -o '[0-9]*' | awk '{s+=$1} END{print s}')
+            dens=$(python3 -c "print('%.4f'%($g/$gl))")
+            rank=$(grep -o 'cohort_ranking=[a-z<>]*' "$C-compare.hbp" | head -1)
+            spread=$(grep -o 'mean_relative_spread=[0-9/]*' "$C-compare.hbp" | head -1)
+            DENS[$C]=$dens; OME[$C]=$OMEGA
+            echo "H2HCORPUS|corpus=$C|native_gain=$g|native_glyphs=$gl|density=$dens|omega=$OMEGA|$rank|$spread|json=0" >> E9-VS-CUBE-HEADTOHEAD.hbp
+          done
+          ratio=$(python3 -c "print('%.4f'%(${DENS[ourcube]}/${DENS[e9]}))")
+          if [ "${OME[e9]}" != "${OME[ourcube]}" ]; then distinct=true; else distinct=false; fi
+          echo "H2HVERDICT|e9_density=${DENS[e9]}|ourcube_density=${DENS[ourcube]}|ourcube_over_e9=$ratio|omega_distinct=$distinct|round1_ratio_at_100pass=1.1120|json=0" >> E9-VS-CUBE-HEADTOHEAD.hbp
+          bash repo-orbit-v1/seal_hbi.sh E9-VS-CUBE-HEADTOHEAD.hbp
+          echo "===== E9-VS-CUBE HEAD-TO-HEAD (800 passes, 8 points, matched) ====="; cat E9-VS-CUBE-HEADTOHEAD.hbp
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e9-vs-cube-headtohead
+          if-no-files-found: error
+          path: |
+            E9-VS-CUBE-HEADTOHEAD.hbp
+            E9-VS-CUBE-HEADTOHEAD.hbi
+            E9-VS-CUBE-HEADTOHEAD.hbp.sha256
+            e9-omega-leaves.txt
+            ourcube-omega-leaves.txt
+            e9-compare.hbp
+            ourcube-compare.hbp
