@@ -20,14 +20,16 @@ def canonical(obj: Any) -> bytes:
 def verify_lens(cube: dict[str, Any]) -> bool:
     claimed = cube.get("cube_sha256")
     body = dict(cube)
-    body.pop("cube_sha256", None)
+    for key in ("cube_sha256", "artifact_path", "digest_verified"):
+        body.pop(key, None)
     return claimed == sha256(canonical(body))
 
 
 def verify_open_cube(cube: dict[str, Any]) -> bool:
     claimed = cube.get("cube_manifest_sha256")
     body = dict(cube)
-    body.pop("cube_manifest_sha256", None)
+    for key in ("cube_manifest_sha256", "artifact_path", "digest_verified"):
+        body.pop(key, None)
     return claimed == sha256(canonical(body))
 
 
@@ -48,17 +50,19 @@ def main() -> None:
 
     for path in sorted(root.rglob("shadow-cube.json")):
         cube = json.loads(path.read_text(encoding="utf-8"))
+        verified = verify_lens(cube)
         cube["artifact_path"] = str(path.relative_to(root))
-        cube["digest_verified"] = verify_lens(cube)
-        if not cube["digest_verified"]:
+        cube["digest_verified"] = verified
+        if not verified:
             invalid.append(cube["source_id"])
         lenses.append(cube)
 
     for path in sorted(root.rglob("cube-manifest.json")):
         cube = json.loads(path.read_text(encoding="utf-8"))
+        verified = verify_open_cube(cube)
         cube["artifact_path"] = str(path.relative_to(root))
-        cube["digest_verified"] = verify_open_cube(cube)
-        if not cube["digest_verified"]:
+        cube["digest_verified"] = verified
+        if not verified:
             invalid.append(cube["source_id"])
         open_cubes.append(cube)
 
