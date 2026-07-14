@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 """Corrected wrapper for wolfram_cube_forge.py.
 
-Attempt 1 proved the 20-runner fan-out and exact decoder, but exposed three audit
-issues rather than source failures:
-1. many canonical MIT files omit the literal heading "MIT License";
-2. bundle lanes allowed the first large repository to consume the whole corpus;
-3. method shadows tokenized binary framing headers along with source bytes.
-
-Attempt 2 fixed those three paths but showed that canonical MIT notices may wrap
-"to deal in the Software" across lines. License text is therefore normalized to
-single-space form before exact phrase classification.
+The first executions proved the 20-runner fan-out and exact decoder, then exposed
+four audit/selection issues rather than source failures:
+1. canonical MIT files can omit the literal heading "MIT License" and wrap clauses;
+2. bundle lanes must give each repository a deterministic corpus share;
+3. method shadows must exclude binary framing headers;
+4. mathematical program files must be selected before CI, contributor, and editor
+   metadata so the cube represents code rather than repository administration.
 
 This wrapper patches those functions and then runs the original forge unchanged.
 """
@@ -21,6 +19,18 @@ import struct
 from pathlib import Path
 
 import wolfram_cube_forge as forge
+
+PROGRAM_EXTENSIONS = {
+    ".wl", ".wls", ".m", ".mt", ".wlt",
+    ".py", ".rs", ".c", ".cc", ".cpp", ".cxx", ".h", ".hpp",
+    ".java", ".scala", ".js", ".jsx", ".ts", ".tsx", ".cmake",
+}
+NOTEBOOK_EXTENSIONS = {".nb", ".ipynb"}
+ADMIN_PARTS = {".github", ".claude", ".claude-plugin", ".vscode", ".circleci"}
+ADMIN_NAMES = {
+    "contributing.md", "changelog.md", "code_of_conduct.md", "security.md",
+    "authors", "authors.md", "readme.md", "readme.rst", "readme.txt",
+}
 
 
 def classify_license(text: str) -> str:
@@ -38,6 +48,44 @@ def classify_license(text: str) -> str:
             return "BSD-3-Clause"
         return "BSD-2-Clause"
     return "UNKNOWN"
+
+
+def path_priority(path: Path, root: Path) -> tuple[int, str]:
+    rel = path.relative_to(root)
+    parts_lower = {part.lower() for part in rel.parts}
+    suffix = path.suffix.lower()
+    name = path.name.lower()
+    if parts_lower & ADMIN_PARTS:
+        tier = 8
+    elif suffix in PROGRAM_EXTENSIONS and any(part.lower() in {"kernel", "src", "source", "codeparser", "packages", "libraryresources"} for part in rel.parts):
+        tier = 0
+    elif suffix in PROGRAM_EXTENSIONS:
+        tier = 1
+    elif suffix in NOTEBOOK_EXTENSIONS:
+        tier = 2
+    elif name in ADMIN_NAMES:
+        tier = 7
+    elif suffix in {".json", ".toml", ".yaml", ".yml", ".xml"}:
+        tier = 3
+    elif suffix in {".md", ".rst", ".txt"}:
+        tier = 5
+    else:
+        tier = 4
+    return tier, str(rel).lower()
+
+
+def selected_paths_for_repo(repo: str, root: Path, include_paths):
+    if include_paths and repo in include_paths:
+        out = []
+        for rel in include_paths[repo]:
+            path = root / rel
+            if path.is_file():
+                out.append(path)
+            elif path.is_dir():
+                out.extend(p for p in path.rglob("*") if p.is_file())
+    else:
+        out = [p for p in root.rglob("*") if p.is_file()]
+    return sorted(set(out), key=lambda path: path_priority(path, root))
 
 
 def frame(repo: str, rel: str, raw: bytes) -> bytes:
@@ -61,7 +109,7 @@ def build_corpus(accepted, include_paths):
         if source_index == len(accepted) - 1:
             repo_budget = forge.MAX_CORPUS_BYTES - len(corpus)
         repo_used = 0
-        for path in forge.selected_paths_for_repo(repo, root, include_paths):
+        for path in selected_paths_for_repo(repo, root, include_paths):
             if not forge.should_include(path, root):
                 continue
             raw = path.read_bytes()
@@ -82,6 +130,7 @@ def build_corpus(accepted, include_paths):
                 "bytes": len(raw),
                 "sha256": hashlib.sha256(raw).hexdigest(),
                 "extension": path.suffix.lower(),
+                "selection_tier": path_priority(path, root)[0],
             })
             if len(corpus) >= forge.MAX_CORPUS_BYTES:
                 break
@@ -117,20 +166,23 @@ def method_shadow(corpus, files, focus):
         if len(formulas) >= 150:
             break
     ext = collections.Counter(file["extension"] or "<none>" for file in files)
+    tiers = collections.Counter(str(file.get("selection_tier", "unknown")) for file in files)
     bigrams = collections.Counter()
     tokens = forge.IDENTIFIER_RE.findall(text[:5_000_000])
     for a, b in zip(tokens, tokens[1:]):
         if a != b:
             bigrams[(a, b)] += 1
     return {
-        "schema": "WOLFRAM-WHITE-ROOM-METHOD-SHADOW-v2",
+        "schema": "WOLFRAM-WHITE-ROOM-METHOD-SHADOW-v3",
         "focus": focus,
         "nonreconstructive": True,
         "framing_excluded": True,
+        "program_files_prioritized": True,
         "source_corpus_sha256": forge.sha256(corpus),
         "source_text_sha256": forge.sha256(text.encode("utf-8", errors="replace")),
         "file_count": len(files),
         "extension_counts": dict(sorted(ext.items())),
+        "selection_tier_counts": dict(sorted(tiers.items())),
         "top_identifiers": [{"name": k, "count": v} for k, v in identifiers.most_common(512)],
         "top_wolfram_symbols": [{"name": k, "count": v} for k, v in builtins.most_common(512)],
         "top_identifier_edges": [
@@ -141,6 +193,7 @@ def method_shadow(corpus, files, focus):
 
 
 forge.classify_license = classify_license
+forge.selected_paths_for_repo = selected_paths_for_repo
 forge.build_corpus = build_corpus
 forge.method_shadow = method_shadow
 forge.main()
