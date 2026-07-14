@@ -1,0 +1,222 @@
+name: Cube recurrence 50x28
+
+on:
+  pull_request:
+    paths:
+      - 'research/cube-recurrence-50x28-v1/**'
+      - '.github/workflows/cube-recurrence-50x28.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: matrix
+        name: Build the first-set plus Wolfram 50-cube matrix
+        run: |
+          python - <<'PY'
+          import json, os
+          first=json.load(open('research/hutter-cube-swarm-v1/sources.json'))
+          wolfram=json.load(open('research/wolfram-open-math-cubes-v1/sources.json'))
+          include=[]
+          for lane in first['lanes']:
+              include.append({'set':'first','lane':lane['id'],'kind':lane['kind']})
+          for lane in wolfram['lanes']:
+              include.append({'set':'wolfram','lane':lane['id'],'kind':lane['kind']})
+          assert len(include)==50, len(include)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('matrix='+json.dumps({'include':include},separators=(',',':'))+'\n')
+          print(json.dumps(include,indent=2))
+          PY
+
+  recurrence:
+    name: ${{ matrix.set }} / ${{ matrix.lane }} / 8+10+10
+    needs: prepare
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install exact cube dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy==2.4.4' zstandard
+
+      - name: Install PDF extraction only for arXiv lanes
+        if: matrix.kind == 'arxiv'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+
+      - name: Compile the recurrence runner and dependencies
+        run: |
+          python -m py_compile \
+            research/cube-recurrence-50x28-v1/cube_recurrence_50x28.py \
+            research/cube-recurrence-50x28-v1/cube_recurrence_50x28_v2.py \
+            research/cube-recurrence-50x28-v1/aggregate_cube_recurrence.py \
+            research/cube-recurrence-50x28-v1/aggregate_cube_recurrence_v2.py \
+            research/hutter-cube-swarm-v1/cube_session.py \
+            research/wolfram-open-math-cubes-v1/wolfram_cube_forge.py \
+            third-seat-2026-07-12/gpt-crosscheck/multilevel_bpe_zstd_v1.py \
+            third-seat-2026-07-12/gpt-crosscheck/persistent_order2_curve_v1.py
+
+      - name: Run one cube through eight, ten, and ten perspectives
+        env:
+          SOURCE_SET: ${{ matrix.set }}
+          CUBE_LANE: ${{ matrix.lane }}
+        run: |
+          set -euo pipefail
+          out="research/cube-recurrence-50x28-v1/out/${SOURCE_SET}--${CUBE_LANE}"
+          rm -rf "$out"
+          mkdir -p "$out"
+          PYTHONPATH=research/cube-recurrence-50x28-v1 \
+          python research/cube-recurrence-50x28-v1/cube_recurrence_50x28_v2.py \
+            --set "$SOURCE_SET" \
+            --lane "$CUBE_LANE" \
+            --output "$out" \
+            --repo-root . \
+            --min-runtime 120 | tee "$out/run.log"
+          (cd "$out" && sha256sum -c SHA256SUMS)
+
+      - name: Validate the 8+10+10 receipt and independently restore the base cube
+        env:
+          SOURCE_SET: ${{ matrix.set }}
+          CUBE_LANE: ${{ matrix.lane }}
+        run: |
+          set -euo pipefail
+          out="research/cube-recurrence-50x28-v1/out/${SOURCE_SET}--${CUBE_LANE}"
+          python - "$out" <<'PY'
+          import json, math, sys
+          p=sys.argv[1]
+          r=json.load(open(p+'/perspective-result.json'))
+          if r['status']=='MEASURED':
+              rows=r['perspectives']
+              assert len(rows)==28
+              assert sum(x['ring']=='A_REPRESENTATION' for x in rows)==8
+              assert sum(x['ring']=='B_FISCHER_PREDICTOR' for x in rows)==10
+              assert sum(x['ring']=='C_PERSISTENT_RECURRENCE' for x in rows)==10
+              assert all(x['restore'] for x in rows if x['ring']=='A_REPRESENTATION')
+              assert all(x['restore'] and x['state_match'] for x in rows if x['ring']=='C_PERSISTENT_RECURRENCE')
+              assert all(math.isfinite(x['estimated_bpc']) for x in rows if x['ring']=='B_FISCHER_PREDICTOR')
+              assert r['base_cube']['restore']
+              assert r['base_cube'].get('fixed_start_id', 256)==256 or r['base_cube'].get('alphabet_reserved', 256)==256
+              assert r['recurrence']['all_restore'] and r['recurrence']['all_state_match']
+          else:
+              assert r['status'].startswith('HELD')
+          print(f"CUBERECURRENCEVALIDATE|status={r['status']}|passes={len(r['perspectives'])}|json=0")
+          PY
+          status="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["status"])' "$out/perspective-result.json")"
+          if [ "$status" = "MEASURED" ]; then
+            PYTHONPATH=research/cube-recurrence-50x28-v1 \
+            python research/cube-recurrence-50x28-v1/cube_recurrence_50x28_v2.py \
+              --set "$SOURCE_SET" --lane "$CUBE_LANE" --output "$out" --verify-output
+          fi
+
+      - name: Upload one base cube and its twenty-eight perspective receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: recurrence-${{ matrix.set }}-${{ matrix.lane }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/cube-recurrence-50x28-v1/out/${{ matrix.set }}--${{ matrix.lane }}/perspective-result.json
+            research/cube-recurrence-50x28-v1/out/${{ matrix.set }}--${{ matrix.lane }}/perspective-result.hbp
+            research/cube-recurrence-50x28-v1/out/${{ matrix.set }}--${{ matrix.lane }}/base-cube.model.json
+            research/cube-recurrence-50x28-v1/out/${{ matrix.set }}--${{ matrix.lane }}/base-cube.payload.zst
+            research/cube-recurrence-50x28-v1/out/${{ matrix.set }}--${{ matrix.lane }}/source-receipt.json
+            research/cube-recurrence-50x28-v1/out/${{ matrix.set }}--${{ matrix.lane }}/runtime.json
+            research/cube-recurrence-50x28-v1/out/${{ matrix.set }}--${{ matrix.lane }}/SUMMARY.md
+            research/cube-recurrence-50x28-v1/out/${{ matrix.set }}--${{ matrix.lane }}/SHA256SUMS
+            research/cube-recurrence-50x28-v1/out/${{ matrix.set }}--${{ matrix.lane }}/run.log
+
+  aggregate:
+    name: Aggregate fifty cubes and 1,400 perspectives
+    needs: [prepare, recurrence]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install independent aggregate-verifier dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy==2.4.4' zstandard
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: recurrence-*
+          path: research/cube-recurrence-50x28-v1/downloaded
+          merge-multiple: false
+
+      - name: Independently restore every returned base cube and build the registry
+        run: |
+          set -euo pipefail
+          rm -rf research/cube-recurrence-50x28-v1/aggregate-out
+          mkdir -p research/cube-recurrence-50x28-v1/aggregate-out
+          PYTHONPATH=research/cube-recurrence-50x28-v1 \
+          python research/cube-recurrence-50x28-v1/aggregate_cube_recurrence_v2.py \
+            --input research/cube-recurrence-50x28-v1/downloaded \
+            --output research/cube-recurrence-50x28-v1/aggregate-out | tee research/cube-recurrence-50x28-v1/aggregate-out/run.log
+          (cd research/cube-recurrence-50x28-v1/aggregate-out && sha256sum -c SHA256SUMS)
+
+      - name: Verify complete returned surfaces
+        run: |
+          python - <<'PY'
+          import json
+          root='research/cube-recurrence-50x28-v1/aggregate-out'
+          r=json.load(open(root+'/CUBE-RECURRENCE-REGISTRY.json'))
+          v=json.load(open(root+'/INDEPENDENT-ARTIFACT-VERIFICATION.json'))
+          assert r['returned_cubes']==50, r['returned_cubes']
+          assert not r['invalid_receipts'], r['invalid_receipts']
+          assert r['measured_cubes']>=49, r['status_counts']
+          assert r['returned_perspective_passes']==r['measured_cubes']*28
+          assert all(row['all_restore'] for row in r['ring_a'])
+          assert r['recurrence']['cubes']==r['measured_cubes']
+          assert r['recurrence']['improved_cubes']>0
+          assert v['returned']==50 and v['measured']==r['measured_cubes']
+          assert v['verified_perspective_rows']==r['returned_perspective_passes']
+          assert v['all_base_artifacts_restored']
+          print('CUBERECURRENCEAGGVERIFY|'+'|'.join([
+            f"returned={r['returned_cubes']}",
+            f"measured={r['measured_cubes']}",
+            f"passes={r['returned_perspective_passes']}",
+            f"observed_max={r['observed_max_concurrent_sessions']}",
+            'independent_base_restore=1','status=PASS','json=0']))
+          PY
+
+      - name: Upload the full 50×28 registry
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cube-recurrence-50x28-registry
+          retention-days: 30
+          path: |
+            research/cube-recurrence-50x28-v1/aggregate-out/**
+            research/cube-recurrence-50x28-v1/PLAN.md
+            research/cube-recurrence-50x28-v1/FIRST-FLIGHT-CORRECTIONS.md
+            research/cube-recurrence-50x28-v1/cube_recurrence_50x28.py
+            research/cube-recurrence-50x28-v1/cube_recurrence_50x28_v2.py
+            research/cube-recurrence-50x28-v1/aggregate_cube_recurrence.py
+            research/cube-recurrence-50x28-v1/aggregate_cube_recurrence_v2.py
