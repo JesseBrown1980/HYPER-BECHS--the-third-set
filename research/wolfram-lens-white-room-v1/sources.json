@@ -1,0 +1,92 @@
+{
+  "schema": "WOLFRAM-LENS-WHITE-ROOM-SOURCES-v1",
+  "date": "2026-07-14",
+  "lens_sources": [
+    {
+      "id": "wolfram-data-repository",
+      "url": "https://datarepository.wolframcloud.com/",
+      "title": "Wolfram Data Repository",
+      "allowed_sections": ["categories", "content types", "featured resource names", "public capability statement"],
+      "retention": "aggregate-only"
+    },
+    {
+      "id": "wolfram-function-repository",
+      "url": "https://resources.wolframcloud.com/FunctionRepository/",
+      "title": "Wolfram Function Repository",
+      "allowed_sections": ["categories", "public capability statement"],
+      "retention": "aggregate-only"
+    },
+    {
+      "id": "wolfram-neural-net-repository",
+      "url": "https://resources.wolframcloud.com/NeuralNetRepository/",
+      "title": "Wolfram Neural Net Repository",
+      "allowed_sections": ["input domains", "task types", "featured resource names", "public capability statement"],
+      "retention": "aggregate-only"
+    }
+  ],
+  "open_sources": [
+    {
+      "id": "wolfram-codeparser",
+      "repo": "WolframResearch/codeparser",
+      "ref": "master",
+      "expected_license": "MIT",
+      "license_paths": ["LICENSE"],
+      "include_extensions": [".wl", ".wlt", ".m", ".cpp", ".h", ".md", ".txt", ".json"],
+      "max_corpus_bytes": 1000000
+    },
+    {
+      "id": "wolfram-client-python",
+      "repo": "WolframResearch/WolframClientForPython",
+      "ref": "master",
+      "expected_license": "MIT",
+      "license_paths": ["LICENSE"],
+      "include_extensions": [".py", ".md", ".rst", ".json", ".toml"],
+      "max_corpus_bytes": 1000000
+    },
+    {
+      "id": "wolfram-quantum-framework",
+      "repo": "WolframResearch/QuantumFramework",
+      "ref": "main",
+      "expected_license": "MIT",
+      "license_paths": ["LICENSE"],
+      "include_extensions": [".wl", ".wlt", ".m", ".md", ".txt", ".json"],
+      "max_corpus_bytes": 1000000
+    },
+    {
+      "id": "wolfram-lsp-server",
+      "repo": "WolframResearch/LSPServer",
+      "ref": "master",
+      "expected_license": "MIT",
+      "license_paths": ["LICENSE"],
+      "include_extensions": [".wl", ".wlt", ".m", ".md", ".json"],
+      "max_corpus_bytes": 1000000
+    },
+    {
+      "id": "wolfram-language-jupyter",
+      "repo": "WolframResearch/WolframLanguageForJupyter",
+      "ref": "master",
+      "expected_license": "MIT",
+      "license_paths": ["LICENSE"],
+      "include_extensions": [".wl", ".m", ".py", ".sh", ".md", ".json"],
+      "max_corpus_bytes": 1000000
+    },
+    {
+      "id": "deepmind-mathematics-dataset",
+      "repo": "google-deepmind/mathematics_dataset",
+      "ref": "master",
+      "expected_license": "Apache-2.0",
+      "license_paths": ["LICENSE"],
+      "include_extensions": [".py", ".md", ".txt", ".json"],
+      "max_corpus_bytes": 1000000
+    },
+    {
+      "id": "sympy",
+      "repo": "sympy/sympy",
+      "ref": "master",
+      "expected_license": "BSD-3-Clause",
+      "license_paths": ["LICENSE"],
+      "include_extensions": [".py", ".md", ".rst", ".txt"],
+      "max_corpus_bytes": 1000000
+    }
+  ]
+}
