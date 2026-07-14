@@ -1,0 +1,145 @@
+name: Hutter deep-research 30-cube swarm
+
+on:
+  pull_request:
+    paths:
+      - 'research/hutter-cube-swarm-v1/**'
+      - '.github/workflows/hutter-deep-research-cube-swarm.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+      count: ${{ steps.matrix.outputs.count }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: matrix
+        name: Build the thirty-lane matrix from the source manifest
+        run: |
+          python - <<'PY'
+          import json, os
+          manifest=json.load(open('research/hutter-cube-swarm-v1/sources.json'))
+          include=[{'lane':x['id'],'kind':x['kind'],'family':x['family']} for x in manifest['lanes']]
+          assert len(include)==30, len(include)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('matrix='+json.dumps({'include':include},separators=(',',':'))+'\n')
+              f.write('count=30\n')
+          print(json.dumps(include,indent=2))
+          PY
+
+  cube-session:
+    name: cube ${{ matrix.lane }}
+    needs: prepare
+    strategy:
+      fail-fast: false
+      max-parallel: 30
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install compact research dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install zstandard
+
+      - name: Compile the lane runner and reversible cube dependency
+        run: |
+          python -m py_compile \
+            research/hutter-cube-swarm-v1/cube_session.py \
+            third-seat-2026-07-12/gpt-crosscheck/multilevel_bpe_zstd_v1.py \
+            third-seat-2026-07-12/asolaria_codec_v0_1.py
+
+      - name: Run one source-pinned cube session
+        env:
+          CUBE_LANE: ${{ matrix.lane }}
+          CUBE_KIND: ${{ matrix.kind }}
+          CUBE_FAMILY: ${{ matrix.family }}
+        run: |
+          set -euo pipefail
+          out="research/hutter-cube-swarm-v1/out/${CUBE_LANE}"
+          rm -rf "$out"
+          mkdir -p "$out"
+          python research/hutter-cube-swarm-v1/cube_session.py \
+            --manifest research/hutter-cube-swarm-v1/sources.json \
+            --lane "$CUBE_LANE" \
+            --output "$out" \
+            --repo-root . \
+            --min-runtime 120 | tee "$out/run.log"
+          (cd "$out" && sha256sum -c SHA256SUMS)
+
+      - name: Upload the lane cube
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cube-${{ matrix.lane }}
+          if-no-files-found: warn
+          retention-days: 30
+          path: |
+            research/hutter-cube-swarm-v1/out/${{ matrix.lane }}/cube.json
+            research/hutter-cube-swarm-v1/out/${{ matrix.lane }}/cube.hbp
+            research/hutter-cube-swarm-v1/out/${{ matrix.lane }}/SUMMARY.md
+            research/hutter-cube-swarm-v1/out/${{ matrix.lane }}/source-manifest.json
+            research/hutter-cube-swarm-v1/out/${{ matrix.lane }}/runtime.json
+            research/hutter-cube-swarm-v1/out/${{ matrix.lane }}/SHA256SUMS
+            research/hutter-cube-swarm-v1/out/${{ matrix.lane }}/run.log
+
+  aggregate:
+    name: aggregate, measure concurrency, and rank the next tournament
+    needs: [prepare, cube-session]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cube-*
+          path: research/hutter-cube-swarm-v1/downloaded
+          merge-multiple: false
+
+      - name: Aggregate all returned cubes
+        run: |
+          set -euo pipefail
+          rm -rf research/hutter-cube-swarm-v1/aggregate-out
+          mkdir -p research/hutter-cube-swarm-v1/aggregate-out
+          PYTHONPATH=research/hutter-cube-swarm-v1 \
+          python research/hutter-cube-swarm-v1/aggregate_v2.py \
+            --input research/hutter-cube-swarm-v1/downloaded \
+            --output research/hutter-cube-swarm-v1/aggregate-out | tee research/hutter-cube-swarm-v1/aggregate-out/run.log
+          (cd research/hutter-cube-swarm-v1/aggregate-out && sha256sum -c SHA256SUMS)
+
+      - name: Print the observed concurrency and top results
+        run: |
+          python - <<'PY'
+          import json
+          p='research/hutter-cube-swarm-v1/aggregate-out/CUBE-REGISTRY.json'
+          r=json.load(open(p))
+          print('CUBE_SWARM_OBSERVED_CONCURRENCY='+str(r['observed_max_concurrent_sessions']))
+          print('RETURNED='+str(r['returned_sessions']))
+          print('STATUS_COUNTS='+json.dumps(r['status_counts'],sort_keys=True))
+          for lane in r['ranked_lanes'][:12]:
+              print(f"TOP|{lane['lane_id']}|score={lane['score']}|status={lane['status']}")
+          PY
+
+      - name: Upload aggregate research graph and next tournament
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hutter-cube-swarm-aggregate
+          retention-days: 30
+          path: |
+            research/hutter-cube-swarm-v1/aggregate-out/**
+            research/hutter-cube-swarm-v1/PLAN.md
+            research/hutter-cube-swarm-v1/sources.json
