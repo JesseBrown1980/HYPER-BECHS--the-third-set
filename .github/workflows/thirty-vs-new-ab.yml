@@ -1,0 +1,89 @@
+name: Thirty vs new-way super-cube A/B
+
+on:
+  pull_request:
+    paths:
+      - 'thirty-vs-new-ab-v1/**'
+      - '.github/workflows/thirty-vs-new-ab.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  arm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arm: old-30
+            cycles: 3
+          - arm: new-100
+            cycles: 10
+          - arm: new-800
+            cycles: 80
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run uniform-pass arm (own cloud container)
+        run: |
+          set -euo pipefail
+          python glyph-hyperstack-first-floor-v1/glyph_hyperstack_first_floor_v1.py \
+            selftest \
+            --cubes 27 \
+            --passes-per-cycle 10 \
+            --three-rule-cycles ${{ matrix.cycles }} \
+            --merges-per-pass 1 \
+            --output-dir thirty-vs-new-ab-v1/out-${{ matrix.arm }} \
+            2>&1 | tee thirty-vs-new-ab-v1/${{ matrix.arm }}.log
+
+      - name: Verify receipts and exact restore
+        run: |
+          set -euo pipefail
+          grep -q 'restore=1' thirty-vs-new-ab-v1/${{ matrix.arm }}.log
+          grep -q 'status=PASS' thirty-vs-new-ab-v1/${{ matrix.arm }}.log
+          cd thirty-vs-new-ab-v1/out-${{ matrix.arm }}
+          sha256sum -c SHA256SUMS --quiet && echo "ARM ${{ matrix.arm }} SUMS_OK"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ab-${{ matrix.arm }}
+          if-no-files-found: error
+          path: thirty-vs-new-ab-v1/
+
+  compare:
+    needs: arm
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: arms
+
+      - name: Compare floor densities (exact arithmetic)
+        run: |
+          set -euo pipefail
+          python thirty-vs-new-ab-v1/analyze_ab.py \
+            arms/ab-old-30/out-old-30 \
+            arms/ab-new-100/out-new-100 \
+            arms/ab-new-800/out-new-800 \
+            2>&1 | tee AB-COMPARISON.hbp
+          grep -q 'ABVERDICT' AB-COMPARISON.hbp
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ab-comparison
+          if-no-files-found: error
+          path: AB-COMPARISON.hbp
