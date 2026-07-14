@@ -190,6 +190,7 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf research/wolfram-lens-white-room-v1/aggregate-out
+          mkdir -p research/wolfram-lens-white-room-v1/aggregate-out
           python research/wolfram-lens-white-room-v1/aggregate.py \
             --input research/wolfram-lens-white-room-v1/downloaded \
             --output research/wolfram-lens-white-room-v1/aggregate-out | tee research/wolfram-lens-white-room-v1/aggregate-out/run.log
