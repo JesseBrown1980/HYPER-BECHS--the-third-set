@@ -1,0 +1,236 @@
+{
+  "schema": "ASOLARIA-HUTTER-CUBE-SWARM-SOURCES-v1",
+  "date": "2026-07-14",
+  "lanes": [
+    {
+      "id": "01-asolaria-algorithms",
+      "family": "asolaria",
+      "kind": "github_repo",
+      "repo": "JesseBrown1980/Algorithms-of-Asolaria",
+      "ref": "main",
+      "focus": ["formula registry", "combined quant atlas", "N-lens", "N-vantage", "Path 1", "Path 2", "claim classes"]
+    },
+    {
+      "id": "02-asolaria-quant-atlas",
+      "family": "asolaria",
+      "kind": "github_paths",
+      "repo": "JesseBrown1980/Algorithms-of-Asolaria",
+      "ref": "main",
+      "paths": ["ASOLARIA-COMBINED-QUANT-ATLAS-2026-07-13.md", "ASOLARIA-COMBINED-QUANT-REGISTRY-2026-07-13.hbp", "ASOLARIA-COMBINED-QUANT-MEASURED-ADDENDUM-2026-07-13.md"],
+      "focus": ["28 public quant slots", "exact translations", "local quant bundles", "catalog cost", "residuals"]
+    },
+    {
+      "id": "03-hyperbehcs-event-recovery",
+      "family": "asolaria",
+      "kind": "github_paths",
+      "repo": "JesseBrown1980/HYPER-BECHS--the-third-set",
+      "ref": "main",
+      "paths": ["omni-event-v1", "n-lens-v1", "n-vantage-30-v1", "MEASURED-PATH2-STORAGE-SUBSTRATE-2026-07-11.md"],
+      "focus": ["Catalog47", "Hyper60", "OMNIEVENT", "DBBH DBWH", "nullspace", "conditional rate"]
+    },
+    {
+      "id": "04-fischer-omnishannon",
+      "family": "asolaria",
+      "kind": "github_paths",
+      "repo": "JesseBrown1980/HYPER-BECHS--the-third-set",
+      "ref": "main",
+      "paths": ["verification/fischer-bidirectional-10-runner", "third-seat-2026-07-12"],
+      "focus": ["black forward models", "white right-context models", "anti-blunder", "consensus mixer", "restore gate"]
+    },
+    {
+      "id": "05-glyph-first-floor",
+      "family": "asolaria",
+      "kind": "github_paths",
+      "repo": "JesseBrown1980/HYPER-BECHS--the-third-set",
+      "ref": "agent/glyph-hyperstack-first-floor-2026-07-13",
+      "paths": ["glyph-hyperstack-first-floor-v1"],
+      "focus": ["per-cube reversible language", "accept hold economics", "OmniShannon exact receipts", "27 seats"]
+    },
+    {
+      "id": "06-plan-b-public-index",
+      "family": "plan-b",
+      "kind": "github_paths",
+      "repo": "JesseBrown1980/asolaria-behcs-256",
+      "ref": "802023a9588cf3c72be9f9b353c847f22c616092",
+      "paths": ["data/agent-index/references", "data/agent-index/patterns/IX-136.md", "data/agent-index/patterns/IX-141.md", "data/agent-index/CHAINS.md"],
+      "focus": ["Plan B public research archive", "MLC", "Mamba", "S-LoRA", "TTT", "memory", "optical computing"]
+    },
+    {
+      "id": "07-path1-path2-crates",
+      "family": "asolaria",
+      "kind": "github_bundle",
+      "repos": ["JesseBrown1980/dbbh-coms-quant-prism", "JesseBrown1980/path2-two-shadow-recovery", "JesseBrown1980/qprism-3d-slice-harness"],
+      "focus": ["retained-store recall", "CRT recovery", "capacity gate", "reprojection", "watchers"]
+    },
+    {
+      "id": "08-cube-ab-class-copy-public",
+      "family": "asolaria",
+      "kind": "github_paths",
+      "repo": "JesseBrown1980/HYPER-BECHS--the-third-set",
+      "ref": "agent/cube-ab-vantage-comint-2026-07-13",
+      "paths": ["third-seat-2026-07-12/cube-ab-vantage-comint-v1"],
+      "focus": ["Cube A", "Cube B", "decoder DAG", "missing encoder law", "shared language overlap"]
+    },
+
+    {
+      "id": "09-hutter-fx2-cmix",
+      "family": "hutter-winner",
+      "kind": "github_repo",
+      "repo": "kaitz/fx2-cmix",
+      "ref": "main",
+      "focus": ["current awarded record", "NLP stemmer", "reverse dictionary", "article ordering", "cmix", "disk-backed PPM"]
+    },
+    {
+      "id": "10-hutter-fx-cmix",
+      "family": "hutter-winner",
+      "kind": "github_repo",
+      "repo": "kaitz/fx-cmix",
+      "ref": "main",
+      "focus": ["30 main predictors", "wiki parsing", "context switching", "match model", "state tables"]
+    },
+    {
+      "id": "11-hutter-fast-cmix",
+      "family": "hutter-winner",
+      "kind": "github_repo",
+      "repo": "saurabhk/fast-cmix",
+      "ref": "main",
+      "focus": ["cache locality", "virtual-call elimination", "hash maps", "large PPM", "timing and RAM"]
+    },
+    {
+      "id": "12-hutter-starlit",
+      "family": "hutter-winner",
+      "kind": "github_repo",
+      "repo": "amargaritov/starlit",
+      "ref": "master",
+      "focus": ["article similarity sorting", "Wikipedia preprocessing", "cmix", "self-extracting archive"]
+    },
+    {
+      "id": "13-cmix-core",
+      "family": "hutter-foundation",
+      "kind": "github_repo",
+      "repo": "byronknoll/cmix",
+      "ref": "master",
+      "focus": ["context mixing", "LSTM", "APM SSE", "match models", "arithmetic coding"]
+    },
+    {
+      "id": "14-fxcm-predictor",
+      "family": "hutter-foundation",
+      "kind": "github_repo",
+      "repo": "kaitz/fxcm",
+      "ref": "master",
+      "focus": ["predictor layout", "state tables", "word contexts", "mixer contexts", "PAQ lineage"]
+    },
+    {
+      "id": "15-paq8pxd",
+      "family": "hutter-foundation",
+      "kind": "github_repo",
+      "repo": "kaitz/paq8pxd",
+      "ref": "master",
+      "focus": ["PAQ context mixing", "stemmer", "specialized text models", "APM", "state maps"]
+    },
+    {
+      "id": "16-hutter-official-rules-faq",
+      "family": "hutter-official",
+      "kind": "web_bundle",
+      "urls": ["https://www.hutter1.net/prize/hfaq.htm", "https://prize.hutter1.net/"],
+      "focus": ["current rules", "model length", "online training", "RAM time limits", "source requirements", "prize threshold"]
+    },
+
+    {
+      "id": "17-matt-mahoney-compression",
+      "family": "literature",
+      "kind": "web_bundle",
+      "urls": ["https://mattmahoney.net/dc/", "https://mattmahoney.net/dc/dce.html", "https://mattmahoney.net/dc/textdata.html"],
+      "focus": ["Data Compression Explained", "PAQ", "context mixing", "large text benchmark", "baseline formulas"]
+    },
+    {
+      "id": "18-nncp-ts-zip",
+      "family": "neural-compression",
+      "kind": "web_bundle",
+      "urls": ["https://bellard.org/nncp/", "https://bellard.org/ts_zip/"],
+      "focus": ["Transformer neural compressor", "online model", "arithmetic coding", "enwik8 enwik9", "model size"]
+    },
+    {
+      "id": "19-language-modeling-is-compression",
+      "family": "paper",
+      "kind": "arxiv",
+      "arxiv_id": "2309.10668",
+      "focus": ["prediction compression equivalence", "LLM compressor", "tokenization", "in-context learning", "Marcus Hutter", "Joel Veness"]
+    },
+    {
+      "id": "20-mambabyte",
+      "family": "paper",
+      "kind": "arxiv",
+      "arxiv_id": "2401.13660",
+      "focus": ["byte-level state-space model", "fixed memory state", "long sequence", "Mamba", "token-free"]
+    },
+    {
+      "id": "21-context-tree-weighting",
+      "family": "paper",
+      "kind": "arxiv",
+      "arxiv_id": "2211.02676",
+      "focus": ["CTW", "Bayesian context trees", "minimax optimality", "MDL", "context depth"]
+    },
+    {
+      "id": "22-adaptive-ctw",
+      "family": "paper",
+      "kind": "arxiv",
+      "arxiv_id": "1201.2056",
+      "focus": ["adaptive CTW", "nonstationary data", "recent weighting", "Marcus Hutter"]
+    },
+    {
+      "id": "23-ans-rans",
+      "family": "entropy-coding",
+      "kind": "github_bundle",
+      "repos": ["Cyan4973/FiniteStateEntropy", "rygorous/ryg_rans", "jkbonfield/rans_static"],
+      "focus": ["ANS", "FSE", "rANS", "state machine", "arithmetic-coder alternative"]
+    },
+    {
+      "id": "24-statistical-compression-thesis",
+      "family": "paper",
+      "kind": "web_bundle",
+      "urls": ["https://www.db-thueringen.de/receive/dbt_mods_00027239"],
+      "focus": ["statistical data compression", "PAQ", "context mixing", "probability maps", "formula survey"]
+    },
+    {
+      "id": "25-pmatic-probability-sync",
+      "family": "paper",
+      "kind": "arxiv",
+      "arxiv_id": "2601.10678",
+      "focus": ["probability mismatch", "deterministic decode", "model-driven compression", "interval coding", "cross-device reproducibility"]
+    },
+    {
+      "id": "26-fx2-action-plan-docs",
+      "family": "hutter-winner-docs",
+      "kind": "google_doc_bundle",
+      "document_ids": ["14nNIMAFC11lNFD-WrLQbGLIuRqqcKKBnUtrxy-tc0Rc", "1DW0Lqr_y-yAIvPpGua56j1Y3gRaMS5yt2RuQy5xgGMk"],
+      "focus": ["improvement timeline", "experiment graph", "winner development process", "failed and accepted changes"]
+    },
+
+    {
+      "id": "27-train-plan-b-public-cube",
+      "family": "training",
+      "kind": "train_public_plan_b",
+      "focus": ["reversible glyph cube", "Plan B public IX corpus", "formula vocabulary", "catalog cost"]
+    },
+    {
+      "id": "28-train-hutter-methods-cube",
+      "family": "training",
+      "kind": "train_hutter_methods",
+      "focus": ["reversible glyph cube", "winner READMEs", "compression methods", "people and formulas"]
+    },
+    {
+      "id": "29-train-combined-and-benchmark",
+      "family": "training",
+      "kind": "train_combined_benchmark",
+      "focus": ["combined Asolaria Hutter corpus", "BPE cube", "same-slice baselines", "restore"]
+    },
+    {
+      "id": "30-private-class-copy-wolf-ram-gate",
+      "family": "input-gate",
+      "kind": "private_input_gate",
+      "expected_paths": ["research/private-inputs/class-copy", "research/private-inputs/plan-b", "research/private-inputs/wolf-ram"],
+      "focus": ["private class-copy", "private Plan B", "wolf ram exact source identity", "no substitution"]
+    }
+  ]
+}
