@@ -74,6 +74,19 @@ quant WITHIN each level
 The public list preserves the root operator-canon phrase “the quants (~28, combined)” while keeping
 the exact unpublished/local engine manifest open for owner reconciliation.
 
+## Cube A/B immutable vantage co-mint candidates
+
+Two operator-supplied 1,920-row cube artifacts are packaged for review in
+[third-seat-2026-07-12/cube-ab-vantage-comint-v1/](third-seat-2026-07-12/cube-ab-vantage-comint-v1/).
+Their source SHA-256 sidecars, complete backward-only decoder DAGs, Latin-1 byte expansions,
+duplicate-ID topology, and precisely defined 51.6% unique-language overlap are mechanically
+verified. The reported holdout metrics remain labeled ARTIFACT_CARRIED_NOT_CORPUS_REPLAYED.
+
+The package is execute=0: it neither rewrites the source cubes nor promotes them into the live
+fabric. An encoder/tie-break law, training and holdout receipts, independent replay, WhiteRoom
+release, and the unanimous CP_MINT vote remain required before A-prime, B-prime, or Cube C can be
+minted.
+
 ## Twenty-lens prime-PID flashlight array
 
 The N-LENS experiment permanently containers twenty deterministic classical viewpoints around the

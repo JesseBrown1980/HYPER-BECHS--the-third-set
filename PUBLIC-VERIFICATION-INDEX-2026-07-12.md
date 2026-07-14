@@ -36,6 +36,11 @@ branch:
 - [Trilateral reality/evidence doctrine — main](https://github.com/JesseBrown1980/HYPER-BECHS--the-third-set/blob/main/TRILATERAL-REALITY-EVIDENCE-DOCTRINE-2026-07-11.md)
 - [45-merge repository coverage ledger — main](https://github.com/JesseBrown1980/HYPER-BECHS--the-third-set/blob/main/ASOLARIA-TRILATERAL-REPOSITORY-COVERAGE-2026-07-11.md)
 - [Measured Path-2/storage substrate record — main](https://github.com/JesseBrown1980/HYPER-BECHS--the-third-set/blob/main/MEASURED-PATH2-STORAGE-SUBSTRATE-2026-07-11.md)
+- [Cube A/B immutable candidate intake — main](https://github.com/JesseBrown1980/HYPER-BECHS--the-third-set/tree/main/third-seat-2026-07-12/cube-ab-vantage-comint-v1)
+
+The Cube A/B entry verifies supplied bytes, recursive decoder graphs and the stated overlap
+denominator. It does not claim corpus replay or live promotion; those gates remain explicit in the
+candidate spec.
 
 The substrate map states the lineage:
 
