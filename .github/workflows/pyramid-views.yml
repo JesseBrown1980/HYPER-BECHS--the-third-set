@@ -16,11 +16,11 @@ env:
 jobs:
   view:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 300
     strategy:
       fail-fast: false
       matrix:
-        view: [i, r, n, nr, e, er, ne, ner]
+        view: [i, r, n, nr, q, qr, nq, nqr]
     steps:
       - uses: actions/checkout@v4
 
@@ -57,15 +57,17 @@ jobs:
             --count 27 \
             --output-dir pyramid-views-v1/native
 
-      - name: Transform through vertex view ${{ matrix.view }} (round-trips asserted)
+      - name: Transform through vertex view ${{ matrix.view }} (round-trips + group gates)
         run: |
           set -euo pipefail
           python pyramid-views-v1/make_views.py \
             --native-snapshot pyramid-views-v1/native/snapshot \
             --view ${{ matrix.view }} \
+            --group-gates \
             --output-dir pyramid-views-v1/view-${{ matrix.view }}
+          grep -q 'group=C2\^3_CONFIRMED_ON_INPUTS' pyramid-views-v1/view-${{ matrix.view }}/GROUP-GATES.hbp
 
-      - name: Train view language (uniform 100 passes, own container)
+      - name: Train view language (uniform 800 passes, own container)
         run: |
           set -euo pipefail
           python glyph-hyperstack-first-floor-v1/glyph_hyperstack_first_floor_v1.py \
@@ -74,7 +76,7 @@ jobs:
             --source-hbp-manifest pyramid-views-v1/view-${{ matrix.view }}/manifest.hbp \
             --count 27 \
             --passes-per-cycle 10 \
-            --three-rule-cycles 10 \
+            --three-rule-cycles 80 \
             --merges-per-pass 1 \
             --output-dir pyramid-views-v1/out-${{ matrix.view }} \
             2>&1 | tee pyramid-views-v1/${{ matrix.view }}.log
@@ -94,6 +96,7 @@ jobs:
           path: |
             pyramid-views-v1/out-${{ matrix.view }}
             pyramid-views-v1/view-${{ matrix.view }}/views-map.hbp
+            pyramid-views-v1/view-${{ matrix.view }}/GROUP-GATES.hbp
             pyramid-views-v1/${{ matrix.view }}.log
 
   compare:
@@ -115,12 +118,12 @@ jobs:
         run: |
           set -euo pipefail
           MAPS=""
-          for v in i r n nr e er ne ner; do
+          for v in i r n nr q qr nq nqr; do
             MAPS="$MAPS --map arms/pv-$v/view-$v/views-map.hbp"
           done
           python pyramid-views-v1/compare_views.py $MAPS \
             arms/pv-i/out-i arms/pv-r/out-r arms/pv-n/out-n arms/pv-nr/out-nr \
-            arms/pv-e/out-e arms/pv-er/out-er arms/pv-ne/out-ne arms/pv-ner/out-ner \
+            arms/pv-q/out-q arms/pv-qr/out-qr arms/pv-nq/out-nq arms/pv-nqr/out-nqr \
             2>&1 | tee PYRAMID-VIEWS-COMPARISON.hbp
           grep -q 'PVVERDICT' PYRAMID-VIEWS-COMPARISON.hbp
 

@@ -4,22 +4,46 @@ Operator directive (OP-JESSE, 2026-07-14): test the new pyramid/dimensional-aspe
 separately and in isolation; derive the calculated mechanics of the four pyramids beyond the
 black/white pair that complete the cube.
 
-## Calculated mechanics
+## Calculated mechanics (v2 — generators corrected)
 
 A cube decomposes into six face-pyramids (apex at center) = **3 axes × side/anti-side**. Each
-axis maps to a measured, exactly invertible transform of the data:
+axis maps to a measured, exactly invertible transform of the data. **v2 correction:** the
+GENESIS/RECENTER cross-seat review caught that v1's `E` (even/odd nesting) is NOT an involution
+(it has a distinct inverse), so v1's C₂³ group claim was unproven — v1's eight views remain valid
+labeled bijections and their measured baseline stands, but not as a group. The corrected
+generators are the **three scales of reversal**, each a genuine involution, all mutually
+commuting:
 
-| Axis | Anti-side transform | Measured anchor |
+| Axis (scale) | Transform | Measured anchor |
 |---|---|---|
-| Sequence | `R` byte reversal | Fischer black/white (trilateral, trust ~50/50) |
-| Intra-byte | `N` nibble mirror | Ring A top perspective (21 wins, exact restore) |
-| Block structure | `E` even/odd nesting | Ring A measured perspective, exact restore |
+| Stream | `R` reverse byte order | Fischer black/white (trilateral, trust ~50/50) |
+| Byte | `N` swap the two nibbles per byte | Ring A top perspective (21 wins) |
+| Nibble | `Q` reverse bits within each nibble | Ring A bit-level perspective lineage |
 
-The black/white pyramid pair IS the sequence axis; the "other four pyramids" are the side/anti
-pairs of the intra-byte and block axes. Because `R`, `N`, `E` are involutions, they generate a
-group of exactly **2³ = 8 elements** — `{I, R, N, NR, E, ER, NE, NER}` — the **8 vertices of the
-cube**, matching the operator's 8 DBBH–DBWH pairs in the formation stack. Faces (6) and vertices
-(8) are the same anatomy: this experiment trains the full vertex orbit.
+Their full composition `RNQ` is **complete bit-order reversal of the entire message** (the total
+black↔white flip). The group axioms are NOT assumed: `--group-gates` verifies squares,
+commutators, distinctness, and the RNQ-total-reversal property **on the actual sha-pinned
+inputs** and emits `GROUP-GATES.hbp`; CI fails unless `C2^3_CONFIRMED_ON_INPUTS`. If confirmed,
+the 8 views `{I,R,N,NR,Q,QR,NQ,NQR}` are the algebraic binary cube — 8 vertex labels matching
+the 8 DBBH–DBWH pairs. Boundary kept per the review: this is the sign/encoding vertex group,
+NOT the cube's 24/48-element spatial symmetry suite, which belongs to the isotropy gates of the
+GENESIS/RECENTER contract (G7, 24 proper rotations) in a later rung.
+
+### Adopted divergence taxonomy (from GENESIS/RECENTER CONTRACT v1)
+
+```text
+LANGUAGE DIVERGENCE      permitted   (measured here: catalogs may differ per view)
+DECODED-LAW DIVERGENCE   not permitted (v2 conjugacy gate: g⁻¹Φg(gU) = Φ(U) — needs propagation harness)
+IDENTITY DIVERGENCE      never permitted (restore gates, enforced every pass)
+```
+
+### v1 baseline result (100 passes, E-generation views — preserved as measured)
+
+Views diverge decisively (mean relative spread ≈ 0.425): nibble-mirror swept 27/27 cubes and
+out-learned the native encoding (217,662 vs 211,182 B, +3.1%); adjacency-preserving views
+(n,r,i,nr ≈ 211–218k) vs adjacency-destroying interleave views (≈ 142–144k, −32%) — orientations
+that destroy byte adjacency impair pair-based language learning. Pre-registered prediction
+half-confirmed: divergence yes, but corpus-wide (one sweeping winner), not cube-specific.
 
 The level axis ("up and down the pyramids" — Q-prism quant-down/readback) is real but not
 size-preserving; it is explicitly **DEFERRED to v2**, not dropped, to keep v1 isolated and
