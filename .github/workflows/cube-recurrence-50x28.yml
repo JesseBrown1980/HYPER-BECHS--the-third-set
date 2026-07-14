@@ -39,6 +39,7 @@ jobs:
   recurrence:
     name: ${{ matrix.set }} / ${{ matrix.lane }} / 8+10+10
     needs: prepare
+    continue-on-error: true
     strategy:
       fail-fast: false
       max-parallel: 20
@@ -69,6 +70,7 @@ jobs:
             research/cube-recurrence-50x28-v1/cube_recurrence_50x28.py \
             research/cube-recurrence-50x28-v1/cube_recurrence_50x28_v2.py \
             research/cube-recurrence-50x28-v1/aggregate_cube_recurrence.py \
+            research/cube-recurrence-50x28-v1/aggregate_cube_recurrence_v2.py \
             research/hutter-cube-swarm-v1/cube_session.py \
             research/wolfram-open-math-cubes-v1/wolfram_cube_forge.py \
             third-seat-2026-07-12/gpt-crosscheck/multilevel_bpe_zstd_v1.py \
@@ -153,18 +155,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install independent aggregate-verifier dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy==2.4.4' zstandard
+
       - uses: actions/download-artifact@v4
         with:
           pattern: recurrence-*
           path: research/cube-recurrence-50x28-v1/downloaded
           merge-multiple: false
 
-      - name: Build the recurrence registry and perspective winner map
+      - name: Independently restore every returned base cube and build the registry
         run: |
           set -euo pipefail
           rm -rf research/cube-recurrence-50x28-v1/aggregate-out
           mkdir -p research/cube-recurrence-50x28-v1/aggregate-out
-          python research/cube-recurrence-50x28-v1/aggregate_cube_recurrence.py \
+          PYTHONPATH=research/cube-recurrence-50x28-v1 \
+          python research/cube-recurrence-50x28-v1/aggregate_cube_recurrence_v2.py \
             --input research/cube-recurrence-50x28-v1/downloaded \
             --output research/cube-recurrence-50x28-v1/aggregate-out | tee research/cube-recurrence-50x28-v1/aggregate-out/run.log
           (cd research/cube-recurrence-50x28-v1/aggregate-out && sha256sum -c SHA256SUMS)
@@ -173,8 +185,9 @@ jobs:
         run: |
           python - <<'PY'
           import json
-          p='research/cube-recurrence-50x28-v1/aggregate-out/CUBE-RECURRENCE-REGISTRY.json'
-          r=json.load(open(p))
+          root='research/cube-recurrence-50x28-v1/aggregate-out'
+          r=json.load(open(root+'/CUBE-RECURRENCE-REGISTRY.json'))
+          v=json.load(open(root+'/INDEPENDENT-ARTIFACT-VERIFICATION.json'))
           assert r['returned_cubes']==50, r['returned_cubes']
           assert not r['invalid_receipts'], r['invalid_receipts']
           assert r['measured_cubes']>=49, r['status_counts']
@@ -182,12 +195,15 @@ jobs:
           assert all(row['all_restore'] for row in r['ring_a'])
           assert r['recurrence']['cubes']==r['measured_cubes']
           assert r['recurrence']['improved_cubes']>0
+          assert v['returned']==50 and v['measured']==r['measured_cubes']
+          assert v['verified_perspective_rows']==r['returned_perspective_passes']
+          assert v['all_base_artifacts_restored']
           print('CUBERECURRENCEAGGVERIFY|'+'|'.join([
             f"returned={r['returned_cubes']}",
             f"measured={r['measured_cubes']}",
             f"passes={r['returned_perspective_passes']}",
             f"observed_max={r['observed_max_concurrent_sessions']}",
-            'status=PASS','json=0']))
+            'independent_base_restore=1','status=PASS','json=0']))
           PY
 
       - name: Upload the full 50×28 registry
@@ -199,6 +215,8 @@ jobs:
           path: |
             research/cube-recurrence-50x28-v1/aggregate-out/**
             research/cube-recurrence-50x28-v1/PLAN.md
+            research/cube-recurrence-50x28-v1/FIRST-FLIGHT-CORRECTIONS.md
             research/cube-recurrence-50x28-v1/cube_recurrence_50x28.py
             research/cube-recurrence-50x28-v1/cube_recurrence_50x28_v2.py
             research/cube-recurrence-50x28-v1/aggregate_cube_recurrence.py
+            research/cube-recurrence-50x28-v1/aggregate_cube_recurrence_v2.py
