@@ -7,6 +7,10 @@ on:
       - '.github/workflows/wolfram-open-math-cube-forge.yml'
   workflow_dispatch:
 
+concurrency:
+  group: wolfram-open-math-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
