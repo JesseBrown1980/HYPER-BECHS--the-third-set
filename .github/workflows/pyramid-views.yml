@@ -1,0 +1,131 @@
+name: Pyramid views (8 vertex orientations, isolated)
+
+on:
+  pull_request:
+    paths:
+      - 'pyramid-views-v1/**'
+      - '.github/workflows/pyramid-views.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ENWIK9_SHA256: 159b85351e5f76e60cbe32e04c677847a9ecba3adc79addab6f4c6c7aa3744bc
+
+jobs:
+  view:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        view: [i, r, n, nr, e, er, ne, ner]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache enwik9
+        id: cache-e9
+        uses: actions/cache@v4
+        with:
+          path: enwik9.zip
+          key: enwik9-zip-v1
+
+      - name: Download enwik9
+        if: steps.cache-e9.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          curl -fsSL -o enwik9.zip https://mattmahoney.net/dc/enwik9.zip
+
+      - name: Verify corpus against the pinned receipt hash
+        run: |
+          set -euo pipefail
+          unzip -o -q enwik9.zip
+          echo "${ENWIK9_SHA256}  enwik9" | sha256sum -c -
+
+      - name: Cut native E9 cubes (same cohort as the E9 A/B)
+        run: |
+          set -euo pipefail
+          python e9-ab-v1/make_e9_cubes.py \
+            --enwik9 enwik9 \
+            --offset 500000000 \
+            --slice-bytes 37037 \
+            --count 27 \
+            --output-dir pyramid-views-v1/native
+
+      - name: Transform through vertex view ${{ matrix.view }} (round-trips asserted)
+        run: |
+          set -euo pipefail
+          python pyramid-views-v1/make_views.py \
+            --native-snapshot pyramid-views-v1/native/snapshot \
+            --view ${{ matrix.view }} \
+            --output-dir pyramid-views-v1/view-${{ matrix.view }}
+
+      - name: Train view language (uniform 100 passes, own container)
+        run: |
+          set -euo pipefail
+          python glyph-hyperstack-first-floor-v1/glyph_hyperstack_first_floor_v1.py \
+            run \
+            --snapshot-root pyramid-views-v1/view-${{ matrix.view }}/snapshot \
+            --source-hbp-manifest pyramid-views-v1/view-${{ matrix.view }}/manifest.hbp \
+            --count 27 \
+            --passes-per-cycle 10 \
+            --three-rule-cycles 10 \
+            --merges-per-pass 1 \
+            --output-dir pyramid-views-v1/out-${{ matrix.view }} \
+            2>&1 | tee pyramid-views-v1/${{ matrix.view }}.log
+
+      - name: Verify receipts and exact restore
+        run: |
+          set -euo pipefail
+          grep -q 'restore=1' pyramid-views-v1/${{ matrix.view }}.log
+          grep -q 'status=PASS' pyramid-views-v1/${{ matrix.view }}.log
+          cd pyramid-views-v1/out-${{ matrix.view }}
+          sha256sum -c SHA256SUMS --quiet && echo "VIEW ${{ matrix.view }} SUMS_OK"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pv-${{ matrix.view }}
+          if-no-files-found: error
+          path: |
+            pyramid-views-v1/out-${{ matrix.view }}
+            pyramid-views-v1/view-${{ matrix.view }}/views-map.hbp
+            pyramid-views-v1/${{ matrix.view }}.log
+
+  compare:
+    needs: view
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: arms
+
+      - name: Compare the 8 orientation languages (exact arithmetic)
+        run: |
+          set -euo pipefail
+          MAPS=""
+          for v in i r n nr e er ne ner; do
+            MAPS="$MAPS --map arms/pv-$v/view-$v/views-map.hbp"
+          done
+          python pyramid-views-v1/compare_views.py $MAPS \
+            arms/pv-i/out-i arms/pv-r/out-r arms/pv-n/out-n arms/pv-nr/out-nr \
+            arms/pv-e/out-e arms/pv-er/out-er arms/pv-ne/out-ne arms/pv-ner/out-ner \
+            2>&1 | tee PYRAMID-VIEWS-COMPARISON.hbp
+          grep -q 'PVVERDICT' PYRAMID-VIEWS-COMPARISON.hbp
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pv-comparison
+          if-no-files-found: error
+          path: PYRAMID-VIEWS-COMPARISON.hbp
