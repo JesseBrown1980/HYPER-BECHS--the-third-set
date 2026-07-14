@@ -1,10 +1,11 @@
-name: E9 super-cube A/B (30 vs 100 uniform passes)
+name: E9 super-cube A/B (30 vs 100 vs 800 uniform passes)
 
 on:
   pull_request:
     paths:
       - 'e9-ab-v1/**'
       - '.github/workflows/e9-ab.yml'
+      - 'thirty-vs-new-ab-v1/analyze_ab.py'
   workflow_dispatch:
 
 permissions:
@@ -53,7 +54,7 @@ jobs:
           unzip -o -q enwik9.zip
           echo "${ENWIK9_SHA256}  enwik9" | sha256sum -c -
 
-      - name: Cut 27 sha-pinned E9 cubes (mid-corpus, beyond enwik8 prefix)
+      - name: Cut 27 SHA-pinned E9 cubes (mid-corpus, beyond enwik8 prefix)
         run: |
           set -euo pipefail
           python e9-ab-v1/make_e9_cubes.py \
@@ -114,11 +115,13 @@ jobs:
         run: |
           set -euo pipefail
           python thirty-vs-new-ab-v1/analyze_ab.py \
+            --cohort e9_midcorpus_27 \
             arms/e9-ab-old-30/out-old-30 \
             arms/e9-ab-new-100/out-new-100 \
             arms/e9-ab-new-800/out-new-800 \
             2>&1 | tee E9-AB-COMPARISON.hbp
           grep -q 'ABVERDICT' E9-AB-COMPARISON.hbp
+          grep -q 'cohort=e9_midcorpus_27' E9-AB-COMPARISON.hbp
 
       - uses: actions/upload-artifact@v4
         with:
