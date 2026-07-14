@@ -1,0 +1,204 @@
+name: Wolfram lens and clean white-room cubes
+
+on:
+  pull_request:
+    paths:
+      - 'research/wolfram-lens-white-room-v1/**'
+      - '.github/workflows/wolfram-lens-white-room.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      lens: ${{ steps.matrix.outputs.lens }}
+      open: ${{ steps.matrix.outputs.open }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: matrix
+        run: |
+          python - <<'PY'
+          import json, os
+          manifest=json.load(open('research/wolfram-lens-white-room-v1/sources.json'))
+          lens={'include':[{'source_id':x['id'],'url':x['url']} for x in manifest['lens_sources']]}
+          opened={'include':[{'source_id':x['id']} for x in manifest['open_sources']]}
+          assert len(lens['include'])==3
+          assert len(opened['include'])==7
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('lens='+json.dumps(lens,separators=(',',':'))+'\n')
+              f.write('open='+json.dumps(opened,separators=(',',':'))+'\n')
+          PY
+
+  lens:
+    name: lens ${{ matrix.source_id }}
+    needs: prepare
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix: ${{ fromJson(needs.prepare.outputs.lens) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Observe the public landing page without retaining its expressive body
+        run: |
+          set -euo pipefail
+          out="research/wolfram-lens-white-room-v1/out/lens-${{ matrix.source_id }}"
+          mkdir -p "$out"
+          python research/wolfram-lens-white-room-v1/lens_observer.py \
+            --source-id '${{ matrix.source_id }}' \
+            --url '${{ matrix.url }}' \
+            --output "$out" | tee "$out/run.log"
+          (cd "$out" && sha256sum -c SHA256SUMS)
+          python - <<PY
+          import json
+          p='$out/shadow-cube.json'
+          c=json.load(open(p))
+          assert c['retention']['raw_body_retained'] is False
+          assert c['retention']['raw_html_retained'] is False
+          assert c['retention']['full_page_text_retained'] is False
+          assert c['retention']['expressive_text_bytes']==0
+          assert c['retention']['source_reconstructable'] is False
+          assert c['retention']['service_payload_downloaded'] is False
+          print('LENS_BOUNDARY=PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lens-${{ matrix.source_id }}
+          retention-days: 30
+          path: |
+            research/wolfram-lens-white-room-v1/out/lens-${{ matrix.source_id }}/shadow-cube.json
+            research/wolfram-lens-white-room-v1/out/lens-${{ matrix.source_id }}/shadow-cube.hbp
+            research/wolfram-lens-white-room-v1/out/lens-${{ matrix.source_id }}/white-room-spec.json
+            research/wolfram-lens-white-room-v1/out/lens-${{ matrix.source_id }}/SHA256SUMS
+            research/wolfram-lens-white-room-v1/out/lens-${{ matrix.source_id }}/run.log
+
+  open-cube:
+    name: cube ${{ matrix.source_id }}
+    needs: prepare
+    strategy:
+      fail-fast: false
+      max-parallel: 7
+      matrix: ${{ fromJson(needs.prepare.outputs.open) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install reversible-cube dependencies
+        run: python -m pip install --upgrade numpy zstandard
+      - name: Build the exact open-license cube
+        run: |
+          set -euo pipefail
+          out="research/wolfram-lens-white-room-v1/out/repo-${{ matrix.source_id }}"
+          mkdir -p "$out"
+          python research/wolfram-lens-white-room-v1/open_cube_builder.py \
+            --manifest research/wolfram-lens-white-room-v1/sources.json \
+            --source-id '${{ matrix.source_id }}' \
+            --repo-root . \
+            --output "$out" | tee "$out/run.log"
+          (cd "$out" && sha256sum -c SHA256SUMS)
+          python - <<PY
+          import json
+          c=json.load(open('$out/cube-manifest.json'))
+          assert c['license'] in {'MIT','Apache-2.0','BSD-3-Clause'}
+          assert c['byte_identical_restore'] is True
+          assert all(x['restore'] for x in c['candidates'])
+          print('OPEN_CUBE_GATE=PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: repo-${{ matrix.source_id }}
+          retention-days: 30
+          path: |
+            research/wolfram-lens-white-room-v1/out/repo-${{ matrix.source_id }}/catalog.bin
+            research/wolfram-lens-white-room-v1/out/repo-${{ matrix.source_id }}/payload.zst
+            research/wolfram-lens-white-room-v1/out/repo-${{ matrix.source_id }}/license.txt
+            research/wolfram-lens-white-room-v1/out/repo-${{ matrix.source_id }}/source-files.json
+            research/wolfram-lens-white-room-v1/out/repo-${{ matrix.source_id }}/cube-manifest.json
+            research/wolfram-lens-white-room-v1/out/repo-${{ matrix.source_id }}/cube.hbp
+            research/wolfram-lens-white-room-v1/out/repo-${{ matrix.source_id }}/SHA256SUMS
+            research/wolfram-lens-white-room-v1/out/repo-${{ matrix.source_id }}/run.log
+
+  white-room:
+    name: independent white-room builder
+    needs: lens
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade numpy
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: lens-*
+          path: research/wolfram-lens-white-room-v1/lens-input
+          merge-multiple: false
+      - name: Expose only the clean spec and aggregate shadow files
+        run: |
+          set -euo pipefail
+          find research/wolfram-lens-white-room-v1/lens-input -type f \
+            ! -name 'white-room-spec.json' \
+            ! -name 'shadow-cube.json' \
+            ! -name 'shadow-cube.hbp' \
+            ! -name 'SHA256SUMS' \
+            -delete
+          rm -rf research/wolfram-lens-white-room-v1/white-room-out
+          python research/wolfram-lens-white-room-v1/white_room_builder.py \
+            --spec-root research/wolfram-lens-white-room-v1/lens-input \
+            --output research/wolfram-lens-white-room-v1/white-room-out
+          (cd research/wolfram-lens-white-room-v1/white-room-out && sha256sum -c SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: white-room-build
+          retention-days: 30
+          path: research/wolfram-lens-white-room-v1/white-room-out/**
+
+  aggregate:
+    name: aggregate lens, cube, and clean-room receipts
+    needs: [lens, open-cube, white-room]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'lens-*'
+          path: research/wolfram-lens-white-room-v1/downloaded
+          merge-multiple: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 'repo-*'
+          path: research/wolfram-lens-white-room-v1/downloaded
+          merge-multiple: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: white-room-build
+          path: research/wolfram-lens-white-room-v1/downloaded/white-room-build
+      - name: Aggregate and verify every receipt
+        run: |
+          set -euo pipefail
+          rm -rf research/wolfram-lens-white-room-v1/aggregate-out
+          python research/wolfram-lens-white-room-v1/aggregate.py \
+            --input research/wolfram-lens-white-room-v1/downloaded \
+            --output research/wolfram-lens-white-room-v1/aggregate-out | tee research/wolfram-lens-white-room-v1/aggregate-out/run.log
+          (cd research/wolfram-lens-white-room-v1/aggregate-out && sha256sum -c SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wolfram-lens-white-room-result
+          retention-days: 30
+          path: |
+            research/wolfram-lens-white-room-v1/SPEC.md
+            research/wolfram-lens-white-room-v1/sources.json
+            research/wolfram-lens-white-room-v1/aggregate-out/**
