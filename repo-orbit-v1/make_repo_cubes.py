@@ -14,7 +14,7 @@ need = a.slice_bytes * a.count
 assert len(data) >= need, "corpus too small: %d < %d" % (len(data), need)
 
 out = pathlib.Path(a.output_dir)
-snap = out / "snapshot" / "repo"
+snap = out / "snapshot" / "e9"
 snap.mkdir(parents=True, exist_ok=True)
 rows = ["REPOCUBEHDR|schema=LIRIS-ASOLARIA-REPO-CUBES-V1|source=asolaria_own_repos"
         "|corpus_sha256=%s|slice_bytes=%d|count=%d|json=0"
@@ -24,7 +24,7 @@ for i in range(1, a.count + 1):
     body = data[off:off + a.slice_bytes]
     name = "LX-%03d.md" % i
     (snap / name).write_bytes(body)
-    rows.append("OLDCUBEREF|file=%s|axis=repo|bytes=%d|sha256=%s|snapshot=repo/%s|json=0"
+    rows.append("OLDCUBEREF|file=%s|axis=repo|bytes=%d|sha256=%s|snapshot=e9/%s|json=0"
                 % (name, len(body), hashlib.sha256(body).hexdigest(), name))
     print("cube repo-LX-%03d off=%d sha256=%s" % (i, off, hashlib.sha256(body).hexdigest()))
 rows.append("REPOCUBEEND|count=%d|total_bytes=%d|json=0" % (a.count, a.count * a.slice_bytes))
