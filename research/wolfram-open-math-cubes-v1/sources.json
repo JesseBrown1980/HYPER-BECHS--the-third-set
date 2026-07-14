@@ -1,0 +1,69 @@
+{
+  "schema": "ASOLARIA-WOLFRAM-OPEN-MATH-CUBE-SOURCES-v1",
+  "date": "2026-07-14",
+  "license_allowlist": ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause"],
+  "lanes": [
+    {"id":"01-wolfram-jupyter","kind":"repo","repos":["WolframResearch/WolframLanguageForJupyter"],"focus":["notebook protocol","Wolfram Language kernel","Jupyter messages","serialization"]},
+    {"id":"02-wolfram-python-client","kind":"repo","repos":["WolframResearch/WolframClientForPython"],"focus":["WXF","serialization","cloud session","language evaluation","Python bridge"]},
+    {"id":"03-wolfram-codeparser","kind":"repo","repos":["WolframResearch/codeparser"],"focus":["concrete syntax tree","abstract syntax tree","Wolfram parser","tokenization","source reconstruction"]},
+    {"id":"04-wolfram-chatbook","kind":"repo","repos":["WolframResearch/Chatbook"],"focus":["notebook agents","LLM tools","prompt cells","function calling","resource functions"]},
+    {"id":"05-wolfram-webengine-python","kind":"repo","repos":["WolframResearch/WolframWebEngineForPython"],"focus":["web engine","Python integration","deployment","session state"]},
+    {"id":"06-wolfram-agenttools","kind":"repo","repos":["WolframResearch/AgentTools"],"focus":["agents","tools","Wolfram functions","tool execution","prompt orchestration"]},
+    {"id":"07-wolfram-codeinspector","kind":"repo","repos":["WolframResearch/codeinspector"],"focus":["static analysis","code quality","abstract interpretation","issues","source positions"]},
+    {"id":"08-wolfram-notebook-embedder","kind":"repo","repos":["WolframResearch/wolfram-notebook-embedder"],"focus":["notebook embedding","web components","serialization","front end"]},
+    {"id":"09-wolfram-lsp","kind":"repo","repos":["WolframResearch/LSPServer"],"focus":["language server","symbol graph","diagnostics","completion","document synchronization"]},
+    {"id":"10-wolfram-codeformatter","kind":"repo","repos":["WolframResearch/codeformatter"],"focus":["formatting","syntax tree","source preservation","whitespace","determinism"]},
+    {"id":"11-wolfram-librarylink","kind":"repo","repos":["WolframResearch/LibraryLinkUtilities"],"focus":["LibraryLink","C++","native types","tensor and numeric arrays","managed expressions"]},
+    {"id":"12-wolfram-aws-lambda","kind":"repo","repos":["WolframResearch/AWSLambda-WolframLanguage"],"focus":["serverless","AWS Lambda","Wolfram runtime","deployment","event handling"]},
+    {"id":"13-wolfram-gurobi","kind":"repo","repos":["WolframResearch/GurobiLink"],"focus":["optimization","linear programming","mixed integer programming","solver bridge","mathematical models"]},
+    {"id":"14-wolfram-sublime","kind":"repo","repos":["WolframResearch/Sublime-WolframLanguage"],"focus":["syntax grammar","editor language","tokens","scopes"]},
+    {"id":"15-wolfram-functioncompile-template","kind":"repo","repos":["WolframResearch/WL-FunctionCompile-CI-Template"],"focus":["compiled functions","CI","Wolfram compiler","native execution"]},
+    {"id":"16-wolfram-quantum-framework","kind":"repo","repos":["WolframResearch/QuantumFramework"],"focus":["quantum states","operators","circuits","measurement","symbolic quantum computation"]},
+    {"id":"17-wolfram-vscode","kind":"repo","repos":["WolframResearch/vscode-wolfram"],"focus":["VS Code","language client","syntax","debugging","LSP"]},
+    {"id":"18-wolfram-librarylink-rust","kind":"repo","repos":["WolframResearch/wolfram-library-link-rs"],"focus":["Rust","LibraryLink","FFI","native Wolfram types","memory safety"]},
+    {
+      "id":"19-wolfram-combined-open-source",
+      "kind":"bundle",
+      "repos":[
+        "WolframResearch/WolframLanguageForJupyter",
+        "WolframResearch/WolframClientForPython",
+        "WolframResearch/codeparser",
+        "WolframResearch/Chatbook",
+        "WolframResearch/AgentTools",
+        "WolframResearch/codeinspector",
+        "WolframResearch/LSPServer",
+        "WolframResearch/codeformatter",
+        "WolframResearch/LibraryLinkUtilities",
+        "WolframResearch/GurobiLink",
+        "WolframResearch/QuantumFramework"
+      ],
+      "focus":["combined Wolfram language","symbolic programs","agents","quantum","parsing","optimization","native execution"]
+    },
+    {
+      "id":"20-wolfram-asolaria-white-room-bridge",
+      "kind":"bridge",
+      "repos":[
+        "WolframResearch/codeparser",
+        "WolframResearch/QuantumFramework",
+        "WolframResearch/AgentTools",
+        "WolframResearch/LibraryLinkUtilities",
+        "JesseBrown1980/Algorithms-of-Asolaria",
+        "JesseBrown1980/HYPER-BECHS--the-third-set"
+      ],
+      "include_paths":{
+        "JesseBrown1980/Algorithms-of-Asolaria":[
+          "ASOLARIA-COMBINED-QUANT-ATLAS-2026-07-13.md",
+          "N-LENS-20-ZERO-MIRROR-FORMULAS-2026-07-13.md",
+          "N-VANTAGE-30-COMPOSED-FORMULAS-2026-07-13.md"
+        ],
+        "JesseBrown1980/HYPER-BECHS--the-third-set":[
+          "omni-event-v1/OMNIEVENT-CATALOG47-HYPER60-SPEC.md",
+          "n-lens-v1/N-LENS-20-FLASHLIGHT-SPEC.md",
+          "n-vantage-30-v1/N-VANTAGE-30-COMPOSED-BENCH-SPEC.md",
+          "research/hutter-cube-swarm-v1/MEASURED-SWARM-RESULT-2026-07-14.md"
+        ]
+      },
+      "focus":["Wolfram Asolaria bridge","symbolic parser","Q-PRISM","quantum framework","agent tools","quants","white-room method cube"]
+    }
+  ]
+}

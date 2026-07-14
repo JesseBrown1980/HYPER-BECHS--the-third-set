@@ -1,0 +1,196 @@
+name: Wolfram open-math 20-cube forge
+
+on:
+  pull_request:
+    paths:
+      - 'research/wolfram-open-math-cubes-v1/**'
+      - '.github/workflows/wolfram-open-math-cube-forge.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: wolfram-open-math-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: matrix
+        run: |
+          python - <<'PY'
+          import json, os
+          manifest=json.load(open('research/wolfram-open-math-cubes-v1/sources.json'))
+          include=[{'lane':x['id'],'kind':x['kind']} for x in manifest['lanes']]
+          assert len(include)==20
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('matrix='+json.dumps({'include':include},separators=(',',':'))+'\n')
+          PY
+
+  forge:
+    name: cube ${{ matrix.lane }}
+    needs: prepare
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deterministic cube dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy==2.4.4' zstandard
+
+      - name: Compile forge, decoder, and exact-codec dependencies
+        run: |
+          python -m py_compile \
+            research/wolfram-open-math-cubes-v1/wolfram_cube_forge.py \
+            research/wolfram-open-math-cubes-v1/wolfram_cube_forge_v2.py \
+            research/wolfram-open-math-cubes-v1/restore_wolfram_cube.py \
+            third-seat-2026-07-12/gpt-crosscheck/multilevel_bpe_zstd_v1.py \
+            third-seat-2026-07-12/asolaria_codec_v0_1.py
+
+      - name: Forge one license-gated reversible cube
+        env:
+          CUBE_LANE: ${{ matrix.lane }}
+        run: |
+          set -euo pipefail
+          out="research/wolfram-open-math-cubes-v1/out/${CUBE_LANE}"
+          rm -rf "$out"
+          mkdir -p "$out"
+          PYTHONPATH=research/wolfram-open-math-cubes-v1 \
+          python research/wolfram-open-math-cubes-v1/wolfram_cube_forge_v2.py \
+            --manifest research/wolfram-open-math-cubes-v1/sources.json \
+            --lane "$CUBE_LANE" \
+            --output "$out" \
+            --repo-root . \
+            --min-runtime 90 | tee "$out/run.log"
+          (cd "$out" && sha256sum -c SHA256SUMS)
+
+      - name: Restore the winning cube and re-extract every framed file
+        env:
+          CUBE_LANE: ${{ matrix.lane }}
+        run: |
+          set -euo pipefail
+          out="research/wolfram-open-math-cubes-v1/out/${CUBE_LANE}"
+          status="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["status"])' "$out/cube-result.json")"
+          if [ "$status" = "MEASURED" ]; then
+            level="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["cube"]["best_level"])' "$out/cube-result.json")"
+            expected_files="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["corpus"]["file_count"])' "$out/cube-result.json")"
+            expected_sha="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["corpus"]["sha256"])' "$out/cube-result.json")"
+            rm -rf "$out/restore-check"
+            mkdir -p "$out/restore-check/files"
+            python research/wolfram-open-math-cubes-v1/restore_wolfram_cube.py \
+              --model "$out/cube-L${level}.model.json" \
+              --payload "$out/cube-L${level}.payload.zst" \
+              --output "$out/restore-check/corpus.bin" \
+              --extract-dir "$out/restore-check/files" | tee "$out/restore-check.log"
+            test "$(sha256sum "$out/restore-check/corpus.bin" | cut -d' ' -f1)" = "$expected_sha"
+            test "$(find "$out/restore-check/files" -type f | wc -l)" = "$expected_files"
+            rm -rf "$out/restore-check"
+          fi
+
+      - name: Preserve exact license notices with the distributable cube
+        env:
+          CUBE_LANE: ${{ matrix.lane }}
+        run: |
+          set -euo pipefail
+          out="research/wolfram-open-math-cubes-v1/out/${CUBE_LANE}"
+          mkdir -p "$out/licenses"
+          python - "$out" <<'PY'
+          import shutil, sys
+          from pathlib import Path
+          out=Path(sys.argv[1])
+          for repo_dir in sorted((out/'work').glob('repo-*')):
+              target=out/'licenses'/repo_dir.name
+              target.mkdir(parents=True,exist_ok=True)
+              for p in sorted(repo_dir.iterdir()):
+                  if p.is_file() and (p.name.lower().startswith('license') or p.name.lower().startswith('copying') or p.name.lower() in {'notice','copyright'}):
+                      shutil.copy2(p,target/p.name)
+          PY
+
+      - name: Upload exact cube, method shadow, source receipt, and license bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wolfram-cube-${{ matrix.lane }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/wolfram-open-math-cubes-v1/out/${{ matrix.lane }}/cube-result.json
+            research/wolfram-open-math-cubes-v1/out/${{ matrix.lane }}/cube-result.hbp
+            research/wolfram-open-math-cubes-v1/out/${{ matrix.lane }}/file-manifest.json
+            research/wolfram-open-math-cubes-v1/out/${{ matrix.lane }}/method-shadow.json
+            research/wolfram-open-math-cubes-v1/out/${{ matrix.lane }}/cube-L*.model.json
+            research/wolfram-open-math-cubes-v1/out/${{ matrix.lane }}/cube-L*.payload.zst
+            research/wolfram-open-math-cubes-v1/out/${{ matrix.lane }}/licenses/**
+            research/wolfram-open-math-cubes-v1/out/${{ matrix.lane }}/SUMMARY.md
+            research/wolfram-open-math-cubes-v1/out/${{ matrix.lane }}/SHA256SUMS
+            research/wolfram-open-math-cubes-v1/out/${{ matrix.lane }}/restore-check.log
+            research/wolfram-open-math-cubes-v1/out/${{ matrix.lane }}/run.log
+            research/wolfram-open-math-cubes-v1/restore_wolfram_cube.py
+
+  aggregate:
+    name: aggregate Wolfram languages and cube economics
+    needs: [prepare, forge]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: wolfram-cube-*
+          path: research/wolfram-open-math-cubes-v1/downloaded
+          merge-multiple: false
+
+      - name: Build registry, shared method cube, overlap graph, and tournament
+        run: |
+          set -euo pipefail
+          rm -rf research/wolfram-open-math-cubes-v1/aggregate-out
+          mkdir -p research/wolfram-open-math-cubes-v1/aggregate-out
+          PYTHONPATH=research/wolfram-open-math-cubes-v1 \
+          python research/wolfram-open-math-cubes-v1/aggregate_wolfram_cubes_v2.py \
+            --input research/wolfram-open-math-cubes-v1/downloaded \
+            --output research/wolfram-open-math-cubes-v1/aggregate-out | tee research/wolfram-open-math-cubes-v1/aggregate-out/run.log
+          (cd research/wolfram-open-math-cubes-v1/aggregate-out && sha256sum -c SHA256SUMS)
+
+      - name: Require every returned receipt to verify
+        run: |
+          python - <<'PY'
+          import json
+          p='research/wolfram-open-math-cubes-v1/aggregate-out/WOLFRAM-CUBE-REGISTRY.json'
+          r=json.load(open(p))
+          assert r['returned_lanes']==20, r['returned_lanes']
+          assert not r['invalid_receipts'], r['invalid_receipts']
+          measured=sum(v for k,v in r['status_counts'].items() if k=='MEASURED')
+          assert measured >= 16, r['status_counts']
+          print('WOLFRAMFORGEVERIFY|returned=20|measured='+str(measured)+'|observed_max='+str(r['observed_max_concurrent_sessions'])+'|status=PASS|json=0')
+          PY
+
+      - name: Upload aggregate cube registry
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wolfram-open-math-cube-registry
+          retention-days: 30
+          path: |
+            research/wolfram-open-math-cubes-v1/aggregate-out/**
+            research/wolfram-open-math-cubes-v1/sources.json
+            research/wolfram-open-math-cubes-v1/wolfram_cube_forge.py
+            research/wolfram-open-math-cubes-v1/wolfram_cube_forge_v2.py
+            research/wolfram-open-math-cubes-v1/restore_wolfram_cube.py
+            research/wolfram-open-math-cubes-v1/aggregate_wolfram_cubes_v2.py
