@@ -1,0 +1,102 @@
+name: Pais Omega floor one GitRAM (27 x 800)
+
+on:
+  pull_request:
+    paths:
+      - 'research/pais-omega-floor1-v1/**'
+      - '.github/workflows/pais-omega-floor1-gitram.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pais-omega-floor1-gitram-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  ROOT: research/pais-omega-floor1-v1
+  MANIFEST: research/pais-omega-floor1-v1/corpus/PAIS-PATENTS-CORPUS-20260715.hbp
+  CONTRACT: research/pais-omega-floor1-v1/PAIS-OMEGA-FLOOR1-CONTRACT.hbp
+
+jobs:
+  cube:
+    name: Cube ${{ matrix.cube }} / 800 Cartesian cells
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        cube: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile the dependency-free floor trainer
+        run: |
+          set -euo pipefail
+          rustc --edition=2021 -O "$ROOT/pais_omega_floor1.rs" -o "$ROOT/pais_omega_floor1"
+
+      - name: Train one complete cube checkpoint
+        run: |
+          set -euo pipefail
+          rm -rf "$ROOT/shard"
+          "$ROOT/pais_omega_floor1" shard             --manifest "$MANIFEST"             --contract "$CONTRACT"             --output "$ROOT/shard"             --cube "${{ matrix.cube }}" | tee "$ROOT/shard.log"
+          grep -q 'GITRAM_SHARD_PASS' "$ROOT/shard.log"
+
+      - name: Upload the self-contained cube checkpoint
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pais-cube-${{ matrix.cube }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            ${{ env.ROOT }}/shard/cube-*
+            ${{ env.ROOT }}/shard.log
+
+  fan-in:
+    name: Verify 27 checkpoints and seal floor-one Omega
+    needs: cube
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: pais-cube-*
+          path: research/pais-omega-floor1-v1/fan-in
+          merge-multiple: true
+
+      - name: Require all returned cube checkpoints
+        run: |
+          set -euo pipefail
+          count="$(find "$ROOT/fan-in" -name CUBE-META.hbp -type f | wc -l)"
+          test "$count" -eq 27
+
+      - name: Compile the independent fan-in executable
+        run: |
+          set -euo pipefail
+          rustc --edition=2021 -O "$ROOT/pais_omega_floor1.rs" -o "$ROOT/pais_omega_floor1"
+
+      - name: Resume from all returned checkpoints and seal
+        run: |
+          set -euo pipefail
+          "$ROOT/pais_omega_floor1" train             --manifest "$MANIFEST"             --contract "$CONTRACT"             --output "$ROOT/fan-in"             --workers 1 | tee "$ROOT/fan-in.log"
+          grep -q 'PAIS_FLOOR_PASS|cubes=27|cells=21600' "$ROOT/fan-in.log"
+          (cd "$ROOT/fan-in" && sha256sum -c SHA256SUMS)
+
+      - name: Upload the sealed one-floor corpus
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pais-omega-floor1-sealed
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            ${{ env.ROOT }}/fan-in/**
+            ${{ env.ROOT }}/fan-in.log
+            ${{ env.ROOT }}/PAIS-OMEGA-FLOOR1-CONTRACT.hbp
+            ${{ env.ROOT }}/GITRAM.md
