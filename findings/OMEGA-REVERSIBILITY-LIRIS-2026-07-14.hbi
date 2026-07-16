@@ -1,0 +1,8 @@
+HBIHDR|artifact=OMEGA-REVERSIBILITY-LIRIS-2026-07-14.hbp|rows=6|encoding=utf8|newline=LF|offset_base=0|row_hash=sha256|json=0
+HBIROW|n=1|tag=FINDHDR|offset=0|bytes=161|sha256=c7e551d7a90dbd44e8a812ba0fa9a54c3c518da012a9141a8e9ac67dc128f2a6|json=0
+HBIROW|n=2|tag=FIND800|offset=161|bytes=243|sha256=b1dacd1e3adf3a54219a3546371c39fdb01b4dd98df82c0edd99fe8d6ce3d50b|json=0
+HBIROW|n=3|tag=FINDISO|offset=404|bytes=172|sha256=79583651b01aef1cc6b927d1f4920c3a75dfc0b104ea4839ea45f58b9b08878a|json=0
+HBIROW|n=4|tag=FINDOMEGA|offset=576|bytes=178|sha256=7d417f5db741a6b3cf803a00f11573af0f3adbc536ebb162d47985690f504a26|json=0
+HBIROW|n=5|tag=FINDREV|offset=754|bytes=212|sha256=46b15e9d7f9e29c005f42350cf66b00a8102c41b81cbe4993123d0c96b073be9|json=0
+HBIROW|n=6|tag=FINDEND|offset=966|bytes=61|sha256=86be0aea6b05989863a456adcc9b9279b0bf38a3fcbcfaf693393b0bb6ab422e|json=0
+HBIEND|rows=6|bytes=1027|json=0
