@@ -1,0 +1,9 @@
+OMEGACORRECTIONv1|date=2026-07-16|seat=LIRIS|artifact=repo-orbit-comparison|run=29357558667|sealed_findings_mutated=0|status=MEASURED|json=0
+SPREAD|sealed_fraction=0.01842713548978976|percent=1.842713548978976|old_percent=0.18|verdict=FACTOR_OF_TEN_DECIMAL_SLIP|json=0
+VERIFY|pvcube_rows=27|views=8|raw_gain_cells=216|raw_gain_matches=216|omega_repo=cc0c4ee328387788e31b686bbcaa07c0c39fd7abe2dadaca7c69972c96951b57|omega_recomputed=1|json=0
+PAIRCORE|pairs=108|map=I:RNQ,R:NQ,N:RQ,Q:NR|count_predictor_invariant=1|lz1_invariant=1|core_equality=FORCED|json=0
+PAIRPIPELINE|exact_byte_ties=61|median_pair_delta_bytes=0|noninvariant_term=numeric_symbol_tiebreak_symbol_lt_best_symbol|full_pipeline_exact_invariance=0|chirality=MEASURED_DETERMINISTIC|json=0
+PAIRCLASSES|independent_classes=4|mean_orientation_dependence_pct=1.4986|largest_residual_1=cube18_N_QR_4.97pct|largest_residual_2=cube22_Q_NR_7.63pct|json=0
+TIES|per_cube_best_ties=17|antipodal_pair_ties=61of108|statistics_distinct=1|json=0
+SYMMETRYAUDIT|law=invariant_core_plus_enumerated_noninvariant_terms_plus_measured_residual|omega_gnn_gate=REQUIRED|elapsed_ms_seat_symmetry_break=1|numeric_tiebreak_parity_break=1|json=0
+VERDICT|raw_spread_pct=1.842713548978976|pairclass_signal_pct=1.4986|antipodal_core_symmetry=THEOREM|full_pipeline_chirality=MEASURED|status=PASS|json=0
