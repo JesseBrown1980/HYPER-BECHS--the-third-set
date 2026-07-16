@@ -32,25 +32,44 @@ Bidirectional verification (2026-07-15/16, LIRIS):
 
 The findings' "equal power across all 8 vertex-facings" reading survives in a sharper
 form. The two-tier inverse-pair theorem (proven from trainer source 2026-07-15/16)
-splits the spread exactly:
+separates the invariant mathematical core from the implementation's one known
+non-invariant term:
 
-- **On antipodal pairs (I↔RNQ, R↔NQ, N↔RQ, Q↔NR): equality is FORCED** — the
-  count-predictor and LZ1 are invariant under the direction-flip + bit-relabeling that
-  relates a view to its complement; 61 of 108 pair-cells are exact byte ties, median
-  delta 0. Not approximate isotropy: a harness theorem.
-- **Across the four pair-classes: real orientation dependence of 1.4986%** — this, not
-  0.18%, is the honest "how much direction matters" number.
-- **The residual asymmetry is one known chirality term** — the numeric-symbol tie-break
-  (`symbol < best_symbol`), the single parity-violating line in the dynamics; its
-  cascades are localized (cube 18 N↔QR 4.97%, cube 22 Q↔NR 7.63%) and deterministic.
+- **Permutation-equivariant core:** for antipodal pairs
+  `I↔RNQ`, `R↔NQ`, `N↔RQ`, `Q↔NR`, the count-predictor and LZ1 gain are invariant under
+  the direction-flip plus bit relabeling that relates a view to its complement.
+  Equality is forced for that core.
+- **Complete measured pipeline:** the numeric-symbol tie-break
+  (`symbol < best_symbol`) is not invariant under arbitrary symbol relabeling.
+  Consequently, 61 of 108 pair-cells are exact byte ties and the median pair delta is
+  0, while the remaining deterministic residuals are the measured chirality term.
+- **Across the four pair-classes:** real orientation dependence is **1.4986%**. This,
+  not 0.18%, is the honest independent-direction signal after the antipodal pairing is
+  factored out.
+- **Localized residuals:** the largest measured cascades are cube 18 `N↔QR` at 4.97%
+  and cube 22 `Q↔NR` at 7.63%.
 
-The 17 exact per-cube best-ties reported here and the 61/108 exact antipodal pair-ties
-are different tie statistics on the same artifact; both stand.
+The 17 exact per-cube best-ties reported in the sealed findings and the 61/108 exact
+antipodal pair-ties are different tie statistics on the same artifact; both stand.
+
+## Symmetry-audit law for Ω-GNN admission
+
+A group-law gate can prove transform-level involution, commutation, and restore while
+an implementation detail still breaks learning-level symmetry. Therefore any claimed
+invariance must enumerate:
+
+    invariant core
+    + every known non-invariant term
+    + measured residual under those terms
+
+The Ω-GNN admission contract should hard-gate the algebra and separately receipt this
+symmetry audit. `elapsed_ms` previously broke seat symmetry; the numeric-symbol
+tie-break breaks parity. Both were discovered by anomaly rather than by an explicit
+audit, which is why this law is now required.
 
 ## Cross-references
 
 - Algorithms-of-Asolaria main: `findings/OMEGA-REVERSIBILITY-CORRECTION-2026-07-15.md`
   (same correction, merged), `ASOLARIA-INVERSE-PAIR-LAW-2026-07-15.md` (the unified law).
 - Standing rule extracted from this incident: any claimed invariance must enumerate its
-  non-invariant terms in the receipt (symmetry-audit law) — elapsed_ms broke
-  seat-symmetry, the tie-break breaks parity; both were found by anomaly, not audit.
+  non-invariant terms in the receipt.
