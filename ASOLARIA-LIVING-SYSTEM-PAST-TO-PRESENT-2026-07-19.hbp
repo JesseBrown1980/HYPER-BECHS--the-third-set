@@ -1,0 +1,14 @@
+RECEIPT|schema=ASOLARIA-LIVING-SYSTEM-V1|date=2026-07-19|branch=agent/asolaria-living-system-2026-07-19|markdown_sha256=57694bdbe420eefe57ff082f1872bbad7f67ac03d8a65a20866abd07c8a359d4|json=0
+LINEAGE|root=approval_switch|agent=ACCELERATOR|next=message_observer|gates=HOOKWALL,GNN,REVERSE_GAIN|json=0
+MEMORYLAW|raw_stream=M|selected_knowledge=K|cube=C|invariant=REHYDRATE_C_EQUALS_K|raw_replay_not_required=1|json=0
+REFLECTION|room=backend_meeting_room|source=explicit_agent_work|translate=1|delay=1|return_to_same_agent=1|hidden_chain_of_thought=0|json=0
+SCALING|prior_bytes=2097152|target_bytes=102400|cold=0.0785|warm=0.0107|reported_gain_pct=86.3|cold_over_warm=7.34|source=operator_bench|json=0
+SCALING|prior_bytes=2097152|target_bytes=1048576|cold=0.0232|warm=0.0110|reported_gain_pct=52.9|cold_over_warm=2.11|source=operator_bench|json=0
+SCALING|prior_bytes=2097152|target_bytes=10485760|cold=0.0117|warm=0.0101|reported_gain_pct=13.2|cold_over_warm=1.16|source=operator_bench|json=0
+NULLSPACE|targeted_beams=56|random_beams=56|free_beam_verdict=NEUTRAL|constrained_watcher_value=SUPPORTED|source=operator_bench|json=0
+CUBECHAIN|L1=0.0330|L2=0.2224|L3=0.0529|L4=0.0341|bad_fold=ctx3_plus_cube_mod3|verdict=PIPE_WORKS_BAD_FOLD_PUNISHED_RECOVERY_OBSERVED|json=0
+PATH2|repo=JesseBrown1980/path2-two-shadow-recovery|tests=30|third_seat=CLAUDE_FABLE5_RUSTC_1_97_30_OF_30|gpt_role=SOURCE_AUDIT|json=0
+SCREENSHOT|topic=liris_spawn|commit=2b81d3b|acer_fix=d35f0f2|tests=111_of_111|A_per_sec=534136675|B_per_sec=72775013|C_per_sec=75926339|typed_soa_per_sec=187821997|json=0
+SCREENSHOT|topic=recall_rust|terms=2614638|rows=591286|query_ms=2_to_16|json_hot_path=0|linear_fallback=0|thread_per_conn=1|json=0
+SCREENSHOT|topic=hyperbehcs_capacity|tuple_dim=60|levels=16|catalogs=47_to_60|engines=17|suite_pass=14|json=0
+DOCTRINE|no_deflate=1|no_inflate=1|capacity_not_residency=1|signal_not_completion=1|projection_not_recovery=1|json=0
